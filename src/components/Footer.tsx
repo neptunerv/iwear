@@ -5,11 +5,13 @@ import { site } from "@/lib/site";
 
 type FooterProps = {
   className?: string;
-  /** Split into logo viewport + info viewport — both snap at the bottom. */
+  /** Split into logo viewport + info viewport. */
   viewport?: boolean;
   /**
-   * @deprecated Viewport footers always snap both panels. Kept so existing
-   * call sites don’t break.
+   * Make both viewport panels scroll-snap targets. Only use on pages that
+   * already snap section-by-section (home, brand, stores). Catalog pages
+   * must omit this — enabling snap with only footer targets traps scroll
+   * and can land the page on the footer.
    */
   snap?: boolean;
 };
@@ -201,14 +203,19 @@ function FooterInfo({ fill = false }: { fill?: boolean }) {
 export function Footer({
   className = "",
   viewport = false,
+  snap = false,
 }: FooterProps) {
   if (viewport) {
-    const viewportClass =
-      "snap-section snap-section-footer h-[calc(100dvh-var(--header-h))] max-h-[calc(100dvh-var(--header-h))]";
+    const viewportClass = [
+      "h-[calc(100dvh-var(--header-h))] max-h-[calc(100dvh-var(--header-h))]",
+      snap ? "snap-section snap-section-footer" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
 
     return (
       <>
-        <FooterScrollSnap />
+        {snap ? <FooterScrollSnap /> : null}
 
         <footer
           className={`${viewportClass} flex flex-col overflow-hidden border-t-2 border-ink bg-brand text-ink ${className}`.trim()}

@@ -3,9 +3,9 @@
 import { useEffect } from "react";
 
 /**
- * Enables document scroll-snap for viewport footers so the info + wordmark
- * panels snap on every page (including shop, where the rest of the page
- * has no snap sections).
+ * Enables document scroll-snap for viewport footers when the page-level
+ * snap helper isn’t already mounted. Snap pages (home, brand) usually
+ * enable this themselves — this is a safety net for `Footer viewport snap`.
  */
 export function FooterScrollSnap() {
   useEffect(() => {
