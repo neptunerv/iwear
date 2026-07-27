@@ -1,0 +1,91 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Footer } from "@/components/Footer";
+import { ProductCatalogGrid } from "@/components/ProductCatalogGrid";
+import { getBrandPage, featuredBrands } from "@/lib/brands";
+import { parseFiltersFromSearchParams } from "@/lib/catalog-filters";
+import { parseCatalogPage } from "@/lib/catalog-pagination";
+import { formatModelLabel } from "@/lib/product-model-family";
+import { getBestSellerHandles, getProductsByBrand } from "@/lib/shopify";
+
+type BrandShopPageProps = {
+  params: Promise<{ brand: string }>;
+  searchParams: Promise<{
+    gender?: string;
+    frame?: string;
+    model?: string;
+    family?: string;
+    page?: string;
+  }>;
+};
+
+export function generateStaticParams() {
+  return featuredBrands.map((brand) => ({ brand: brand.slug }));
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: BrandShopPageProps): Promise<Metadata> {
+  const [{ brand: slug }, query] = await Promise.all([params, searchParams]);
+  const brand = getBrandPage(slug);
+
+  if (!brand) {
+    return { title: "Shop not found" };
+  }
+
+  if (query.family) {
+    const modelName = formatModelLabel(query.family);
+    return {
+      title: `${modelName} · ${brand.name}`,
+      description: `Browse all ${modelName} colors from ${brand.name} at iWear Sunglasses Bali.`,
+    };
+  }
+
+  return {
+    title: `Shop ${brand.name}`,
+    description: `Browse ${brand.name} sunglasses at iWear Sunglasses Bali.`,
+  };
+}
+
+export default async function BrandShopPage({
+  params,
+  searchParams,
+}: BrandShopPageProps) {
+  const [{ brand: slug }, query] = await Promise.all([params, searchParams]);
+  const brand = getBrandPage(slug);
+
+  if (!brand) {
+    notFound();
+  }
+
+  const [products, bestSellerHandles] = await Promise.all([
+    getProductsByBrand(brand.name),
+    getBestSellerHandles(100),
+  ]);
+  const initialFilters = parseFiltersFromSearchParams(query);
+  const initialPage = parseCatalogPage(query.page);
+  const title = query.family
+    ? formatModelLabel(query.family)
+    : brand.name;
+
+  return (
+    <>
+      <ProductCatalogGrid
+        title={title}
+        products={products}
+        bestSellerHandles={bestSellerHandles}
+        fixedBrand={brand.name}
+        initialFilters={initialFilters}
+        initialPage={initialPage}
+        emptyMessage={
+          query.family
+            ? `No ${formatModelLabel(query.family)} styles found.`
+            : `No ${brand.name} products yet — check back soon.`
+        }
+      />
+
+      <Footer viewport className="shop-footer" />
+    </>
+  );
+}

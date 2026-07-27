@@ -1,26 +1,223 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand: #ff0d01;
+  --cream: #faf7f2;
+  --sand-50: #f3ede4;
+  --sand-100: #e8dfd2;
+  --sand-200: #d4c8b8;
+  --ink: #0d0b09;
+  --ink-muted: #6b6358;
+  --terracotta: #c45c3e;
+  --ocean: #2a5f6f;
+  --header-h: 3.5rem;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-brand: var(--brand);
+  --color-cream: var(--cream);
+  --color-sand-50: var(--sand-50);
+  --color-sand-100: var(--sand-100);
+  --color-sand-200: var(--sand-200);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-terracotta: var(--terracotta);
+  --color-ocean: var(--ocean);
+  --font-sans: var(--font-aspekta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), Georgia, serif;
+  --font-poster: var(--font-poster), Impact, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Tailwind preflight leaves buttons on the default arrow; restore click cursor. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.font-poster {
+  font-family: var(--font-poster), Impact, sans-serif;
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.35rem;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+@keyframes marquee-loop {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-1 * var(--marquee-loop, 50%)));
+  }
+}
+
+.marquee-track {
+  animation: marquee-loop var(--marquee-duration, 28s) linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+
+  .hero-video {
+    display: none;
+  }
+}
+
+#site-header.header-ghost {
+  background-color: transparent;
+  border-bottom-color: transparent;
+}
+
+#site-header.header-ghost-dark {
+  color: var(--cream);
+}
+
+#site-header.header-ghost-light {
+  color: var(--ink);
+}
+
+#site-header {
+  transition: background-color 280ms ease, color 280ms ease,
+    border-color 280ms ease;
+}
+
+/* Full-bleed brand video hero — video is a fixed viewport-filling layer
+   that sits behind the (still in-flow, sticky) header. It uses negative
+   z-index so every normal-flow section (which gets an explicit stacking
+   context below) always paints above it — the video can never "leak"
+   on top of the next section while scrolling, no matter when the JS
+   toggle fires. That removes the pop/stutter when snapping past the hero. */
+html.brand-hero-video-active,
+html.brand-hero-video-active body {
+  background: var(--ink);
+}
+
+.brand-hero-video .hero-video-wrap,
+.brand-hero-video .hero-video-scrim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100dvh;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 320ms ease, visibility 0s linear 320ms;
+}
+
+.brand-hero-video .hero-video-wrap {
+  z-index: -2;
+  overflow: hidden;
+}
+
+.brand-hero-video .hero-video-scrim {
+  z-index: -1;
+  background: linear-gradient(
+    to top,
+    rgb(0 0 0 / 0.7),
+    rgb(0 0 0 / 0.35) 45%,
+    rgb(0 0 0 / 0.2)
+  );
+}
+
+html.brand-hero-video-active .brand-hero-video .hero-video-wrap,
+html.brand-hero-video-active .brand-hero-video .hero-video-scrim {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 320ms ease, visibility 0s linear 0s;
+}
+
+/* Homepage viewport snap — snappy, no smooth scroll */
+html.snap-scroll {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: auto;
+  scroll-padding-top: var(--header-h);
+  height: auto;
+  min-height: 100%;
+}
+
+html.snap-scroll.snap-scroll-proximity {
+  scroll-snap-type: y proximity;
+}
+
+.snap-section {
+  position: relative;
+  z-index: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-height: calc(100dvh - var(--header-h));
+}
+
+/* Last viewport section — allow scroll through to footer */
+.snap-section-last {
+  scroll-snap-stop: normal;
+}
+
+/* Footer info + wordmark panels — always snappy stop points */
+.snap-section-footer {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Pages with an in-main footer hide the layout duplicate */
+body:has(.home-footer) .site-footer,
+body:has(.shop-footer) .site-footer,
+body:has(.account-page) .site-footer {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.snap-scroll {
+    scroll-snap-type: none;
+  }
+}
+
+.product-description {
+  max-width: 42rem;
+  font-weight: 600;
+  line-height: 1.7;
+  color: var(--ink-muted);
+}
+
+.product-description p + p {
+  margin-top: 1rem;
+}
+
+.product-description ul {
+  margin-top: 1rem;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.product-description li + li {
+  margin-top: 0.5rem;
 }
