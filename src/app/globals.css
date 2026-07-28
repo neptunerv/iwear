@@ -174,9 +174,11 @@ html.snap-scroll.snap-scroll-proximity {
   z-index: 0;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  height: calc(100dvh - var(--header-h));
-  max-height: calc(100dvh - var(--header-h));
-  min-height: calc(100dvh - var(--header-h));
+  /* Prefer locked --snap-vh (set by snap helpers). Fall back to svh so
+     section height does not resize when mobile browser chrome collapses. */
+  height: calc(var(--snap-vh, 100svh) - var(--header-h));
+  max-height: calc(var(--snap-vh, 100svh) - var(--header-h));
+  min-height: calc(var(--snap-vh, 100svh) - var(--header-h));
   overflow: hidden;
   box-sizing: border-box;
 }

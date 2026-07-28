@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { lockSnapViewportHeight } from "@/lib/snap-viewport";
 
 type HeroTheme = "dark" | "light";
 
@@ -23,11 +24,13 @@ export function BrandScrollSnap() {
   useEffect(() => {
     document.documentElement.classList.add("snap-scroll");
     document.body.classList.add("snap-scroll-page");
+    const unlockSnapVh = lockSnapViewportHeight();
 
     const hero = document.getElementById("brand-hero");
     const header = document.getElementById("site-header");
     if (!hero || !header) {
       return () => {
+        unlockSnapVh();
         document.documentElement.classList.remove("snap-scroll");
         document.body.classList.remove("snap-scroll-page");
         // Reset before the next route paints — otherwise Women/Men (mid-page
@@ -71,6 +74,7 @@ export function BrandScrollSnap() {
 
     return () => {
       observer.disconnect();
+      unlockSnapVh();
       document.documentElement.classList.remove(
         "snap-scroll",
         "brand-hero-video-active",

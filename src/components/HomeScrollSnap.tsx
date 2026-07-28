@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { lockSnapViewportHeight } from "@/lib/snap-viewport";
 
 function setHeaderBorderVisible(visible: boolean) {
   const header = document.getElementById("site-header");
@@ -30,9 +31,11 @@ export function HomeScrollSnap({
     document.documentElement.classList.add("snap-scroll");
     document.body.classList.add("snap-scroll-page");
     setHeaderBorderVisible(true);
+    const unlockSnapVh = lockSnapViewportHeight();
 
     if (keepHeaderBorder) {
       return () => {
+        unlockSnapVh();
         document.documentElement.classList.remove("snap-scroll");
         document.body.classList.remove("snap-scroll-page");
         document.body.classList.remove("scrolled");
@@ -45,6 +48,7 @@ export function HomeScrollSnap({
     const header = document.getElementById("site-header");
     if (!hero || !header) {
       return () => {
+        unlockSnapVh();
         document.documentElement.classList.remove("snap-scroll");
         document.body.classList.remove("snap-scroll-page");
         document.body.classList.remove("scrolled");
@@ -72,6 +76,7 @@ export function HomeScrollSnap({
 
     return () => {
       observer.disconnect();
+      unlockSnapVh();
       document.documentElement.classList.remove("snap-scroll");
       document.body.classList.remove("snap-scroll-page");
       document.body.classList.remove("scrolled");

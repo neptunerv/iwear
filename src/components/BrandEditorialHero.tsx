@@ -21,7 +21,7 @@ export function BrandEditorialHero({
     <section
       id="brand-hero"
       data-hero-theme={hasVideo ? "dark" : "light"}
-      className={`snap-section relative flex min-h-[calc(100dvh-var(--header-h))] flex-col overflow-hidden ${
+      className={`snap-section relative flex min-h-[calc(var(--snap-vh,100svh)-var(--header-h))] flex-col overflow-hidden ${
         hasVideo ? "brand-hero-video bg-ink text-cream" : "bg-cream text-ink"
       }`}
     >

@@ -24,17 +24,16 @@ type FooterNavItem = {
   external?: boolean;
 };
 
-const cellClass = "flex min-h-0 flex-col bg-brand p-5 sm:p-8 lg:p-10";
+const cellClass = "flex min-h-0 flex-col bg-brand p-4 sm:p-8 lg:p-10";
 const labelClass =
-  "font-display text-2xl italic leading-none sm:text-4xl";
-const bodyClass = "text-xs font-semibold sm:text-base";
+  "font-display text-xl italic leading-none sm:text-4xl";
+const bodyClass = "text-[11px] font-semibold sm:text-base";
 const mutedClass = `${bodyClass} text-ink/80`;
 
 const footerAbout = [
   "iWear is an authorized Luxottica retailer based in Bali. Shop authentic Ray-Ban, Oakley, Swarovski, and Scuderia Ferrari online, with more brands in store.",
   "Visit Beachwalk Kuta or Icon Mall Sanur to try on frames and get fitted. Free delivery across Bali.",
 ] as const;
-
 
 const exploreLinks: FooterNavItem[] = [
   { href: "/account", label: "Account" },
@@ -46,9 +45,9 @@ const exploreLinks: FooterNavItem[] = [
 
 const legalLinks: FooterNavItem[] = [
   { href: "/warranty", label: "Warranty" },
-  { href: "/shipping", label: "Shipping & returns" },
-  { href: "/privacy", label: "Privacy policy" },
-  { href: "/terms", label: "Terms of use" },
+  { href: "/shipping", label: "Shipping" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
 ];
 
 function FooterNavList({
@@ -64,7 +63,7 @@ function FooterNavList({
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
         const className =
-          "flex items-center justify-between gap-3 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:bg-ink hover:text-brand sm:px-8 sm:py-4 sm:text-xs lg:px-10";
+          "flex items-center justify-between gap-3 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:bg-ink hover:text-brand sm:px-8 sm:py-4 sm:text-xs lg:px-10";
 
         return (
           <li
@@ -98,18 +97,18 @@ function StoreAddress({ store }: { store: StoreLocation }) {
   return (
     <>
       <p className={labelClass}>{store.area}</p>
-      <div className="mt-auto pt-4 sm:pt-8">
+      <div className="mt-auto pt-3 sm:pt-8">
         <p className={`leading-snug ${mutedClass}`}>
           {store.mall} · {store.level}
         </p>
-        <p className={`mt-2 font-display italic leading-snug text-ink/70 sm:mt-4 sm:text-lg`}>
+        <p className={`mt-1.5 font-display italic leading-snug text-ink/70 sm:mt-4 sm:text-lg`}>
           {store.hours}
         </p>
         <a
           href={store.mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 flex w-full items-center justify-center border-2 border-ink px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors hover:bg-ink hover:text-brand sm:mt-6 sm:px-4 sm:py-3 sm:text-xs"
+          className="mt-3 flex w-full items-center justify-center border-2 border-ink px-3 py-2 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors hover:bg-ink hover:text-brand sm:mt-6 sm:px-4 sm:py-3 sm:text-xs"
         >
           Get directions
         </a>
@@ -132,7 +131,7 @@ function FooterNavCell({
       <p className={`shrink-0 ${labelClass}`}>{title}</p>
       {/* Full-bleed rules under the title — keep bottom padding so last item
           border doesn't stack with the grid gutter into a double line. */}
-      <div className="-mx-5 mt-5 flex min-h-0 flex-1 flex-col border-t-2 border-ink sm:-mx-8 sm:mt-8 lg:-mx-10">
+      <div className="-mx-4 mt-3 flex min-h-0 flex-1 flex-col border-t-2 border-ink sm:-mx-8 sm:mt-8 lg:-mx-10">
         <FooterNavList items={items} borderLast={borderLast} />
       </div>
     </div>
@@ -146,7 +145,7 @@ function FooterContent({ fill = false }: { fill?: boolean }) {
     <div
       className={`grid grid-cols-2 gap-[2px] bg-ink md:grid-cols-4 ${
         fill
-          ? "min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] md:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+          ? "min-h-min w-full md:min-h-0 md:flex-1 md:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto]"
           : ""
       }`}
     >
@@ -154,11 +153,10 @@ function FooterContent({ fill = false }: { fill?: boolean }) {
       <div className={`${cellClass} col-span-2 md:row-span-2`}>
         <p className={labelClass}>About</p>
         <div
-          className={`mt-4 max-w-md space-y-3 leading-snug sm:mt-6 sm:max-w-lg sm:space-y-4 sm:leading-relaxed ${mutedClass}`}
+          className={`mt-3 max-w-md space-y-2 leading-snug sm:mt-6 sm:max-w-lg sm:space-y-4 sm:leading-relaxed ${mutedClass}`}
         >
-          {footerAbout.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+          <p>{footerAbout[0]}</p>
+          <p className="hidden sm:block">{footerAbout[1]}</p>
         </div>
       </div>
 
@@ -173,8 +171,8 @@ function FooterContent({ fill = false }: { fill?: boolean }) {
       <FooterNavCell title="Explore" items={exploreLinks} borderLast />
       <FooterNavCell title="Legal" items={legalLinks} borderLast />
 
-      <div className="col-span-2 bg-brand px-5 py-4 text-[10px] font-semibold leading-relaxed text-ink/70 sm:px-8 sm:py-5 sm:text-sm md:col-span-4 lg:px-10">
-        © {new Date().getFullYear()} {site.name} — Authorized Luxottica
+      <div className="col-span-2 bg-brand px-4 py-3 text-[10px] font-semibold leading-relaxed text-ink/70 sm:px-8 sm:py-5 sm:text-sm md:col-span-4 lg:px-10">
+        © {new Date().getFullYear()} {site.name}. Authorized Luxottica
         reseller. Ray-Ban and Oakley are trademarks of their respective owners.
       </div>
     </div>
@@ -209,7 +207,7 @@ export function Footer({
 }: FooterProps) {
   if (viewport) {
     const viewportClass = [
-      "h-[calc(100dvh-var(--header-h))] max-h-[calc(100dvh-var(--header-h))]",
+      "h-[calc(var(--snap-vh,100svh)-var(--header-h))] max-h-[calc(var(--snap-vh,100svh)-var(--header-h))]",
       snap ? "snap-section snap-section-footer" : "",
     ]
       .filter(Boolean)
@@ -220,7 +218,9 @@ export function Footer({
         {snap ? <FooterScrollSnap /> : null}
 
         <footer
-          className={`${viewportClass} flex flex-col overflow-hidden border-t-2 border-ink bg-brand text-ink ${className}`.trim()}
+          className={`${viewportClass} flex flex-col overflow-x-hidden overflow-y-auto border-t-2 border-ink bg-brand text-ink ${
+            snap ? "snap-section-scroll" : ""
+          } ${className}`.trim()}
         >
           <FooterInfo fill />
         </footer>

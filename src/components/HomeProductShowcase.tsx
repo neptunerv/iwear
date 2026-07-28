@@ -42,7 +42,7 @@ export function HomeProductShowcase({
   slotCount = 4,
 }: HomeProductShowcaseProps) {
   return (
-    <section className="snap-section flex h-[calc(100dvh-var(--header-h))] max-h-[calc(100dvh-var(--header-h))] flex-col overflow-hidden border-x-2 border-ink bg-cream">
+    <section className="snap-section flex flex-col overflow-hidden border-x-2 border-ink bg-cream">
       {strips.map((strip, index) => {
         const slots = Array.from(
           { length: slotCount },

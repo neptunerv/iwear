@@ -8,3 +8,12 @@ export function formatPrice(amount: string, currencyCode: string): string {
     maximumFractionDigits: 0,
   }).format(value);
 }
+
+/** Compact card price, e.g. 2590000 → "2.590K". */
+export function formatPriceK(amount: string): string {
+  const value = Math.round(parseFloat(amount) / 1000);
+
+  return `${new Intl.NumberFormat("id-ID", {
+    maximumFractionDigits: 0,
+  }).format(value)}K`;
+}
