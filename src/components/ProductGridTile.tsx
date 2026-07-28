@@ -121,14 +121,14 @@ export function ProductGridTile({
       if (axis === "x") {
         const dx = event.clientX - startX;
         const threshold = 40;
-        if (Math.abs(dx) >= threshold) {
+        if (Math.abs(dx) >= threshold && views.length > 0) {
           didSwipeRef.current = true;
           const current = activeIndexRef.current;
-          if (dx < 0 && current < views.length - 1) {
-            setActiveIndex(current + 1);
-          } else if (dx > 0 && current > 0) {
-            setActiveIndex(current - 1);
-          }
+          const next =
+            dx < 0
+              ? (current + 1) % views.length
+              : (current - 1 + views.length) % views.length;
+          setActiveIndex(next);
         }
       }
 
