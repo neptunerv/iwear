@@ -65,7 +65,9 @@ export default async function RootLayout({
       <body className="flex min-h-full flex-col bg-cream font-sans font-semibold text-ink">
         <Providers initialCart={initialCart}>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main id="site-main" className="flex-1">
+            {children}
+          </main>
           <Footer className="site-footer" />
           <Analytics />
         </Providers>

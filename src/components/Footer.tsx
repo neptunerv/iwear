@@ -145,7 +145,9 @@ function FooterContent({ fill = false }: { fill?: boolean }) {
     <div
       className={`grid grid-cols-2 gap-[2px] bg-ink md:grid-cols-4 ${
         fill
-          ? "min-h-min w-full md:min-h-0 md:flex-1 md:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+          ? // Mobile: stretch into the full footer viewport so the block
+            // doesn’t sit short at the top. Desktop: two equal body rows.
+            "h-full min-h-full w-full flex-1 grid-rows-[auto_minmax(min-content,1fr)_minmax(min-content,1fr)_auto] md:min-h-0 md:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto]"
           : ""
       }`}
     >
@@ -206,8 +208,20 @@ export function Footer({
   snap = false,
 }: FooterProps) {
   if (viewport) {
-    const viewportClass = [
-      "h-[calc(var(--snap-vh,100svh)-var(--header-h))] max-h-[calc(var(--snap-vh,100svh)-var(--header-h))]",
+    // Info panel: min-height one scrollport; may grow so tall content
+    // scrolls with the page/root (not nested). Wordmark is one panel.
+    const infoClass = [
+      snap
+        ? "min-h-full md:min-h-[calc(var(--snap-vh,100svh)-var(--header-h))]"
+        : "min-h-[calc(100svh-var(--header-h))] md:min-h-[calc(var(--snap-vh,100svh)-var(--header-h))]",
+      snap ? "snap-section snap-section-footer snap-section-footer-flow" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    const markClass = [
+      snap
+        ? "min-h-full md:h-[calc(var(--snap-vh,100svh)-var(--header-h))] md:max-h-[calc(var(--snap-vh,100svh)-var(--header-h))] md:min-h-[calc(var(--snap-vh,100svh)-var(--header-h))]"
+        : "min-h-[calc(100svh-var(--header-h))] md:h-[calc(var(--snap-vh,100svh)-var(--header-h))] md:max-h-[calc(var(--snap-vh,100svh)-var(--header-h))] md:min-h-[calc(var(--snap-vh,100svh)-var(--header-h))]",
       snap ? "snap-section snap-section-footer" : "",
     ]
       .filter(Boolean)
@@ -218,15 +232,13 @@ export function Footer({
         {snap ? <FooterScrollSnap /> : null}
 
         <footer
-          className={`${viewportClass} flex flex-col overflow-x-hidden overflow-y-auto border-t-2 border-ink bg-brand text-ink ${
-            snap ? "snap-section-scroll" : ""
-          } ${className}`.trim()}
+          className={`${infoClass} flex flex-col border-t-2 border-ink bg-brand text-ink ${className}`.trim()}
         >
           <FooterInfo fill />
         </footer>
 
         <section
-          className={`${viewportClass} flex flex-col bg-brand text-ink ${className}`.trim()}
+          className={`${markClass} flex flex-col overflow-hidden bg-brand text-ink ${className}`.trim()}
           aria-label={site.name}
         >
           <FooterMark fill />

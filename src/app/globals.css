@@ -156,17 +156,59 @@ html.brand-hero-video-active .brand-hero-video .hero-video-scrim {
   transition: opacity 320ms ease, visibility 0s linear 0s;
 }
 
-/* Homepage viewport snap — snappy, no smooth scroll */
+/* Viewport snap
+ *
+ * Desktop: document scroll-snap (html.snap-scroll).
+ * Mobile: lock the document and snap inside #site-main instead. Scrolling
+ * an inner container keeps iOS/Android browser chrome from collapsing
+ * (Ray-Ban House pattern) so panel heights stay stable. */
 html.snap-scroll {
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: none;
   scroll-behavior: auto;
-  scroll-padding-top: var(--header-h);
   height: auto;
   min-height: 100%;
 }
 
-html.snap-scroll.snap-scroll-proximity {
-  scroll-snap-type: y proximity;
+@media (max-width: 767px) {
+  html.snap-scroll {
+    height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  html.snap-scroll body.snap-scroll-page {
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  html.snap-scroll #site-main {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: auto;
+  }
+
+  html.snap-scroll.snap-scroll-proximity #site-main {
+    scroll-snap-type: y proximity;
+  }
+}
+
+@media (min-width: 768px) {
+  html.snap-scroll {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: var(--header-h);
+  }
+
+  html.snap-scroll.snap-scroll-proximity {
+    scroll-snap-type: y proximity;
+  }
 }
 
 .snap-section {
@@ -174,13 +216,21 @@ html.snap-scroll.snap-scroll-proximity {
   z-index: 0;
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  /* Prefer locked --snap-vh (set by snap helpers). Fall back to svh so
-     section height does not resize when mobile browser chrome collapses. */
-  height: calc(var(--snap-vh, 100svh) - var(--header-h));
-  max-height: calc(var(--snap-vh, 100svh) - var(--header-h));
-  min-height: calc(var(--snap-vh, 100svh) - var(--header-h));
-  overflow: hidden;
   box-sizing: border-box;
+  /* Mobile (inside #site-main): at least one scrollport tall; may grow. */
+  height: auto;
+  max-height: none;
+  min-height: 100%;
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .snap-section {
+    height: calc(var(--snap-vh, 100svh) - var(--header-h));
+    max-height: calc(var(--snap-vh, 100svh) - var(--header-h));
+    min-height: calc(var(--snap-vh, 100svh) - var(--header-h));
+    overflow: hidden;
+  }
 }
 
 /* Opt-in when a snap panel must scroll its own content */
@@ -200,6 +250,21 @@ html.snap-scroll.snap-scroll-proximity {
   scroll-snap-stop: always;
 }
 
+/* Footer info panel: grow with content so the scroll root moves
+   (never a nested overflow trap). */
+.snap-section.snap-section-footer-flow {
+  height: auto;
+  max-height: none;
+  min-height: 100%;
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .snap-section.snap-section-footer-flow {
+    min-height: calc(var(--snap-vh, 100svh) - var(--header-h));
+  }
+}
+
 /* Pages with an in-main footer hide the layout duplicate */
 body:has(.home-footer) .site-footer,
 body:has(.shop-footer) .site-footer,
@@ -210,6 +275,10 @@ body:has(.legal-page) .site-footer {
 
 @media (prefers-reduced-motion: reduce) {
   html.snap-scroll {
+    scroll-snap-type: none;
+  }
+
+  html.snap-scroll #site-main {
     scroll-snap-type: none;
   }
 }

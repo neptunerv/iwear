@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { resetSnapScroll } from "@/lib/snap-scroll";
 import { lockSnapViewportHeight } from "@/lib/snap-viewport";
 
 type ScrollSnapProps = {
@@ -24,14 +25,14 @@ export function ScrollSnap({ proximity = false }: ScrollSnapProps) {
       document.documentElement.classList.remove("snap-scroll");
       document.documentElement.classList.remove("snap-scroll-proximity");
       document.body.classList.remove("snap-scroll-page");
-      window.scrollTo(0, 0);
+      resetSnapScroll();
     };
   }, [proximity]);
 
   useEffect(() => {
     const previous = history.scrollRestoration;
     history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
+    resetSnapScroll();
 
     return () => {
       history.scrollRestoration = previous;

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { getSnapScrollRoot, resetSnapScroll } from "@/lib/snap-scroll";
 import { lockSnapViewportHeight } from "@/lib/snap-viewport";
 
 function setHeaderBorderVisible(visible: boolean) {
@@ -40,7 +41,7 @@ export function HomeScrollSnap({
         document.body.classList.remove("snap-scroll-page");
         document.body.classList.remove("scrolled");
         setHeaderBorderVisible(true);
-        window.scrollTo(0, 0);
+        resetSnapScroll();
       };
     }
 
@@ -53,11 +54,12 @@ export function HomeScrollSnap({
         document.body.classList.remove("snap-scroll-page");
         document.body.classList.remove("scrolled");
         setHeaderBorderVisible(true);
-        window.scrollTo(0, 0);
+        resetSnapScroll();
       };
     }
 
     const headerHeight = header.getBoundingClientRect().height;
+    const scrollRoot = getSnapScrollRoot();
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -67,7 +69,9 @@ export function HomeScrollSnap({
         document.body.classList.toggle("scrolled", !heroInView);
       },
       {
-        rootMargin: `-${headerHeight}px 0px 0px 0px`,
+        root: scrollRoot,
+        // Header sits outside #site-main on mobile, so no top inset there.
+        rootMargin: scrollRoot ? "0px" : `-${headerHeight}px 0px 0px 0px`,
         threshold: [0, 0.5, 1],
       },
     );
@@ -81,14 +85,14 @@ export function HomeScrollSnap({
       document.body.classList.remove("snap-scroll-page");
       document.body.classList.remove("scrolled");
       setHeaderBorderVisible(true);
-      window.scrollTo(0, 0);
+      resetSnapScroll();
     };
   }, [keepHeaderBorder]);
 
   useEffect(() => {
     const previous = history.scrollRestoration;
     history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
+    resetSnapScroll();
 
     return () => {
       history.scrollRestoration = previous;

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { getSnapScrollRoot, resetSnapScroll } from "@/lib/snap-scroll";
 import { lockSnapViewportHeight } from "@/lib/snap-viewport";
 
 type HeroTheme = "dark" | "light";
@@ -33,9 +34,7 @@ export function BrandScrollSnap() {
         unlockSnapVh();
         document.documentElement.classList.remove("snap-scroll");
         document.body.classList.remove("snap-scroll-page");
-        // Reset before the next route paints — otherwise Women/Men (mid-page
-        // snap) carries the scroll offset onto /shop.
-        window.scrollTo(0, 0);
+        resetSnapScroll();
       };
     }
 
@@ -44,6 +43,7 @@ export function BrandScrollSnap() {
     const hasVideoHero = hero.classList.contains("brand-hero-video");
 
     const headerHeight = header.getBoundingClientRect().height;
+    const scrollRoot = getSnapScrollRoot();
 
     const updateHeroState = (heroInView: boolean) => {
       setBrandHeroHeader(heroInView, heroTheme);
@@ -65,7 +65,8 @@ export function BrandScrollSnap() {
         updateHeroState(heroInView);
       },
       {
-        rootMargin: `-${headerHeight}px 0px 0px 0px`,
+        root: scrollRoot,
+        rootMargin: scrollRoot ? "0px" : `-${headerHeight}px 0px 0px 0px`,
         threshold: [0, 0.5, 1],
       },
     );
@@ -81,16 +82,14 @@ export function BrandScrollSnap() {
       );
       document.body.classList.remove("snap-scroll-page");
       setBrandHeroHeader(false, heroTheme);
-      // Reset before the next route paints — otherwise Women/Men (mid-page
-      // snap) carries the scroll offset onto /shop.
-      window.scrollTo(0, 0);
+      resetSnapScroll();
     };
   }, []);
 
   useEffect(() => {
     const previous = history.scrollRestoration;
     history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
+    resetSnapScroll();
 
     return () => {
       history.scrollRestoration = previous;

@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { lockSnapViewportHeight } from "@/lib/snap-viewport";
 
 /**
- * Enables document scroll-snap for viewport footers when the page-level
- * snap helper isn’t already mounted. Snap pages (home, brand) usually
- * enable this themselves — this is a safety net for `Footer viewport snap`.
+ * Enables scroll-snap for viewport footers when the page-level snap helper
+ * isn’t already mounted. Snap pages (home, brand) usually enable this
+ * themselves — safety net for `Footer viewport snap`.
  */
 export function FooterScrollSnap() {
   useEffect(() => {

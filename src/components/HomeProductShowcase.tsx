@@ -42,7 +42,7 @@ export function HomeProductShowcase({
   slotCount = 4,
 }: HomeProductShowcaseProps) {
   return (
-    <section className="snap-section flex flex-col overflow-hidden border-x-2 border-ink bg-cream">
+    <section className="snap-section flex flex-col border-x-2 border-ink bg-cream md:overflow-hidden">
       {strips.map((strip, index) => {
         const slots = Array.from(
           { length: slotCount },
@@ -50,7 +50,10 @@ export function HomeProductShowcase({
         );
 
         return (
-          <div key={strip.title} className="flex min-h-0 flex-1 flex-col">
+          <div
+            key={strip.title}
+            className="flex flex-col md:min-h-0 md:flex-1"
+          >
             <div
               className={`flex shrink-0 items-center justify-between border-b-2 border-ink px-5 py-2 sm:px-8 sm:py-2.5 ${
                 index === 0 ? "border-t-2" : ""
@@ -67,11 +70,11 @@ export function HomeProductShowcase({
               </Link>
             </div>
 
-            <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1">
+            <div className="grid grid-cols-2 md:min-h-0 md:flex-1 md:grid-cols-4 md:grid-rows-1">
               {slots.map((product, slotIndex) => (
                 <div
                   key={product?.id ?? `${strip.title}-slot-${slotIndex}`}
-                  className={`h-full min-h-0 overflow-hidden ${stripCellBorderClass(slotIndex)}`}
+                  className={`aspect-square overflow-hidden md:aspect-auto md:h-full md:min-h-0 ${stripCellBorderClass(slotIndex)}`}
                 >
                   {product ? (
                     <ProductGridTile product={product} fill showMeta={false} />
