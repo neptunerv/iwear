@@ -39,6 +39,7 @@ export function HeaderActions({
 
   return (
     <div className="flex shrink-0 items-center gap-4 sm:gap-5">
+      {/* Mobile: hamburger only */}
       <button
         type="button"
         aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -49,17 +50,22 @@ export function HeaderActions({
         <MenuIcon className={iconClassName} />
       </button>
 
+      {/* Desktop: utility actions */}
       <button
         type="button"
         aria-label="Search"
         aria-expanded={searchOpen}
         onClick={onSearchClick}
-        className={actionClassName(searchOpen)}
+        className={`hidden md:inline-flex ${actionClassName(searchOpen)}`}
       >
         <SearchIcon className={iconClassName} />
       </button>
 
-      <Link href="/account" aria-label="Account" className={linkClassName}>
+      <Link
+        href="/account"
+        aria-label="Account"
+        className={`hidden md:inline-flex ${linkClassName}`}
+      >
         <UserIcon className={iconClassName} />
       </Link>
 
@@ -70,7 +76,7 @@ export function HeaderActions({
         }
         aria-expanded={wishlistOpen}
         onClick={toggleWishlist}
-        className={`relative ${actionClassName(wishlistOpen)}`}
+        className={`relative hidden md:inline-flex ${actionClassName(wishlistOpen)}`}
       >
         <HeartIcon className={iconClassName} />
         {wishlistCount > 0 ? (
@@ -85,7 +91,7 @@ export function HeaderActions({
         aria-label={cartCount > 0 ? `Cart (${cartCount})` : "Cart"}
         aria-expanded={cartOpen}
         onClick={toggleCart}
-        className={`relative ${actionClassName(cartOpen)}`}
+        className={`relative hidden md:inline-flex ${actionClassName(cartOpen)}`}
       >
         <BagIcon className={iconClassName} />
         {cartCount > 0 ? (

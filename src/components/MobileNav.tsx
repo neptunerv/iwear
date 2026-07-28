@@ -1,16 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import { CloseIcon } from "@/components/icons";
 import { navLinks } from "@/lib/nav";
 
 type MobileNavProps = {
   open: boolean;
   onClose: () => void;
+  logo: ReactNode;
 };
 
-export function MobileNav({ open, onClose }: MobileNavProps) {
+const menuLinks = [
+  { href: "/shop", label: "Shop All" },
+  ...navLinks.filter((link) => link.href !== "/shop"),
+  { href: "/about", label: "About" },
+  { href: "/account", label: "Account" },
+  { href: "/cart", label: "Cart" },
+] as const;
+
+export function MobileNav({ open, onClose, logo }: MobileNavProps) {
   useEffect(() => {
     if (!open) return;
 
@@ -29,67 +38,38 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[55] md:hidden">
-      <button
-        type="button"
-        aria-label="Close menu"
-        onClick={onClose}
-        className="absolute inset-0 bg-ink/20"
-      />
+    <div className="fixed inset-0 z-[60] flex flex-col bg-ink text-cream md:hidden">
+      <div className="flex items-center justify-between px-5 pt-4">
+        <div onClick={onClose} className="flex shrink-0 items-center text-cream">
+          {logo}
+        </div>
+
+        <button
+          type="button"
+          aria-label="Close menu"
+          onClick={onClose}
+          className="transition-opacity hover:opacity-60"
+        >
+          <CloseIcon className="h-5 w-5" />
+        </button>
+      </div>
+
       <nav
         aria-label="Mobile"
-        className="absolute inset-x-0 top-0 border-b-2 border-ink bg-brand text-ink shadow-[0_8px_24px_rgba(13,11,9,0.08)]"
+        className="flex flex-1 flex-col items-center justify-center px-8"
       >
-        <div className="flex h-14 items-center justify-between px-5">
-          <p className="text-xs font-bold uppercase tracking-[0.2em]">Menu</p>
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={onClose}
-            className="transition-opacity hover:opacity-60"
-          >
-            <CloseIcon className="h-5 w-5" />
-          </button>
-        </div>
-        <ul className="border-t-2 border-ink/15 px-5 py-4">
-          {navLinks.map((link) => (
+        <ul className="flex flex-col items-center gap-7 text-center">
+          {menuLinks.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
                 onClick={onClose}
-                className="block py-3.5 text-sm font-bold uppercase tracking-[0.16em]"
+                className="font-display text-4xl italic leading-none transition-opacity hover:opacity-60"
               >
                 {link.label}
               </Link>
             </li>
           ))}
-          <li>
-            <Link
-              href="/account"
-              onClick={onClose}
-              className="block py-3.5 text-sm font-bold uppercase tracking-[0.16em]"
-            >
-              Account
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/about"
-              onClick={onClose}
-              className="block py-3.5 text-sm font-bold uppercase tracking-[0.16em]"
-            >
-              About
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/faq"
-              onClick={onClose}
-              className="block py-3.5 text-sm font-bold uppercase tracking-[0.16em]"
-            >
-              FAQ
-            </Link>
-          </li>
         </ul>
       </nav>
     </div>

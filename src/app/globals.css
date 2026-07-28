@@ -174,7 +174,17 @@ html.snap-scroll.snap-scroll-proximity {
   z-index: 0;
   scroll-snap-align: start;
   scroll-snap-stop: always;
+  height: calc(100dvh - var(--header-h));
+  max-height: calc(100dvh - var(--header-h));
   min-height: calc(100dvh - var(--header-h));
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Opt-in when a snap panel must scroll its own content */
+.snap-section.snap-section-scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Last viewport section — allow scroll through to footer */
@@ -191,7 +201,8 @@ html.snap-scroll.snap-scroll-proximity {
 /* Pages with an in-main footer hide the layout duplicate */
 body:has(.home-footer) .site-footer,
 body:has(.shop-footer) .site-footer,
-body:has(.account-page) .site-footer {
+body:has(.account-page) .site-footer,
+body:has(.legal-page) .site-footer {
   display: none;
 }
 
@@ -257,6 +268,14 @@ body:has(.account-page) .site-footer {
 .page-spinner-brand {
   border-color: rgb(255 13 1 / 0.22);
   border-top-color: var(--brand);
+}
+
+/* Keep Shop login button flush inside the ink outline frame. */
+.account-shop-login,
+.account-shop-login > * {
+  display: block;
+  width: 100%;
+  line-height: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

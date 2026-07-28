@@ -50,7 +50,7 @@ export default function StoresPage() {
 
       <VisitUsSection />
 
-      <div className="snap-section flex flex-col border-t-2 border-ink bg-cream text-ink">
+      <div className="snap-section snap-section-scroll flex flex-col border-t-2 border-ink bg-cream text-ink">
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-12 sm:px-10 sm:py-16">
           <h2 className="font-display text-center text-5xl italic leading-none sm:text-6xl lg:text-7xl">
             Exclusive in store
@@ -59,11 +59,11 @@ export default function StoresPage() {
             Prada, Gucci, Dior and more — try them at Beachwalk or Sanur.
           </p>
 
-          <ul className="mt-10 flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-6 gap-y-8 sm:mt-12 sm:gap-x-10 sm:gap-y-10">
+          <ul className="mt-8 flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-4 sm:mt-12 sm:gap-x-10 sm:gap-y-10">
             {site.inStoreBrandLogos.map((brand) => (
               <li
                 key={brand.name}
-                className="flex h-14 w-[calc(50%-0.75rem)] items-center justify-center px-2 sm:h-16 sm:w-[calc(33.333%-1.67rem)] lg:w-[calc(25%-1.875rem)]"
+                className="flex h-9 w-[calc(50%-0.5rem)] items-center justify-center px-3 sm:h-16 sm:w-[calc(33.333%-1.67rem)] sm:px-2 lg:w-[calc(25%-1.875rem)]"
               >
                 <Image
                   src={brand.src}
@@ -73,8 +73,8 @@ export default function StoresPage() {
                   unoptimized
                   className={
                     brand.name === "Oliver Peoples"
-                      ? "max-h-12 w-auto max-w-full object-contain object-center sm:max-h-14"
-                      : "max-h-10 w-auto max-w-full object-contain object-center sm:max-h-12"
+                      ? "max-h-7 w-auto max-w-full object-contain object-center sm:max-h-14"
+                      : "max-h-6 w-auto max-w-full object-contain object-center sm:max-h-12"
                   }
                 />
               </li>

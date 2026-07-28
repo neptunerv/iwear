@@ -41,12 +41,12 @@ export const site = {
       headline: "Icon Mall",
       area: "Sanur",
       mall: "Icon Bali Mall",
-      level: "1F · Unit 1F-04",
+      level: "4th Floor",
       street: "Jl. Danau Tamblingan No.27",
       cityLine: "Denpasar, Bali 80228",
       hours: "Daily 10:00 – 22:00",
       address:
-        "Icon Bali Mall, 1F · Unit 1F-04, Jl. Danau Tamblingan No.27, Denpasar, Bali 80228, Indonesia",
+        "Icon Bali Mall, 4th Floor, Jl. Danau Tamblingan No.27, Denpasar, Bali 80228, Indonesia",
       mapsUrl:
         "https://www.google.com/maps/search/?api=1&query=iwear+sunglasses+sanur+icon+bali+mall",
     },

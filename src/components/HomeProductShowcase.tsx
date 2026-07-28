@@ -20,15 +20,6 @@ function ProductGridPlaceholder({ fill = false }: { fill?: boolean }) {
       }`}
     >
       <div aria-hidden="true" className="min-h-0 flex-1" />
-      <div className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5">
-        <span aria-hidden="true" className="h-3 w-16 bg-ink/10" />
-        <div aria-hidden="true" className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-ink" />
-          <span className="h-2 w-2 rounded-full border border-ink/40" />
-          <span className="h-2 w-2 rounded-full border border-ink/40" />
-        </div>
-        <span aria-hidden="true" className="justify-self-end h-3 w-5 bg-ink/10" />
-      </div>
     </article>
   );
 }
@@ -83,7 +74,7 @@ export function HomeProductShowcase({
                   className={`h-full min-h-0 overflow-hidden ${stripCellBorderClass(slotIndex)}`}
                 >
                   {product ? (
-                    <ProductGridTile product={product} fill />
+                    <ProductGridTile product={product} fill showMeta={false} />
                   ) : (
                     <ProductGridPlaceholder fill />
                   )}

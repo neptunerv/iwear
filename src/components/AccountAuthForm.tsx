@@ -7,6 +7,7 @@ import {
   useState,
   type FormEvent,
 } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type AccountAuthFormProps = {
@@ -59,7 +60,8 @@ const errorCopy: Record<string, string> = {
   missing_code: "Login didn’t complete. Please try again.",
   invalid_state: "Login session expired. Please try again.",
   token: "Couldn’t finish signing in. Please try again.",
-  shop_session: "Signed in with Shop, but we couldn’t open your account. Try email sign-in below.",
+  shop_session:
+    "Signed in with Shop, but we couldn’t open your account. Try email below.",
 };
 
 let shopSdkLoader: Promise<void> | null = null;
@@ -93,7 +95,6 @@ function loadShopSdk() {
     script.addEventListener(
       "load",
       () => {
-        // Module evaluation can finish just after load; give ShopSDK a tick.
         queueMicrotask(() => {
           if (window.ShopSDK) resolve();
           else {
@@ -160,7 +161,8 @@ export function AccountAuthForm({
             preferredLoginExperience: "popup",
             variables: {
               "--shop-pay-button-width": "100%",
-              "--shop-pay-button-height": "48px",
+              "--shop-pay-button-height": "52px",
+              "--shop-pay-button-border-radius": "0px",
               "--buttons-radius": "0px",
             },
           },
@@ -169,7 +171,7 @@ export function AccountAuthForm({
         const login = await sdk.create("login", {
           attributes: {
             buttonType: "continue",
-            buttonLayout: "or",
+            buttonLayout: "standalone",
             emailInputSelector: `#${CSS.escape(emailInputId)}`,
             clientId,
             storefrontOrigin,
@@ -179,7 +181,7 @@ export function AccountAuthForm({
           onComplete: async (event: ShopLoginCompleteEvent) => {
             if (!event.signedIn || !event.customerAccessToken) {
               setLocalError(
-                "Sign-in didn’t return an account session. Try again or use Shopify login.",
+                "Sign-in didn’t return an account session. Try again or use email.",
               );
               return;
             }
@@ -214,7 +216,7 @@ export function AccountAuthForm({
           onError: (event: ShopLoginErrorEvent) => {
             setLocalError(
               event.message ||
-                "Couldn’t complete Shop sign-in. Try email via Shopify below.",
+                "Couldn’t complete Shop sign-in. Try email below.",
             );
             setSigningIn(false);
           },
@@ -266,37 +268,50 @@ export function AccountAuthForm({
   }
 
   return (
-    <div className="w-full text-left">
-      <p className="text-sm font-semibold leading-relaxed text-ink-muted">
-        Sign in or create an account to view orders and track shipments. Guest
-        checkout still works anytime.
-      </p>
-
+    <div className="w-full">
       {message ? (
-        <p className="mt-4 text-sm font-semibold text-brand" role="alert">
+        <p className="mb-6 text-sm font-semibold text-brand" role="alert">
           {message}
         </p>
       ) : null}
 
       {configured ? (
-        <div className="mt-8 space-y-5">
+        <div className="space-y-5">
           <div
-            ref={mountRef}
-            className="min-h-12 w-full"
-            aria-busy={!shopReady && !shopFailed}
-          />
+            className={`overflow-hidden border-2 border-ink transition-opacity ${
+              shopReady ? "opacity-100" : "min-h-[52px] opacity-40"
+            }`}
+          >
+            <div
+              ref={mountRef}
+              className="account-shop-login w-full [&_*]:max-w-none"
+              aria-busy={!shopReady && !shopFailed}
+            />
+          </div>
 
           {!shopReady && !shopFailed ? (
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted">
-              Loading Shop sign-in…
+            <p className="text-center text-[10px] font-bold uppercase tracking-[0.2em] text-ink-muted">
+              Loading Shop…
             </p>
           ) : null}
 
-          <form onSubmit={startEmailLogin} className="space-y-4">
+          <div
+            className="flex items-center gap-4"
+            role="separator"
+            aria-label="or"
+          >
+            <span className="h-px flex-1 bg-ink/20" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink-muted">
+              or
+            </span>
+            <span className="h-px flex-1 bg-ink/20" />
+          </div>
+
+          <form onSubmit={startEmailLogin}>
             <label className="sr-only" htmlFor={emailInputId}>
               Email
             </label>
-            <div className="flex border-2 border-ink bg-cream">
+            <div className="flex border-2 border-ink bg-cream focus-within:bg-white">
               <input
                 id={emailInputId}
                 name="email"
@@ -311,7 +326,7 @@ export function AccountAuthForm({
                 type="submit"
                 disabled={signingIn}
                 aria-label="Continue with email"
-                className="border-l-2 border-ink px-4 text-ink transition-colors hover:bg-ink hover:text-brand disabled:opacity-60"
+                className="border-l-2 border-ink px-4 text-base text-ink transition-colors hover:bg-ink hover:text-brand disabled:opacity-60"
               >
                 <span aria-hidden="true">→</span>
               </button>
@@ -339,9 +354,18 @@ export function AccountAuthForm({
               {signingIn ? "Signing in…" : "Continue with Shopify"}
             </a>
           )}
+
+          <p className="pt-1 text-center text-xs font-semibold text-ink-muted">
+            <Link
+              href="/privacy"
+              className="underline decoration-ink/25 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink"
+            >
+              Privacy policy
+            </Link>
+          </p>
         </div>
       ) : (
-        <p className="mt-8 border-2 border-dashed border-ink/20 px-5 py-6 text-sm font-semibold leading-relaxed text-ink-muted">
+        <p className="border-2 border-dashed border-ink/20 px-5 py-6 text-sm font-semibold leading-relaxed text-ink-muted">
           Online accounts aren’t connected yet. Ask the store to finish Customer
           Account API setup, or message us for order help.
         </p>

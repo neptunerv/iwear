@@ -11,11 +11,14 @@ import type { Product } from "@/lib/shopify";
 type ProductGridTileProps = {
   product: Product;
   fill?: boolean;
+  /** Show title + price footer. Off for image-led homepage strips. */
+  showMeta?: boolean;
 };
 
 export function ProductGridTile({
   product,
   fill = false,
+  showMeta = true,
 }: ProductGridTileProps) {
   const { name: displayTitle } = getProductDisplayTitle(product);
   const image =
@@ -91,23 +94,25 @@ export function ProductGridTile({
         )}
       </Link>
 
-      <div className="grid shrink-0 grid-cols-[1fr_auto] items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5">
-        <Link
-          href={`/products/${product.handle}`}
-          className="truncate text-[11px] font-semibold text-ink sm:text-xs"
-        >
-          {displayTitle}
-        </Link>
+      {showMeta ? (
+        <div className="grid shrink-0 grid-cols-[1fr_auto] items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5">
+          <Link
+            href={`/products/${product.handle}`}
+            className="truncate text-[11px] font-semibold text-ink sm:text-xs"
+          >
+            {displayTitle}
+          </Link>
 
-        <span className="justify-self-end text-[11px] font-semibold text-ink sm:text-xs">
-          {formatPrice(price.amount, price.currencyCode)}
-          {onSale && compareAt && (
-            <span className="ml-1 font-semibold text-ink-muted line-through">
-              {formatPrice(compareAt.amount, compareAt.currencyCode)}
-            </span>
-          )}
-        </span>
-      </div>
+          <span className="justify-self-end text-[11px] font-semibold text-ink sm:text-xs">
+            {formatPrice(price.amount, price.currencyCode)}
+            {onSale && compareAt && (
+              <span className="ml-1 font-semibold text-ink-muted line-through">
+                {formatPrice(compareAt.amount, compareAt.currencyCode)}
+              </span>
+            )}
+          </span>
+        </div>
+      ) : null}
     </article>
   );
 }

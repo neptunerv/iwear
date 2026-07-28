@@ -144,8 +144,8 @@ export function ProductCatalogGrid({
   return (
     <>
       <div className="bg-cream">
-        <div className="grid border-b-2 border-ink text-[10px] font-bold uppercase tracking-[0.16em] sm:grid-cols-[1fr_auto_1fr] sm:text-xs">
-          <div className="flex items-center border-b-2 border-ink px-3 py-2.5 sm:border-b-0 sm:px-5">
+        <div className="grid grid-cols-[1fr_auto_1fr] border-b-2 border-ink text-[10px] font-bold uppercase tracking-[0.16em] sm:text-xs">
+          <div className="flex items-center px-3 py-2.5 sm:px-5">
             <button
               type="button"
               onClick={() => setFilterOpen(true)}
@@ -155,7 +155,7 @@ export function ProductCatalogGrid({
               {activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
             </button>
           </div>
-          <h1 className="flex items-center justify-center border-b-2 border-ink px-3 py-2.5 text-center sm:border-b-0 sm:px-10">
+          <h1 className="flex items-center justify-center px-3 py-2.5 text-center sm:px-10">
             {title}
           </h1>
           <div className="flex items-center justify-end px-3 py-2.5 sm:px-5">

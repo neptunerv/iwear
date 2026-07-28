@@ -24,11 +24,17 @@ type FooterNavItem = {
   external?: boolean;
 };
 
-const cellClass = "flex min-h-0 flex-col bg-brand p-6 sm:p-8 lg:p-10";
+const cellClass = "flex min-h-0 flex-col bg-brand p-5 sm:p-8 lg:p-10";
 const labelClass =
-  "font-display text-3xl italic leading-none sm:text-4xl";
-const bodyClass = "text-sm font-semibold sm:text-base";
+  "font-display text-2xl italic leading-none sm:text-4xl";
+const bodyClass = "text-xs font-semibold sm:text-base";
 const mutedClass = `${bodyClass} text-ink/80`;
+
+const footerAbout = [
+  "iWear is an authorized Luxottica retailer based in Bali. Shop authentic Ray-Ban, Oakley, Swarovski, and Scuderia Ferrari online, with more brands in store.",
+  "Visit Beachwalk Kuta or Icon Mall Sanur to try on frames and get fitted. Free delivery across Bali.",
+] as const;
+
 
 const exploreLinks: FooterNavItem[] = [
   { href: "/account", label: "Account" },
@@ -58,7 +64,7 @@ function FooterNavList({
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
         const className =
-          "flex items-center justify-between gap-3 px-6 py-3.5 text-xs font-bold uppercase tracking-[0.16em] transition-colors hover:bg-ink hover:text-brand sm:px-8 sm:py-4 lg:px-10";
+          "flex items-center justify-between gap-3 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:bg-ink hover:text-brand sm:px-8 sm:py-4 sm:text-xs lg:px-10";
 
         return (
           <li
@@ -89,28 +95,21 @@ function FooterNavList({
 }
 
 function StoreAddress({ store }: { store: StoreLocation }) {
-  const hourLines = store.hours.split(" · ");
-
   return (
     <>
       <p className={labelClass}>{store.area}</p>
-      <div className="mt-auto pt-8">
-        <p className={`leading-relaxed ${mutedClass}`}>{store.mall}</p>
-        <p className={`leading-relaxed ${mutedClass}`}>{store.level}</p>
-        <p className={`mt-4 leading-relaxed ${mutedClass}`}>{store.street}</p>
-        <p className={`leading-relaxed ${mutedClass}`}>{store.cityLine}</p>
-        <div className={`mt-4 space-y-1 text-ink/70 ${bodyClass}`}>
-          {hourLines.map((line) => (
-            <p key={line} className="leading-relaxed">
-              {line}
-            </p>
-          ))}
-        </div>
+      <div className="mt-auto pt-4 sm:pt-8">
+        <p className={`leading-snug ${mutedClass}`}>
+          {store.mall} · {store.level}
+        </p>
+        <p className={`mt-2 font-display italic leading-snug text-ink/70 sm:mt-4 sm:text-lg`}>
+          {store.hours}
+        </p>
         <a
           href={store.mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex border-2 border-ink px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors hover:bg-ink hover:text-brand sm:text-xs"
+          className="mt-4 flex w-full items-center justify-center border-2 border-ink px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors hover:bg-ink hover:text-brand sm:mt-6 sm:px-4 sm:py-3 sm:text-xs"
         >
           Get directions
         </a>
@@ -131,8 +130,9 @@ function FooterNavCell({
   return (
     <div className={cellClass}>
       <p className={`shrink-0 ${labelClass}`}>{title}</p>
-      {/* Full-bleed rule directly under the title — same for Explore & Legal */}
-      <div className="-mx-6 -mb-6 mt-6 flex min-h-0 flex-1 flex-col border-t-2 border-ink sm:-mx-8 sm:-mb-8 sm:mt-8 lg:-mx-10 lg:-mb-10">
+      {/* Full-bleed rules under the title — keep bottom padding so last item
+          border doesn't stack with the grid gutter into a double line. */}
+      <div className="-mx-5 mt-5 flex min-h-0 flex-1 flex-col border-t-2 border-ink sm:-mx-8 sm:mt-8 lg:-mx-10">
         <FooterNavList items={items} borderLast={borderLast} />
       </div>
     </div>
@@ -153,11 +153,13 @@ function FooterContent({ fill = false }: { fill?: boolean }) {
       {/* About — tall left tile */}
       <div className={`${cellClass} col-span-2 md:row-span-2`}>
         <p className={labelClass}>About</p>
-        <p
-          className={`mt-6 max-w-md text-base leading-relaxed sm:text-lg ${mutedClass}`}
+        <div
+          className={`mt-4 max-w-md space-y-3 leading-snug sm:mt-6 sm:max-w-lg sm:space-y-4 sm:leading-relaxed ${mutedClass}`}
         >
-          {site.description}
-        </p>
+          {footerAbout.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
       </div>
 
       <div className={cellClass}>
@@ -171,7 +173,7 @@ function FooterContent({ fill = false }: { fill?: boolean }) {
       <FooterNavCell title="Explore" items={exploreLinks} borderLast />
       <FooterNavCell title="Legal" items={legalLinks} borderLast />
 
-      <div className="col-span-2 bg-brand px-6 py-5 text-xs font-semibold leading-relaxed text-ink/70 sm:px-8 sm:text-sm md:col-span-4 lg:px-10">
+      <div className="col-span-2 bg-brand px-5 py-4 text-[10px] font-semibold leading-relaxed text-ink/70 sm:px-8 sm:py-5 sm:text-sm md:col-span-4 lg:px-10">
         © {new Date().getFullYear()} {site.name} — Authorized Luxottica
         reseller. Ray-Ban and Oakley are trademarks of their respective owners.
       </div>

@@ -63,7 +63,7 @@ export function HeaderShell({ logo, nav }: HeaderShellProps) {
         />
       </header>
 
-      <MobileNav open={panel === "menu"} onClose={closePanel} />
+      <MobileNav open={panel === "menu"} onClose={closePanel} logo={logo} />
       <WishlistDrawer />
       <CartDrawer />
     </>
