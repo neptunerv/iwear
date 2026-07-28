@@ -4,7 +4,10 @@ import { AccountAuthForm } from "@/components/AccountAuthForm";
 import { AccountDashboard } from "@/components/AccountDashboard";
 import { Footer } from "@/components/Footer";
 import { HomeScrollSnap } from "@/components/HomeScrollSnap";
-import { isCustomerAccountConfigured } from "@/lib/shopify/customer-account";
+import {
+  getCustomerAccountClientId,
+  isCustomerAccountConfigured,
+} from "@/lib/shopify/customer-account";
 import { getCustomer } from "@/lib/shopify/customer";
 import { site } from "@/lib/site";
 
@@ -24,6 +27,11 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const { error } = await searchParams;
   const customer = await getCustomer();
   const configured = isCustomerAccountConfigured();
+  const clientId = getCustomerAccountClientId();
+  const storefrontOrigin = (process.env.NEXT_PUBLIC_SITE_URL ?? site.url).replace(
+    /\/$/,
+    "",
+  );
 
   return (
     <>
@@ -39,12 +47,12 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               Account
             </p>
             <h1 className="mt-2 font-display text-5xl italic leading-none text-ink sm:text-6xl">
-              {customer ? "Your account" : "Welcome"}
+              {customer ? "Your account" : "Sign in"}
             </h1>
             <p className="mt-4 text-sm font-semibold leading-relaxed text-ink-muted">
               {customer
                 ? "View recent orders and track shipments. Guest checkout still works anytime."
-                : "Sign in with Shopify to see your orders. Guest checkout and wishlist stay available anytime."}
+                : "Sign in or create an account. Guest checkout and wishlist stay available anytime."}
             </p>
           </div>
 
@@ -54,6 +62,8 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             ) : (
               <AccountAuthForm
                 configured={configured}
+                clientId={clientId}
+                storefrontOrigin={storefrontOrigin}
                 error={error ?? null}
               />
             )}
