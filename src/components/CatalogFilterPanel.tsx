@@ -79,6 +79,37 @@ function toggle(arr: string[], value: string): string[] {
     : [...arr, value];
 }
 
+function brandSelected(
+  brandName: string,
+  filters: CatalogFilters,
+  fixedBrand?: string,
+): boolean {
+  const target = brandName.toLowerCase();
+  if (fixedBrand?.toLowerCase() === target) return true;
+  return filters.brands.some((brand) => brand.toLowerCase() === target);
+}
+
+function toggleBrand(
+  filters: CatalogFilters,
+  brand: string,
+): CatalogFilters {
+  const nextBrands = toggle(filters.brands, brand);
+  const hasRayBan = nextBrands.some((b) => b.toLowerCase() === "ray-ban");
+  const hasOakley = nextBrands.some((b) => b.toLowerCase() === "oakley");
+  const hasFeaturedBrand = hasRayBan || hasOakley;
+
+  return {
+    ...filters,
+    brands: nextBrands,
+    // Drop brand-specific extras once their brand is no longer selected.
+    frameShapes: hasRayBan ? filters.frameShapes : [],
+    modelFamilies: hasOakley ? filters.modelFamilies : [],
+    genders: hasFeaturedBrand ? filters.genders : [],
+    frameTypes: hasFeaturedBrand ? filters.frameTypes : [],
+    lensTypes: hasFeaturedBrand ? filters.lensTypes : [],
+  };
+}
+
 export function CatalogFilterPanel({
   open,
   onClose,
@@ -95,9 +126,11 @@ export function CatalogFilterPanel({
   const brands = fixedBrand ? [] : [...onlineBrandNames];
   const activeCount = countActiveFilters(filters, fixedBrand);
 
-  const isRayBan = fixedBrand?.toLowerCase() === "ray-ban";
-  const isOakley = fixedBrand?.toLowerCase() === "oakley";
-  const isBrandPage = isRayBan || isOakley;
+  // Extra filters match Shop Ray-Ban / Shop Oakley — also when those brands
+  // are picked in Shop All (via filters.brands), not only on brand pages.
+  const isRayBan = brandSelected("Ray-Ban", filters, fixedBrand);
+  const isOakley = brandSelected("Oakley", filters, fixedBrand);
+  const showBrandExtras = isRayBan || isOakley;
 
   useEffect(() => {
     if (!open) return;
@@ -164,16 +197,14 @@ export function CatalogFilterPanel({
                     label={brand}
                     active={filters.brands.includes(brand)}
                     disabled={!brandsInCatalog.has(brand.toLowerCase())}
-                    onClick={() =>
-                      onChange({ ...filters, brands: toggle(filters.brands, brand) })
-                    }
+                    onClick={() => onChange(toggleBrand(filters, brand))}
                   />
                 ))}
               </div>
             </FilterSection>
           )}
 
-          {isBrandPage && (
+          {showBrandExtras && (
             <FilterSection title="Gender">
               <div className="flex flex-wrap gap-2">
                 {genderOptions.map((option) => (
@@ -233,7 +264,7 @@ export function CatalogFilterPanel({
             </FilterSection>
           )}
 
-          {isBrandPage && (
+          {showBrandExtras && (
             <FilterSection title="Frame type">
               <div className="flex flex-wrap gap-2">
                 {frameTypeOptions.map((option) => (
@@ -253,7 +284,7 @@ export function CatalogFilterPanel({
             </FilterSection>
           )}
 
-          {isBrandPage && (
+          {showBrandExtras && (
             <FilterSection title="Lens type">
               <div className="flex flex-wrap gap-2">
                 {lensTypeOptions.map((option) => (

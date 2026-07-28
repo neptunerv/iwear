@@ -35,44 +35,40 @@ function gridCellBorderClass(
     .join(" ");
 }
 
-function flowingCellBorderClass(index: number, columns: number) {
-  const isLastCol = (index + 1) % columns === 0;
-
-  return [
-    "border-b-2 border-r-2 border-ink",
-    isLastCol && "border-r-0",
-  ]
-    .filter(Boolean)
-    .join(" ");
-}
-
 function ProductCell({
   product,
   borderClassName,
-  square = false,
+  /** Fill the grid cell (viewport snap). Otherwise use a fixed aspect. */
+  fill = false,
+  rotatePortrait = false,
 }: {
   product: Product | undefined;
   borderClassName: string;
-  square?: boolean;
+  fill?: boolean;
+  rotatePortrait?: boolean;
 }) {
   const content = product ? (
-    <ProductStripTile product={product} fill />
+    <ProductStripTile
+      product={product}
+      fill
+      rotatePortrait={rotatePortrait}
+    />
   ) : (
     <ProductStripPlaceholder fill />
   );
 
-  if (square) {
+  if (fill) {
     return (
-      <div className={`h-full min-h-0 ${borderClassName}`}>
-        <div className="mx-auto aspect-square h-full max-w-full w-auto min-h-0">
-          {content}
-        </div>
+      <div className={`h-full min-h-0 overflow-hidden ${borderClassName}`}>
+        {content}
       </div>
     );
   }
 
   return (
-    <div className={`aspect-square ${borderClassName}`}>{content}</div>
+    <div className={`aspect-square max-md:aspect-[3/4] ${borderClassName}`}>
+      {content}
+    </div>
   );
 }
 
@@ -87,20 +83,25 @@ function ViewportProductGrid({
   columns: number;
   rows: number;
 }) {
-  const mobileColumns = 4;
+  // Mobile: 3×3 of tall cells — more than a 2×2, still readable vs packing 21.
+  const mobileColumns = 3;
+  const mobileRows = 3;
+  const mobileSlots = slots.slice(0, mobileColumns * mobileRows);
 
   return (
     <>
-      <div
-        className="grid min-h-0 flex-1 auto-rows-fr lg:hidden"
-        style={{ gridTemplateColumns: `repeat(${mobileColumns}, minmax(0, 1fr))` }}
-      >
-        {slots.map((product, slotIndex) => (
+      <div className="grid min-h-0 flex-1 grid-cols-3 grid-rows-3 lg:hidden">
+        {mobileSlots.map((product, slotIndex) => (
           <ProductCell
-            key={product?.id ?? `${title}-slot-${slotIndex}`}
+            key={product?.id ?? `${title}-m-${slotIndex}`}
             product={product}
-            borderClassName={flowingCellBorderClass(slotIndex, mobileColumns)}
-            square
+            borderClassName={gridCellBorderClass(
+              slotIndex,
+              mobileColumns,
+              mobileRows,
+            )}
+            fill
+            rotatePortrait
           />
         ))}
       </div>
@@ -117,7 +118,7 @@ function ViewportProductGrid({
             key={product?.id ?? `${title}-slot-${slotIndex}`}
             product={product}
             borderClassName={gridCellBorderClass(slotIndex, columns, rows)}
-            square
+            fill
           />
         ))}
       </div>

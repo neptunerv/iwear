@@ -27,6 +27,9 @@ export const metadata: Metadata = {
   },
 };
 
+/** Refresh shop catalog data periodically (pairs with Shopify page caches). */
+export const revalidate = 300;
+
 function resolveBrandFilter(brand?: string): string | undefined {
   if (!brand) return undefined;
   return onlineBrandNames.find(

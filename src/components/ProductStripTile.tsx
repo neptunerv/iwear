@@ -8,9 +8,15 @@ import type { Product } from "@/lib/shopify";
 type ProductStripTileProps = {
   product: Product;
   fill?: boolean;
+  /** Rotate the product image 90° (try portrait crop look on tall mobile cells). */
+  rotatePortrait?: boolean;
 };
 
-export function ProductStripTile({ product, fill = false }: ProductStripTileProps) {
+export function ProductStripTile({
+  product,
+  fill = false,
+  rotatePortrait = false,
+}: ProductStripTileProps) {
   const price = product.priceRange.minVariantPrice;
   const compareAt = getCompareAtPrice(product);
   const onSale =
@@ -19,6 +25,10 @@ export function ProductStripTile({ product, fill = false }: ProductStripTileProp
   const hoverImage = product.images.nodes[1] ?? null;
   const brand = getProductBrand(product);
   const { name: displayTitle } = getProductDisplayTitle(product);
+  const imageOrient = rotatePortrait
+    ? "origin-center rotate-90 scale-[1.45]"
+    : "";
+  const imagePad = rotatePortrait ? "p-1.5 sm:p-8" : "p-2.5 sm:p-8";
 
   return (
     <Link
@@ -31,9 +41,13 @@ export function ProductStripTile({ product, fill = false }: ProductStripTileProp
             src={image.url}
             alt={image.altText ?? displayTitle}
             fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className={`object-contain p-6 transition-opacity duration-500 sm:p-8 ${
-              hoverImage ? "group-hover:opacity-0" : "group-hover:scale-[1.03]"
+            sizes="(max-width: 768px) 33vw, 25vw"
+            className={`object-contain transition-opacity duration-500 ${imagePad} ${imageOrient} ${
+              hoverImage
+                ? "group-hover:opacity-0"
+                : rotatePortrait
+                  ? ""
+                  : "group-hover:scale-[1.03]"
             }`}
           />
           {hoverImage && (
@@ -41,8 +55,8 @@ export function ProductStripTile({ product, fill = false }: ProductStripTileProp
               src={hoverImage.url}
               alt={hoverImage.altText ?? displayTitle}
               fill
-              sizes="(max-width: 768px) 50vw, 25vw"
-              className="object-contain p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100 sm:p-8"
+              sizes="(max-width: 768px) 33vw, 25vw"
+              className={`object-contain opacity-0 transition-opacity duration-500 group-hover:opacity-100 ${imagePad} ${imageOrient}`}
             />
           )}
         </>

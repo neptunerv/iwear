@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LabelBar } from "@/components/LabelBar";
+import { getSnapScrollRoot } from "@/lib/snap-scroll";
 
 const trustPoints = [
   {
@@ -68,7 +69,7 @@ function buildSlides(points: readonly TrustPoint[]): Slide[] {
 
 function TrustSlide({ title, body }: { title: string; body: string }) {
   return (
-    <div className="flex h-full min-h-0 w-full shrink-0 snap-center snap-always flex-col justify-end px-8 py-10 sm:px-12 sm:py-14">
+    <div className="flex h-full min-h-0 w-full min-w-full shrink-0 basis-full flex-col justify-end px-8 py-10 sm:px-12 sm:py-14">
       <h2 className="font-poster text-5xl uppercase leading-none sm:text-6xl lg:text-7xl">
         {title}
       </h2>
@@ -128,7 +129,20 @@ export function TrustSection() {
 
   useEffect(() => {
     if (!looping) return;
-    jumpToSlide(1);
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    let primed = false;
+    const prime = () => {
+      if (primed || !scroller.clientWidth) return;
+      primed = true;
+      jumpToSlide(1);
+    };
+
+    prime();
+    const observer = new ResizeObserver(prime);
+    observer.observe(scroller);
+    return () => observer.disconnect();
   }, [jumpToSlide, looping]);
 
   useEffect(() => {
@@ -160,6 +174,98 @@ export function TrustSection() {
     };
   }, [looping, settleLoop, slides]);
 
+  // Native horizontal scroll is stolen by the mobile #site-main vertical
+  // snap shell. Drive the carousel with pointer capture instead.
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller || !looping) return;
+
+    let pointerId: number | null = null;
+    let startX = 0;
+    let startY = 0;
+    let startScroll = 0;
+    let startMainScroll = 0;
+    let axis: "undecided" | "x" | "y" = "undecided";
+
+    const onDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      startY = event.clientY;
+      startScroll = scroller.scrollLeft;
+      startMainScroll = getSnapScrollRoot()?.scrollTop ?? 0;
+      axis = "undecided";
+      scroller.setPointerCapture(event.pointerId);
+    };
+
+    const onMove = (event: PointerEvent) => {
+      if (pointerId !== event.pointerId) return;
+
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+
+      if (axis === "undecided") {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+        if (axis === "x") settlingRef.current = true;
+      }
+
+      if (axis === "x") {
+        event.preventDefault();
+        scroller.scrollLeft = startScroll - dx;
+        const width = scroller.clientWidth;
+        if (width) {
+          const index = Math.round(scroller.scrollLeft / width);
+          const slide = slides[index];
+          if (slide) setActiveIndex(slide.realIndex);
+        }
+        return;
+      }
+
+      if (axis === "y") {
+        const main = getSnapScrollRoot();
+        if (!main) return;
+        event.preventDefault();
+        main.scrollTop = startMainScroll - dy;
+      }
+    };
+
+    const onUp = (event: PointerEvent) => {
+      if (pointerId !== event.pointerId) return;
+      pointerId = null;
+
+      if (axis === "x") {
+        const width = scroller.clientWidth;
+        if (width) {
+          const index = Math.round(scroller.scrollLeft / width);
+          scroller.scrollTo({ left: width * index, behavior: "smooth" });
+          window.setTimeout(() => {
+            settlingRef.current = false;
+            settleLoop();
+          }, 280);
+        } else {
+          settlingRef.current = false;
+        }
+      } else {
+        settlingRef.current = false;
+      }
+
+      axis = "undecided";
+    };
+
+    scroller.addEventListener("pointerdown", onDown);
+    scroller.addEventListener("pointermove", onMove, { passive: false });
+    scroller.addEventListener("pointerup", onUp);
+    scroller.addEventListener("pointercancel", onUp);
+
+    return () => {
+      scroller.removeEventListener("pointerdown", onDown);
+      scroller.removeEventListener("pointermove", onMove);
+      scroller.removeEventListener("pointerup", onUp);
+      scroller.removeEventListener("pointercancel", onUp);
+    };
+  }, [looping, settleLoop, slides]);
+
   function goTo(realIndex: number) {
     const scroller = scrollerRef.current;
     if (!scroller) return;
@@ -172,15 +278,18 @@ export function TrustSection() {
   }
 
   return (
-    <div id="warranty" className="snap-section flex flex-col bg-cream text-ink">
+    <div
+      id="warranty"
+      className="snap-section flex h-full max-h-full min-h-full flex-col overflow-hidden bg-cream text-ink md:h-auto md:max-h-none"
+    >
       <LabelBar label="Why buy from iWear" />
 
       {/* Mobile: infinite swipe carousel */}
       <div className="relative min-h-0 flex-1 md:hidden">
         <div
           ref={scrollerRef}
-          className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          className="flex h-full w-full cursor-grab overflow-x-auto active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ touchAction: "none" }}
         >
           {slides.map((slide) => (
             <TrustSlide
@@ -191,14 +300,14 @@ export function TrustSection() {
           ))}
         </div>
 
-        <div className="absolute inset-x-0 bottom-5 flex justify-center gap-2">
+        <div className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center gap-2">
           {trustPoints.map((point, index) => (
             <button
               key={point.title}
               type="button"
               aria-label={`Show ${point.title}`}
               onClick={() => goTo(index)}
-              className={`h-1.5 w-1.5 rounded-full transition-colors ${
+              className={`pointer-events-auto h-1.5 w-1.5 rounded-full transition-colors ${
                 index === activeIndex ? "bg-ink" : "bg-ink/25"
               }`}
             />

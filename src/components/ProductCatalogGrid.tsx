@@ -45,16 +45,17 @@ const placeholderSlots = Array.from({ length: 20 }, (_, index) => index);
 
 function ProductGridPlaceholder() {
   return (
-    <article className="flex aspect-square flex-col bg-white">
+    <article className="flex aspect-[3/4] flex-col bg-white sm:aspect-square">
       <div aria-hidden="true" className="min-h-0 flex-1" />
-      <div className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 py-2.5 sm:px-4">
+      <div className="flex shrink-0 flex-col gap-0.5 px-3 py-2 sm:grid sm:grid-cols-[1fr_auto] sm:items-center sm:gap-2 sm:px-4 sm:py-2.5">
         <span aria-hidden="true" className="h-3 w-16 bg-ink/10" />
-        <div aria-hidden="true" className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-ink" />
-          <span className="h-2 w-2 rounded-full border border-ink/40" />
-          <span className="h-2 w-2 rounded-full border border-ink/40" />
+        <div className="flex items-center justify-between gap-2 sm:contents">
+          <span aria-hidden="true" className="h-3 w-10 bg-ink/10 sm:justify-self-end" />
+          <div aria-hidden="true" className="flex items-center gap-1.5 sm:hidden">
+            <span className="h-2 w-2 rounded-full bg-ink" />
+            <span className="h-2 w-2 rounded-full border border-ink/40" />
+          </div>
         </div>
-        <span aria-hidden="true" className="justify-self-end h-3 w-5 bg-ink/10" />
       </div>
     </article>
   );

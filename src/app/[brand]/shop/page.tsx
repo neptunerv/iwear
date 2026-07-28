@@ -23,6 +23,9 @@ export function generateStaticParams() {
   return featuredBrands.map((brand) => ({ brand: brand.slug }));
 }
 
+/** Refresh brand shop catalog data periodically. */
+export const revalidate = 300;
+
 export async function generateMetadata({
   params,
   searchParams,

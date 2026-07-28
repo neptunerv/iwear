@@ -71,7 +71,7 @@ export default async function HomePage() {
       </section>
 
       {/* Featured brands — one viewport, equal split */}
-      <section className="snap-section grid grid-rows-2 border-t-2 border-ink bg-cream md:grid-cols-2 md:grid-rows-1">
+      <section className="snap-section grid grid-rows-2 bg-cream md:grid-cols-2 md:grid-rows-1 md:border-t-2 md:border-ink">
         {featuredBrands.map((brand, index) => (
           <Link
             key={brand.name}

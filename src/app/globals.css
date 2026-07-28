@@ -187,7 +187,8 @@ html.snap-scroll {
   html.snap-scroll #site-main {
     flex: 1 1 0;
     min-height: 0;
-    overflow-x: hidden;
+    /* clip (not hidden) so nested horizontal carousels can still pan */
+    overflow-x: clip;
     overflow-y: auto;
     overscroll-behavior-y: contain;
     -webkit-overflow-scrolling: touch;
@@ -197,6 +198,18 @@ html.snap-scroll {
 
   html.snap-scroll.snap-scroll-proximity #site-main {
     scroll-snap-type: y proximity;
+  }
+
+  /* Header already has border-b — drop section border-t so they don’t
+     stack into a double rule when a panel snaps under the nav. Use
+     border-b between panels instead. */
+  html.snap-scroll #site-main > .snap-section {
+    border-top-width: 0;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  html.snap-scroll #site-main > .snap-section:last-child {
+    border-bottom-width: 0;
   }
 }
 

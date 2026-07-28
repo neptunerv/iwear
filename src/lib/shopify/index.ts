@@ -52,9 +52,23 @@ type GetAllProductsOptions = {
   pageSize?: number;
 };
 
-const SHOPIFY_PAGE_SIZE = 100;
+const SHOPIFY_PAGE_SIZE = 50;
 /** Revalidate Shopify catalog data every 5 minutes. */
 const SHOPIFY_CACHE_REVALIDATE = 300;
+/**
+ * In-process memo for the *assembled* catalog (all pages stitched).
+ * Next.js Data Cache cannot store the full list (2MB/entry cap), so we only
+ * persist per-page entries there and keep the stitched array in memory briefly.
+ * UI: no change. Perf: repeat /shop hits on a warm server skip re-stitching.
+ */
+const ASSEMBLED_CATALOG_TTL_MS = 60_000;
+
+type AssembledCatalogEntry = {
+  expires: number;
+  products: Product[];
+};
+
+const assembledCatalogCache = new Map<string, AssembledCatalogEntry>();
 
 export function vendorSearchQuery(brand: string): string {
   const escaped = brand.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
@@ -63,17 +77,170 @@ export function vendorSearchQuery(brand: string): string {
 
 /** List queries omit descriptionHtml — fill defaults for the Product type. */
 function normalizeListProduct(product: Product): Product {
+  // Keep a short plain-text blurb for lens-type filters; drop the rest so
+  // per-page cache entries stay well under Next’s 2MB limit.
+  const description = (product.description ?? "").slice(0, 240);
+
   return {
-    ...product,
-    description: product.description ?? "",
-    descriptionHtml: product.descriptionHtml ?? "",
-    images: product.images ?? { nodes: [] },
-    variants: product.variants ?? { nodes: [] },
+    id: product.id,
+    handle: product.handle,
+    title: product.title,
+    description,
+    descriptionHtml: "",
+    availableForSale: product.availableForSale,
+    vendor: product.vendor,
+    tags: product.tags ?? [],
+    featuredImage: product.featuredImage
+      ? {
+          url: product.featuredImage.url,
+          altText: product.featuredImage.altText ?? null,
+          width: 0,
+          height: 0,
+        }
+      : null,
+    images: {
+      nodes: (product.images?.nodes ?? []).slice(0, 2).map((image) => ({
+        url: image.url,
+        altText: image.altText ?? null,
+        width: 0,
+        height: 0,
+      })),
+    },
+    priceRange: product.priceRange,
+    variants: {
+      nodes: (product.variants?.nodes ?? []).slice(0, 8).map((variant) => ({
+        id: variant.id,
+        title: variant.title,
+        availableForSale: variant.availableForSale,
+        price: variant.price,
+        compareAtPrice: variant.compareAtPrice,
+        image: null,
+        selectedOptions: variant.selectedOptions ?? [],
+      })),
+    },
+    metafields: (product.metafields ?? []).filter(Boolean).map((field) =>
+      field
+        ? {
+            namespace: field.namespace,
+            key: field.key,
+            value: field.value,
+            type: field.type,
+          }
+        : null,
+    ),
   };
 }
 
 function normalizeListProducts(products: Product[]): Product[] {
   return products.map(normalizeListProduct);
+}
+
+type ProductsPageResult = {
+  nodes: Product[];
+  hasNextPage: boolean;
+  endCursor: string | null;
+};
+
+async function fetchProductsPage({
+  sortKey = "CREATED_AT",
+  reverse = true,
+  query,
+  after = null,
+  pageSize = SHOPIFY_PAGE_SIZE,
+}: {
+  sortKey?: ProductSortKey;
+  reverse?: boolean;
+  query?: string;
+  after?: string | null;
+  pageSize?: number;
+}): Promise<ProductsPageResult> {
+  if (!isShopifyConfigured()) {
+    return { nodes: [], hasNextPage: false, endCursor: null };
+  }
+
+  const client = getShopifyClient();
+  const response: {
+    data?: ProductsPage;
+    errors?: unknown;
+  } = await client.request(GET_PRODUCTS_QUERY, {
+    variables: {
+      first: pageSize,
+      sortKey,
+      reverse,
+      query: query || null,
+      after,
+    },
+  });
+
+  if (response.errors) {
+    console.error("Shopify getAllProducts error:", response.errors);
+    return { nodes: [], hasNextPage: false, endCursor: null };
+  }
+
+  const page = response.data?.products;
+  if (!page) {
+    return { nodes: [], hasNextPage: false, endCursor: null };
+  }
+
+  return {
+    nodes: productsWithImages(normalizeListProducts(page.nodes)),
+    hasNextPage: page.pageInfo.hasNextPage,
+    endCursor: page.pageInfo.endCursor,
+  };
+}
+
+/**
+ * Cache one Storefront page at a time.
+ *
+ * Why: Next.js `unstable_cache` rejects entries over 2MB. The full shop
+ * catalog is larger than that, which caused /shop errors and blank grids.
+ * Page-sized entries (~50 products) stay under the cap permanently as the
+ * catalog grows — we just store more pages, never one giant blob.
+ *
+ * UI: unchanged (same products/images). Perf: first load fetches/fills pages;
+ * later loads read cached pages; warm instances also hit the in-memory stitch.
+ */
+const getCachedProductsPage = unstable_cache(
+  async (
+    sortKey: ProductSortKey,
+    reverse: boolean,
+    query: string,
+    after: string,
+    pageSize: number,
+  ) =>
+    fetchProductsPage({
+      sortKey,
+      reverse,
+      query: query || undefined,
+      after: after || null,
+      pageSize,
+    }),
+  ["shopify-products-page-v4"],
+  {
+    revalidate: SHOPIFY_CACHE_REVALIDATE,
+    tags: ["products"],
+  },
+);
+
+function assembledCatalogKey({
+  sortKey,
+  reverse,
+  query,
+  maxWithImages,
+  pageSize,
+}: Required<
+  Pick<GetAllProductsOptions, "sortKey" | "reverse" | "pageSize">
+> & {
+  query: string;
+  maxWithImages: number;
+}): string {
+  return JSON.stringify([
+    sortKey,
+    reverse,
+    query,
+    maxWithImages,
+    pageSize,
+  ]);
 }
 
 async function fetchAllProducts({
@@ -85,77 +252,56 @@ async function fetchAllProducts({
 }: GetAllProductsOptions = {}): Promise<Product[]> {
   if (!isShopifyConfigured()) return [];
 
-  const client = getShopifyClient();
+  const cacheKey = assembledCatalogKey({
+    sortKey,
+    reverse,
+    query: query ?? "",
+    maxWithImages: maxWithImages ?? -1,
+    pageSize,
+  });
+  const cached = assembledCatalogCache.get(cacheKey);
+  if (cached && cached.expires > Date.now()) {
+    return cached.products;
+  }
+
   const collected: Product[] = [];
   let after: string | null = null;
   let hasNextPage = true;
   let guard = 0;
 
-  while (hasNextPage && guard < 100) {
+  while (hasNextPage && guard < 200) {
     guard += 1;
 
-    const response: {
-      data?: ProductsPage;
-      errors?: unknown;
-    } = await client.request(GET_PRODUCTS_QUERY, {
-      variables: {
-        first: pageSize,
-        sortKey,
-        reverse,
-        query: query || null,
-        after,
-      },
-    });
-
-    if (response.errors) {
-      console.error("Shopify getAllProducts error:", response.errors);
-      break;
-    }
-
-    const page = response.data?.products;
-    if (!page) break;
-
-    collected.push(
-      ...productsWithImages(normalizeListProducts(page.nodes)),
+    const page = await getCachedProductsPage(
+      sortKey,
+      reverse,
+      query ?? "",
+      after ?? "",
+      pageSize,
     );
-    hasNextPage = page.pageInfo.hasNextPage;
-    after = page.pageInfo.endCursor;
+
+    collected.push(...page.nodes);
+    hasNextPage = page.hasNextPage;
+    after = page.endCursor;
 
     if (maxWithImages != null && collected.length >= maxWithImages) {
-      return collected.slice(0, maxWithImages);
+      const sliced = collected.slice(0, maxWithImages);
+      assembledCatalogCache.set(cacheKey, {
+        expires: Date.now() + ASSEMBLED_CATALOG_TTL_MS,
+        products: sliced,
+      });
+      return sliced;
     }
 
     if (!hasNextPage || !after) break;
   }
 
+  assembledCatalogCache.set(cacheKey, {
+    expires: Date.now() + ASSEMBLED_CATALOG_TTL_MS,
+    products: collected,
+  });
   return collected;
 }
-
-/**
- * Cached catalog fetch. Cache key includes sort/query/limits so brand pages
- * and shop-all don't collide. Revalidates every 5 minutes.
- */
-const getCachedAllProducts = unstable_cache(
-  async (
-    sortKey: ProductSortKey,
-    reverse: boolean,
-    query: string,
-    maxWithImages: number,
-    pageSize: number,
-  ) =>
-    fetchAllProducts({
-      sortKey,
-      reverse,
-      query: query || undefined,
-      maxWithImages: maxWithImages < 0 ? undefined : maxWithImages,
-      pageSize,
-    }),
-  ["shopify-all-products"],
-  {
-    revalidate: SHOPIFY_CACHE_REVALIDATE,
-    tags: ["products"],
-  },
-);
 
 /** Fetch every matching product with an image (paginated Storefront requests). */
 export async function getAllProducts({
@@ -167,13 +313,13 @@ export async function getAllProducts({
 }: GetAllProductsOptions = {}): Promise<Product[]> {
   if (!isShopifyConfigured()) return [];
 
-  return getCachedAllProducts(
+  return fetchAllProducts({
     sortKey,
     reverse,
-    query ?? "",
-    maxWithImages ?? -1,
+    query,
+    maxWithImages,
     pageSize,
-  );
+  });
 }
 
 export async function getProducts({

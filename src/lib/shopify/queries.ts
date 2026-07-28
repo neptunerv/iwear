@@ -86,7 +86,8 @@ export const PRODUCT_FRAGMENT = `
 
 /**
  * Lighter payload for catalog / listing pages.
- * Omits descriptionHtml and PDP-only metafields; keeps filter + tile fields.
+ * Omits descriptionHtml, variant images, and image dimensions so the full
+ * catalog stays under Next.js unstable_cache’s 2MB entry limit.
  */
 export const LIST_PRODUCT_FRAGMENT = `
   fragment ListProductFields on Product {
@@ -100,15 +101,11 @@ export const LIST_PRODUCT_FRAGMENT = `
     featuredImage {
       url
       altText
-      width
-      height
     }
     images(first: 2) {
       nodes {
         url
         altText
-        width
-        height
       }
     }
     priceRange {
@@ -121,7 +118,7 @@ export const LIST_PRODUCT_FRAGMENT = `
         currencyCode
       }
     }
-    variants(first: 20) {
+    variants(first: 8) {
       nodes {
         id
         title
@@ -133,12 +130,6 @@ export const LIST_PRODUCT_FRAGMENT = `
         compareAtPrice {
           amount
           currencyCode
-        }
-        image {
-          url
-          altText
-          width
-          height
         }
         selectedOptions {
           name
