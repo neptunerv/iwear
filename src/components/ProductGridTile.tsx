@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { WishlistButton } from "@/components/WishlistButton";
 import { formatPriceK } from "@/lib/format";
 import { getProductDisplayTitle } from "@/lib/product-specs";
@@ -58,6 +58,103 @@ export function ProductGridTile({
   // Tighter pad so frames read larger in the card.
   const imagePad = fill ? "p-3 sm:p-5 lg:p-6" : "p-4 sm:p-6 lg:p-8";
   const showDots = showMeta && views.length > 1;
+  const canSwipe = views.length > 1;
+
+  const swipeSurfaceRef = useRef<HTMLDivElement>(null);
+  const activeIndexRef = useRef(safeIndex);
+  activeIndexRef.current = safeIndex;
+  const didSwipeRef = useRef(false);
+
+  useEffect(() => {
+    const surface = swipeSurfaceRef.current;
+    if (!surface || !canSwipe) return;
+
+    let pointerId: number | null = null;
+    let startX = 0;
+    let startY = 0;
+    let axis: "undecided" | "x" | "y" = "undecided";
+
+    const endGesture = () => {
+      pointerId = null;
+      axis = "undecided";
+    };
+
+    const onDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      startY = event.clientY;
+      axis = "undecided";
+      didSwipeRef.current = false;
+    };
+
+    const onMove = (event: PointerEvent) => {
+      if (pointerId !== event.pointerId) return;
+
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+
+      if (axis === "undecided") {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+
+        if (axis === "y") {
+          endGesture();
+          return;
+        }
+
+        try {
+          surface.setPointerCapture(event.pointerId);
+        } catch {
+          /* ignore */
+        }
+      }
+
+      if (axis === "x") {
+        event.preventDefault();
+      }
+    };
+
+    const onUp = (event: PointerEvent) => {
+      if (pointerId !== event.pointerId) return;
+
+      if (axis === "x") {
+        const dx = event.clientX - startX;
+        const threshold = 40;
+        if (Math.abs(dx) >= threshold) {
+          didSwipeRef.current = true;
+          const current = activeIndexRef.current;
+          if (dx < 0 && current < views.length - 1) {
+            setActiveIndex(current + 1);
+          } else if (dx > 0 && current > 0) {
+            setActiveIndex(current - 1);
+          }
+        }
+      }
+
+      try {
+        if (surface.hasPointerCapture(event.pointerId)) {
+          surface.releasePointerCapture(event.pointerId);
+        }
+      } catch {
+        /* ignore */
+      }
+
+      endGesture();
+    };
+
+    surface.addEventListener("pointerdown", onDown);
+    surface.addEventListener("pointermove", onMove, { passive: false });
+    surface.addEventListener("pointerup", onUp);
+    surface.addEventListener("pointercancel", onUp);
+
+    return () => {
+      surface.removeEventListener("pointerdown", onDown);
+      surface.removeEventListener("pointermove", onMove);
+      surface.removeEventListener("pointerup", onUp);
+      surface.removeEventListener("pointercancel", onUp);
+    };
+  }, [canSwipe, views.length]);
 
   return (
     <article
@@ -77,28 +174,62 @@ export function ProductGridTile({
         className="absolute right-2 top-2 z-10 bg-white/90 p-1.5"
       />
 
+      {/* Mobile image — swipe between views when available */}
+      <div
+        ref={swipeSurfaceRef}
+        className="relative min-h-0 flex-1 sm:hidden"
+        style={{ touchAction: canSwipe ? "pan-y" : undefined }}
+      >
+        <Link
+          href={`/products/${product.handle}`}
+          className="absolute inset-0"
+          aria-label={displayTitle}
+          onClick={(event) => {
+            if (didSwipeRef.current) {
+              event.preventDefault();
+              didSwipeRef.current = false;
+            }
+          }}
+        >
+          {mobileImage ? (
+            <Image
+              src={mobileImage.url}
+              alt={mobileImage.altText ?? product.title}
+              fill
+              sizes="50vw"
+              className={`object-contain ${imagePad}`}
+              draggable={false}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink-muted">
+                No image
+              </span>
+            </div>
+          )}
+
+          {!product.availableForSale && (
+            <span className="absolute left-0 top-0 bg-ink px-2 py-1 text-[9px] font-bold uppercase tracking-[0.15em] text-cream">
+              Sold out
+            </span>
+          )}
+        </Link>
+      </div>
+
+      {/* Desktop image — hover swap */}
       <Link
         href={`/products/${product.handle}`}
-        className="relative min-h-0 flex-1"
+        className="relative hidden min-h-0 flex-1 sm:block"
         aria-label={displayTitle}
       >
         {primaryImage ? (
           <>
-            {mobileImage ? (
-              <Image
-                src={mobileImage.url}
-                alt={mobileImage.altText ?? product.title}
-                fill
-                sizes="(max-width: 640px) 50vw, 25vw"
-                className={`object-contain sm:hidden ${imagePad}`}
-              />
-            ) : null}
             <Image
               src={primaryImage.url}
               alt={primaryImage.altText ?? product.title}
               fill
-              sizes="(max-width: 640px) 50vw, 25vw"
-              className={`object-contain transition-opacity duration-500 max-sm:hidden ${imagePad} ${
+              sizes="25vw"
+              className={`object-contain transition-opacity duration-500 ${imagePad} ${
                 hoverImage ? "group-hover:opacity-0" : ""
               }`}
             />
@@ -107,8 +238,8 @@ export function ProductGridTile({
                 src={hoverImage.url}
                 alt={hoverImage.altText ?? product.title}
                 fill
-                sizes="(max-width: 640px) 50vw, 25vw"
-                className={`object-contain opacity-0 transition-opacity duration-500 max-sm:hidden group-hover:opacity-100 ${imagePad}`}
+                sizes="25vw"
+                className={`object-contain opacity-0 transition-opacity duration-500 group-hover:opacity-100 ${imagePad}`}
               />
             ) : null}
           </>

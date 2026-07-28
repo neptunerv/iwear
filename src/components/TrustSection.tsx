@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LabelBar } from "@/components/LabelBar";
-import { getSnapScrollRoot } from "@/lib/snap-scroll";
 
 const trustPoints = [
   {
@@ -133,13 +132,19 @@ export function TrustSection() {
     let pointerId: number | null = null;
     let startX = 0;
     let startY = 0;
-    let startMainScroll = 0;
     let startPage = 0;
     let width = 0;
     let lastX = 0;
     let lastT = 0;
     let velocityX = 0;
     let axis: "undecided" | "x" | "y" = "undecided";
+
+    const endGesture = () => {
+      pointerId = null;
+      draggingRef.current = false;
+      axis = "undecided";
+      velocityX = 0;
+    };
 
     const onDown = (event: PointerEvent) => {
       if (event.pointerType === "mouse" && event.button !== 0) return;
@@ -155,11 +160,8 @@ export function TrustSection() {
       lastT = performance.now();
       velocityX = 0;
       startPage = pageRef.current;
-      startMainScroll = getSnapScrollRoot()?.scrollTop ?? 0;
       axis = "undecided";
-      draggingRef.current = true;
-      setAnimate(false);
-      surface.setPointerCapture(event.pointerId);
+      // Do not capture yet — vertical pans must stay with #site-main.
     };
 
     const onMove = (event: PointerEvent) => {
@@ -178,26 +180,30 @@ export function TrustSection() {
       if (axis === "undecided") {
         if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
         axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+
+        if (axis === "y") {
+          // Hand vertical scroll back to the page snap shell.
+          endGesture();
+          return;
+        }
+
+        draggingRef.current = true;
+        setAnimate(false);
+        try {
+          surface.setPointerCapture(event.pointerId);
+        } catch {
+          /* ignore */
+        }
       }
 
       if (axis === "x") {
         event.preventDefault();
         setDragX(dx);
-        return;
-      }
-
-      if (axis === "y") {
-        const main = getSnapScrollRoot();
-        if (!main) return;
-        event.preventDefault();
-        main.scrollTop = startMainScroll - dy;
       }
     };
 
     const onUp = (event: PointerEvent) => {
       if (pointerId !== event.pointerId) return;
-      pointerId = null;
-      draggingRef.current = false;
 
       if (axis === "x") {
         const dx = event.clientX - startX;
@@ -216,8 +222,15 @@ export function TrustSection() {
         setDragX(0);
       }
 
-      axis = "undecided";
-      velocityX = 0;
+      try {
+        if (surface.hasPointerCapture(event.pointerId)) {
+          surface.releasePointerCapture(event.pointerId);
+        }
+      } catch {
+        /* ignore */
+      }
+
+      endGesture();
     };
 
     surface.addEventListener("pointerdown", onDown);
@@ -249,11 +262,11 @@ export function TrustSection() {
     >
       <LabelBar label="Why buy from iWear" />
 
-      {/* Mobile: page-snap carousel — whole panel is the drag surface */}
+      {/* Mobile: page-snap carousel — pan-y so page scroll still works */}
       <div
         ref={surfaceRef}
         className="relative min-h-0 flex-1 cursor-grab overflow-hidden bg-cream active:cursor-grabbing md:hidden"
-        style={{ touchAction: "none" }}
+        style={{ touchAction: "pan-y" }}
       >
         <div
           ref={trackRef}
