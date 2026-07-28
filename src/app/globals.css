@@ -254,9 +254,9 @@ body:has(.account-page) .site-footer {
   animation: page-spinner 0.7s linear infinite;
 }
 
-.page-spinner-on-dark {
-  border-color: rgb(250 247 242 / 0.25);
-  border-top-color: var(--cream);
+.page-spinner-brand {
+  border-color: rgb(255 13 1 / 0.22);
+  border-top-color: var(--brand);
 }
 
 @media (prefers-reduced-motion: reduce) {

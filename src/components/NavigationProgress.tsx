@@ -50,57 +50,73 @@ function isInternalNavClick(event: MouseEvent) {
 
 export function NavigationProgress() {
   const pathname = usePathname();
-  const [active, setActive] = useState(false);
+  const [bar, setBar] = useState(false);
+  const [overlay, setOverlay] = useState(false);
   const clearTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const overlayTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    setActive(false);
+  function clearPending() {
     if (clearTimer.current) {
       clearTimeout(clearTimer.current);
       clearTimer.current = null;
     }
+    if (overlayTimer.current) {
+      clearTimeout(overlayTimer.current);
+      overlayTimer.current = null;
+    }
+    setBar(false);
+    setOverlay(false);
+  }
+
+  useEffect(() => {
+    clearPending();
   }, [pathname]);
 
   useEffect(() => {
     function onClick(event: MouseEvent) {
       if (!isInternalNavClick(event)) return;
-      if (clearTimer.current) clearTimeout(clearTimer.current);
-      setActive(true);
-      // Safety: don't leave the overlay stuck if navigation is cancelled.
-      clearTimer.current = setTimeout(() => setActive(false), 8000);
+      clearPending();
+      setBar(true);
+      // Only dim the screen if navigation is actually slow (avoids blank
+      // cream flash during fast hops / Next.js compile waits).
+      overlayTimer.current = setTimeout(() => setOverlay(true), 180);
+      clearTimer.current = setTimeout(clearPending, 10000);
+    }
+
+    function onPageShow() {
+      clearPending();
     }
 
     document.addEventListener("click", onClick, true);
+    window.addEventListener("pageshow", onPageShow);
     return () => {
       document.removeEventListener("click", onClick, true);
-      if (clearTimer.current) clearTimeout(clearTimer.current);
+      window.removeEventListener("pageshow", onPageShow);
+      clearPending();
     };
   }, []);
 
+  if (!bar && !overlay) return null;
+
   return (
     <div
-      aria-hidden={!active}
-      aria-busy={active}
+      aria-hidden={!bar}
+      aria-busy={bar}
       className="pointer-events-none fixed inset-0 z-[100]"
     >
-      {/* Left-to-right bar — fixed to viewport so it shows on ghost/brand headers */}
       <div className="absolute inset-x-0 top-0 h-0.5 overflow-hidden">
         <div
           className={`h-full origin-left bg-brand transition-[transform,opacity] duration-300 ease-out ${
-            active ? "nav-progress-active opacity-100" : "scale-x-0 opacity-0"
+            bar ? "nav-progress-active opacity-100" : "scale-x-0 opacity-0"
           }`}
         />
       </div>
 
-      <div
-        className={`absolute inset-0 flex items-center justify-center bg-ink/40 transition-opacity duration-200 ${
-          active ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <span
-          className={`page-spinner page-spinner-on-dark ${active ? "" : "invisible"}`}
-        />
-      </div>
+      {overlay ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-cream/70 transition-opacity duration-200">
+          <span className="page-spinner page-spinner-brand" />
+        </div>
+      ) : null}
     </div>
   );
 }
