@@ -1,0 +1,20 @@
+# Dependencies & build output (also in .gitignore; keep explicit for CLI uploads)
+node_modules
+.next
+out
+build
+coverage
+
+# Local product image cache & spreadsheet tooling — not needed on Vercel
+# (storefront images come from Shopify CDN)
+data
+
+# Git / env / local tooling
+.git
+.env*
+*.pem
+.DS_Store
+
+# Dev-only scripts & large source assets for tracing logos
+scripts
+tsconfig.tsbuildinfo

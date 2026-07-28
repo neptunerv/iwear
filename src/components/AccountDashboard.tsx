@@ -2,10 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState } from "react";
 import { formatPrice } from "@/lib/format";
-import { logoutCustomerAction } from "@/lib/shopify/customer-actions";
 import type { Customer } from "@/lib/shopify/customer";
 import { site } from "@/lib/site";
 
@@ -29,18 +27,10 @@ function statusLabel(value: string | null) {
 }
 
 export function AccountDashboard({ customer }: AccountDashboardProps) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [signingOut, setSigningOut] = useState(false);
   const displayName =
     [customer.firstName, customer.lastName].filter(Boolean).join(" ") ||
     customer.email;
-
-  function handleLogout() {
-    startTransition(async () => {
-      await logoutCustomerAction();
-      router.refresh();
-    });
-  }
 
   return (
     <div className="w-full text-left">
@@ -56,14 +46,25 @@ export function AccountDashboard({ customer }: AccountDashboardProps) {
             {customer.email}
           </p>
         </div>
-        <button
-          type="button"
-          disabled={isPending}
-          onClick={handleLogout}
-          className="border-2 border-ink px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand disabled:opacity-50"
+        <a
+          href="/api/auth/logout"
+          aria-busy={signingOut}
+          aria-disabled={signingOut}
+          onClick={(event) => {
+            if (signingOut) {
+              event.preventDefault();
+              return;
+            }
+            setSigningOut(true);
+          }}
+          className={`border-2 border-ink px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors ${
+            signingOut
+              ? "pointer-events-none bg-ink text-brand"
+              : "hover:bg-ink hover:text-brand"
+          }`}
         >
-          {isPending ? "Signing out…" : "Sign out"}
-        </button>
+          {signingOut ? "Signing out…" : "Sign out"}
+        </a>
       </div>
 
       <div className="mt-8">

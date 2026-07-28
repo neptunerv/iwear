@@ -4,6 +4,7 @@ import { AccountAuthForm } from "@/components/AccountAuthForm";
 import { AccountDashboard } from "@/components/AccountDashboard";
 import { Footer } from "@/components/Footer";
 import { HomeScrollSnap } from "@/components/HomeScrollSnap";
+import { isCustomerAccountConfigured } from "@/lib/shopify/customer-account";
 import { getCustomer } from "@/lib/shopify/customer";
 import { site } from "@/lib/site";
 
@@ -15,8 +16,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function AccountPage() {
+type AccountPageProps = {
+  searchParams: Promise<{ error?: string }>;
+};
+
+export default async function AccountPage({ searchParams }: AccountPageProps) {
+  const { error } = await searchParams;
   const customer = await getCustomer();
+  const configured = isCustomerAccountConfigured();
 
   return (
     <>
@@ -37,7 +44,7 @@ export default async function AccountPage() {
             <p className="mt-4 text-sm font-semibold leading-relaxed text-ink-muted">
               {customer
                 ? "View recent orders and track shipments. Guest checkout still works anytime."
-                : "Log in or create an account. Guest checkout and wishlist stay available anytime."}
+                : "Sign in with Shopify to see your orders. Guest checkout and wishlist stay available anytime."}
             </p>
           </div>
 
@@ -45,7 +52,10 @@ export default async function AccountPage() {
             {customer ? (
               <AccountDashboard customer={customer} />
             ) : (
-              <AccountAuthForm />
+              <AccountAuthForm
+                configured={configured}
+                error={error ?? null}
+              />
             )}
           </div>
 

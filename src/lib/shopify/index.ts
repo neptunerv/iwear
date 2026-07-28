@@ -236,19 +236,21 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
     { variables: { handle } },
   );
 
+  const product = data?.product ?? null;
   if (errors) {
+    // Field-level access denials (e.g. quantityAvailable without inventory
+    // scope) still return the product — don't 404 the PDP for those.
     console.error("Shopify getProductByHandle error:", errors);
-    return null;
+    if (!product) return null;
   }
 
-  const product = data?.product ?? null;
   if (!product || !productHasImage(product)) return null;
   return product;
 }
 
 const getCachedProductByHandle = unstable_cache(
   async (handle: string) => fetchProductByHandle(handle),
-  ["shopify-product-by-handle"],
+  ["shopify-product-by-handle-v2"],
   {
     revalidate: SHOPIFY_CACHE_REVALIDATE,
     tags: ["products"],

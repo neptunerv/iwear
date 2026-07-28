@@ -4,6 +4,7 @@ import { type ReactNode, useEffect, useState } from "react";
 import { CartDrawer } from "@/components/CartDrawer";
 import { HeaderActions } from "@/components/HeaderActions";
 import { MobileNav } from "@/components/MobileNav";
+import { NavigationProgress } from "@/components/NavigationProgress";
 import { SearchBarPopup } from "@/components/SearchBarPopup";
 import { WishlistDrawer } from "@/components/WishlistDrawer";
 import { useCart } from "@/components/CartProvider";
@@ -61,6 +62,7 @@ export function HeaderShell({ logo, nav }: HeaderShellProps) {
           open={panel === "search"}
           onClose={closePanel}
         />
+        <NavigationProgress />
       </header>
 
       <MobileNav open={panel === "menu"} onClose={closePanel} />

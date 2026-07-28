@@ -1,15 +1,12 @@
 import { cookies } from "next/headers";
-import { getShopifyClient, isShopifyConfigured } from "./client";
 import {
-  CUSTOMER_ACCESS_TOKEN_CREATE,
-  CUSTOMER_ACCESS_TOKEN_DELETE,
-  CUSTOMER_CREATE,
-  CUSTOMER_QUERY,
-} from "./customer-queries";
+  customerAccountCookies,
+  discoverCustomerApiConfig,
+  isCustomerAccountConfigured,
+  refreshAccessToken,
+  type TokenResponse,
+} from "./customer-account";
 import type { Image, Money } from "./types";
-
-const CUSTOMER_COOKIE = "iwear_customer_token";
-const CUSTOMER_MAX_AGE = 60 * 60 * 24 * 30;
 
 export type CustomerOrderLine = {
   title: string;
@@ -39,98 +36,171 @@ export type Customer = {
   orders: CustomerOrder[];
 };
 
-type CustomerUserError = {
-  code?: string | null;
-  field?: string[] | null;
-  message: string;
-};
+const CUSTOMER_QUERY = `
+  query CustomerAccount {
+    customer {
+      id
+      firstName
+      lastName
+      emailAddress {
+        emailAddress
+      }
+      orders(first: 20, sortKey: PROCESSED_AT, reverse: true) {
+        nodes {
+          id
+          number
+          processedAt
+          financialStatus
+          fulfillmentStatus
+          statusPageUrl
+          totalPrice {
+            amount
+            currencyCode
+          }
+          lineItems(first: 10) {
+            nodes {
+              title
+              quantity
+              image {
+                url
+                altText
+                width
+                height
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
-type TokenPayload = {
-  accessToken: string;
-  expiresAt: string;
-};
-
-type CustomerPayload = {
-  id: string;
-  firstName: string | null;
-  lastName: string | null;
-  email: string;
-  phone: string | null;
-  numberOfOrders: number;
-  orders?: {
-    nodes: Array<{
-      id: string;
-      orderNumber: number;
-      processedAt: string;
-      financialStatus: string | null;
-      fulfillmentStatus: string | null;
-      statusUrl: string;
-      totalPrice: Money;
-      lineItems: {
-        nodes: Array<{
-          title: string;
-          quantity: number;
-          variant: {
+type CustomerApiPayload = {
+  customer: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    emailAddress: { emailAddress: string } | null;
+    orders: {
+      nodes: Array<{
+        id: string;
+        number: number;
+        processedAt: string;
+        financialStatus: string | null;
+        fulfillmentStatus: string | null;
+        statusPageUrl: string | null;
+        totalPrice: Money;
+        lineItems: {
+          nodes: Array<{
+            title: string;
+            quantity: number;
             image: Image | null;
-            product: { handle: string } | null;
-          } | null;
-        }>;
-      };
-    }>;
+          }>;
+        };
+      }>;
+    };
   } | null;
 };
 
-type AuthResult = {
-  customer: Customer | null;
-  error: string | null;
-};
-
-async function getCustomerToken(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  return cookieStore.get(CUSTOMER_COOKIE)?.value;
-}
-
-async function setCustomerToken(token: string, expiresAt: string) {
-  const cookieStore = await cookies();
-  const expires = new Date(expiresAt);
-  const maxAge = Number.isNaN(expires.getTime())
-    ? CUSTOMER_MAX_AGE
-    : Math.max(60, Math.floor((expires.getTime() - Date.now()) / 1000));
-
-  cookieStore.set(CUSTOMER_COOKIE, token, {
+function cookieOptions(maxAge: number) {
+  return {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "lax" as const,
     secure: process.env.NODE_ENV === "production",
-    maxAge,
     path: "/",
-  });
+    maxAge,
+  };
 }
 
-async function clearCustomerToken() {
+export async function persistCustomerTokens(tokens: TokenResponse) {
   const cookieStore = await cookies();
-  cookieStore.delete(CUSTOMER_COOKIE);
+  const maxAge = Math.max(60, tokens.expires_in ?? 3600);
+
+  cookieStore.set(
+    customerAccountCookies.access,
+    tokens.access_token,
+    cookieOptions(maxAge),
+  );
+  cookieStore.set(
+    customerAccountCookies.expires,
+    String(Date.now() + maxAge * 1000),
+    cookieOptions(maxAge),
+  );
+
+  if (tokens.refresh_token) {
+    cookieStore.set(
+      customerAccountCookies.refresh,
+      tokens.refresh_token,
+      cookieOptions(60 * 60 * 24 * 30),
+    );
+  }
+
+  if (tokens.id_token) {
+    cookieStore.set(
+      customerAccountCookies.idToken,
+      tokens.id_token,
+      cookieOptions(60 * 60 * 24 * 30),
+    );
+  }
 }
 
-function firstCustomerError(errors: CustomerUserError[] | undefined): string | null {
-  return errors?.[0]?.message ?? null;
+export async function clearCustomerTokens() {
+  const cookieStore = await cookies();
+  for (const key of Object.values(customerAccountCookies)) {
+    cookieStore.delete(key);
+  }
 }
 
-function parseCustomer(data: CustomerPayload | null | undefined): Customer | null {
-  if (!data?.id || !data.email) return null;
+async function getValidAccessToken(): Promise<string | null> {
+  if (!isCustomerAccountConfigured()) return null;
+
+  const cookieStore = await cookies();
+  const access = cookieStore.get(customerAccountCookies.access)?.value;
+  const expiresAt = Number(
+    cookieStore.get(customerAccountCookies.expires)?.value ?? 0,
+  );
+  const refresh = cookieStore.get(customerAccountCookies.refresh)?.value;
+
+  if (access && Date.now() < expiresAt - 30_000) {
+    return access;
+  }
+
+  if (!refresh) {
+    if (access) await clearCustomerTokens();
+    return null;
+  }
+
+  const tokens = await refreshAccessToken(refresh);
+  if (!tokens?.access_token) {
+    await clearCustomerTokens();
+    return null;
+  }
+
+  await persistCustomerTokens({
+    ...tokens,
+    refresh_token: tokens.refresh_token ?? refresh,
+  });
+  return tokens.access_token;
+}
+
+function parseCustomer(data: CustomerApiPayload["customer"]): Customer | null {
+  if (!data?.id) return null;
+  const email = data.emailAddress?.emailAddress;
+  if (!email) return null;
 
   const orders = (data.orders?.nodes ?? []).map((order) => ({
     id: order.id,
-    orderNumber: order.orderNumber,
+    orderNumber: order.number,
     processedAt: order.processedAt,
     financialStatus: order.financialStatus,
     fulfillmentStatus: order.fulfillmentStatus,
-    statusUrl: order.statusUrl,
+    statusUrl: order.statusPageUrl ?? "#",
     totalPrice: order.totalPrice,
     lineItems: (order.lineItems?.nodes ?? []).map((line) => ({
       title: line.title,
       quantity: line.quantity,
-      image: line.variant?.image ?? null,
-      productHandle: line.variant?.product?.handle ?? null,
+      image: line.image,
+      productHandle: null,
     })),
   }));
 
@@ -138,145 +208,71 @@ function parseCustomer(data: CustomerPayload | null | undefined): Customer | nul
     id: data.id,
     firstName: data.firstName,
     lastName: data.lastName,
-    email: data.email,
-    phone: data.phone,
-    numberOfOrders: data.numberOfOrders ?? orders.length,
+    email,
+    phone: null,
+    numberOfOrders: orders.length,
     orders,
   };
 }
 
 export async function getCustomer(): Promise<Customer | null> {
-  if (!isShopifyConfigured()) return null;
+  const accessToken = await getValidAccessToken();
+  if (!accessToken) return null;
 
-  const token = await getCustomerToken();
-  if (!token) return null;
+  const api = await discoverCustomerApiConfig();
+  if (!api?.graphql_api) return null;
 
-  const client = getShopifyClient();
-  const { data, errors } = await client.request<{ customer: CustomerPayload | null }>(
-    CUSTOMER_QUERY,
-    { variables: { customerAccessToken: token } },
-  );
-
-  if (errors) {
-    console.error("Shopify customer query error:", errors);
-    return null;
-  }
-
-  const customer = parseCustomer(data?.customer);
-  if (!customer) {
-    await clearCustomerToken();
-    return null;
-  }
-
-  return customer;
-}
-
-export async function loginCustomer(
-  email: string,
-  password: string,
-): Promise<AuthResult> {
-  if (!isShopifyConfigured()) {
-    return { customer: null, error: "Shopify is not configured." };
-  }
-
-  const client = getShopifyClient();
-  const { data, errors } = await client.request<{
-    customerAccessTokenCreate: {
-      customerAccessToken: TokenPayload | null;
-      customerUserErrors: CustomerUserError[];
-    };
-  }>(CUSTOMER_ACCESS_TOKEN_CREATE, {
-    variables: { input: { email, password } },
-  });
-
-  if (errors) {
-    console.error("Shopify customerAccessTokenCreate error:", errors);
-    return { customer: null, error: "Could not log in. Try again." };
-  }
-
-  const userError = firstCustomerError(
-    data?.customerAccessTokenCreate.customerUserErrors,
-  );
-  if (userError) return { customer: null, error: userError };
-
-  const token = data?.customerAccessTokenCreate.customerAccessToken;
-  if (!token?.accessToken) {
-    return { customer: null, error: "Could not log in. Check your email and password." };
-  }
-
-  await setCustomerToken(token.accessToken, token.expiresAt);
-  const customer = await getCustomer();
-  return {
-    customer,
-    error: customer ? null : "Logged in, but could not load your account.",
-  };
-}
-
-export async function createCustomer(input: {
-  email: string;
-  password: string;
-  firstName?: string;
-  lastName?: string;
-}): Promise<AuthResult> {
-  if (!isShopifyConfigured()) {
-    return { customer: null, error: "Shopify is not configured." };
-  }
-
-  const client = getShopifyClient();
-  const { data, errors } = await client.request<{
-    customerCreate: {
-      customer: { id: string } | null;
-      customerUserErrors: CustomerUserError[];
-    };
-  }>(CUSTOMER_CREATE, {
-    variables: {
-      input: {
-        email: input.email,
-        password: input.password,
-        firstName: input.firstName || undefined,
-        lastName: input.lastName || undefined,
-        acceptsMarketing: false,
-      },
+  const response = await fetch(api.graphql_api, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: accessToken,
     },
+    body: JSON.stringify({ query: CUSTOMER_QUERY }),
+    cache: "no-store",
   });
 
-  if (errors) {
-    console.error("Shopify customerCreate error:", errors);
-    return { customer: null, error: "Could not create account. Try again." };
+  if (!response.ok) {
+    console.error("Customer Account API query failed:", response.status);
+    if (response.status === 401) await clearCustomerTokens();
+    return null;
   }
 
-  const userError = firstCustomerError(data?.customerCreate.customerUserErrors);
-  if (userError) return { customer: null, error: userError };
+  const json = (await response.json()) as {
+    data?: CustomerApiPayload;
+    errors?: unknown;
+  };
 
-  if (!data?.customerCreate.customer?.id) {
-    return { customer: null, error: "Could not create account." };
+  if (json.errors) {
+    console.error("Customer Account API GraphQL errors:", json.errors);
   }
 
-  return loginCustomer(input.email, input.password);
+  return parseCustomer(json.data?.customer ?? null);
 }
 
-export async function logoutCustomer(): Promise<{ error: string | null }> {
-  if (!isShopifyConfigured()) {
-    await clearCustomerToken();
-    return { error: null };
+export async function logoutCustomer(): Promise<{
+  error: string | null;
+  logoutUrl: string | null;
+}> {
+  const cookieStore = await cookies();
+  const idToken = cookieStore.get(customerAccountCookies.idToken)?.value ?? null;
+  await clearCustomerTokens();
+
+  if (!idToken) return { error: null, logoutUrl: null };
+
+  const { discoverOpenIdConfig, getCustomerAccountLogoutRedirectUrl } =
+    await import("./customer-account");
+  const config = await discoverOpenIdConfig();
+  if (!config?.end_session_endpoint) {
+    return { error: null, logoutUrl: null };
   }
 
-  const token = await getCustomerToken();
-  if (token) {
-    try {
-      const client = getShopifyClient();
-      await client.request(CUSTOMER_ACCESS_TOKEN_DELETE, {
-        variables: { customerAccessToken: token },
-      });
-    } catch (error) {
-      console.error("Shopify customerAccessTokenDelete error:", error);
-    }
-  }
+  const url = new URL(config.end_session_endpoint);
+  url.searchParams.set("id_token_hint", idToken);
+  url.searchParams.set(
+    "post_logout_redirect_uri",
+    getCustomerAccountLogoutRedirectUrl(),
+  );
 
-  await clearCustomerToken();
-  return { error: null };
-}
-
-export async function getCustomerAccessToken(): Promise<string | undefined> {
-  return getCustomerToken();
+  return { error: null, logoutUrl: url.toString() };
 }

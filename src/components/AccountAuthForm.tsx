@@ -1,206 +1,69 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, useTransition, type FormEvent } from "react";
-import {
-  createCustomerAction,
-  loginCustomerAction,
-} from "@/lib/shopify/customer-actions";
+import { useState } from "react";
 
-type Mode = "login" | "signup";
+type AccountAuthFormProps = {
+  configured: boolean;
+  error?: string | null;
+};
 
-const inputClassName =
-  "w-full border-b-2 border-ink/20 bg-transparent py-3 text-sm font-semibold text-ink outline-none transition-colors placeholder:text-ink-muted focus:border-ink";
+const errorCopy: Record<string, string> = {
+  not_configured:
+    "Customer accounts aren’t configured yet. Set Shopify Customer Account API credentials, or checkout as a guest.",
+  discovery: "Couldn’t reach Shopify login. Try again in a moment.",
+  missing_code: "Login didn’t complete. Please try again.",
+  invalid_state: "Login session expired. Please try again.",
+  token: "Couldn’t finish signing in. Please try again.",
+};
 
-const labelClassName =
-  "block text-left text-[10px] font-bold uppercase tracking-[0.2em] text-ink-muted";
-
-const ctaClassName =
-  "w-full border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand disabled:cursor-not-allowed disabled:opacity-50";
-
-export function AccountAuthForm() {
-  const router = useRouter();
-  const [mode, setMode] = useState<Mode>("login");
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-
-  function switchMode(next: Mode) {
-    setMode(next);
-    setError(null);
-  }
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
-
-    const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") ?? "").trim();
-    const password = String(form.get("password") ?? "");
-
-    if (!email || !password) {
-      setError("Enter your email and password.");
-      return;
-    }
-
-    if (mode === "signup") {
-      const confirm = String(form.get("confirmPassword") ?? "");
-      if (password.length < 8) {
-        setError("Password must be at least 8 characters.");
-        return;
-      }
-      if (password !== confirm) {
-        setError("Passwords do not match.");
-        return;
-      }
-    }
-
-    startTransition(async () => {
-      const result =
-        mode === "login"
-          ? await loginCustomerAction(email, password)
-          : await createCustomerAction({
-              email,
-              password,
-              firstName: String(form.get("firstName") ?? "").trim() || undefined,
-              lastName: String(form.get("lastName") ?? "").trim() || undefined,
-            });
-
-      if (result.error) {
-        setError(result.error);
-        return;
-      }
-
-      router.refresh();
-    });
-  }
+export function AccountAuthForm({
+  configured,
+  error = null,
+}: AccountAuthFormProps) {
+  const message = error
+    ? (errorCopy[error] ?? "Something went wrong. Please try again.")
+    : null;
+  const [signingIn, setSigningIn] = useState(false);
 
   return (
     <div className="w-full text-left">
-      <div
-        role="tablist"
-        aria-label="Account"
-        className="flex border-b-2 border-ink/15"
-      >
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === "login"}
-          onClick={() => switchMode("login")}
-          className={`-mb-[2px] flex-1 border-b-2 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${
-            mode === "login"
-              ? "border-ink text-ink"
-              : "border-transparent text-ink-muted hover:text-ink"
-          }`}
-        >
-          Log in
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === "signup"}
-          onClick={() => switchMode("signup")}
-          className={`-mb-[2px] flex-1 border-b-2 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${
-            mode === "signup"
-              ? "border-ink text-ink"
-              : "border-transparent text-ink-muted hover:text-ink"
-          }`}
-        >
-          Sign up
-        </button>
-      </div>
+      <p className="text-sm font-semibold leading-relaxed text-ink-muted">
+        Sign in with your Shopify customer account to view orders and track
+        shipments. Guest checkout still works anytime.
+      </p>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-5" noValidate>
-        {mode === "signup" ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <div>
-              <label htmlFor="account-first-name" className={labelClassName}>
-                First name
-              </label>
-              <input
-                id="account-first-name"
-                name="firstName"
-                type="text"
-                autoComplete="given-name"
-                className={inputClassName}
-              />
-            </div>
-            <div>
-              <label htmlFor="account-last-name" className={labelClassName}>
-                Last name
-              </label>
-              <input
-                id="account-last-name"
-                name="lastName"
-                type="text"
-                autoComplete="family-name"
-                className={inputClassName}
-              />
-            </div>
-          </div>
-        ) : null}
+      {message ? (
+        <p className="mt-4 text-sm font-semibold text-brand" role="alert">
+          {message}
+        </p>
+      ) : null}
 
-        <div>
-          <label htmlFor="account-email" className={labelClassName}>
-            Email
-          </label>
-          <input
-            id="account-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            className={inputClassName}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="account-password" className={labelClassName}>
-            Password
-          </label>
-          <input
-            id="account-password"
-            name="password"
-            type="password"
-            autoComplete={
-              mode === "login" ? "current-password" : "new-password"
+      {configured ? (
+        <a
+          href="/api/auth/login"
+          aria-busy={signingIn}
+          aria-disabled={signingIn}
+          onClick={(event) => {
+            if (signingIn) {
+              event.preventDefault();
+              return;
             }
-            required
-            className={inputClassName}
-          />
-        </div>
-
-        {mode === "signup" ? (
-          <div>
-            <label htmlFor="account-confirm-password" className={labelClassName}>
-              Confirm password
-            </label>
-            <input
-              id="account-confirm-password"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              className={inputClassName}
-            />
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="text-sm font-semibold text-brand" role="alert">
-            {error}
-          </p>
-        ) : null}
-
-        <button type="submit" disabled={isPending} className={ctaClassName}>
-          {isPending
-            ? mode === "login"
-              ? "Logging in…"
-              : "Creating…"
-            : mode === "login"
-              ? "Log in"
-              : "Create account"}
-        </button>
-      </form>
+            setSigningIn(true);
+          }}
+          className={`mt-8 flex w-full items-center justify-center border-2 border-ink px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${
+            signingIn
+              ? "pointer-events-none bg-ink text-brand"
+              : "hover:bg-ink hover:text-brand"
+          }`}
+        >
+          {signingIn ? "Signing in…" : "Sign in with Shopify"}
+        </a>
+      ) : (
+        <p className="mt-8 border-2 border-dashed border-ink/20 px-5 py-6 text-sm font-semibold leading-relaxed text-ink-muted">
+          Online accounts aren’t connected yet. Ask the store to finish Customer
+          Account API setup, or message us for order help.
+        </p>
+      )}
     </div>
   );
 }

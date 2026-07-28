@@ -25,10 +25,9 @@ npm install
    - `unauthenticated_read_product_listings`
    - `unauthenticated_read_product_inventory`
    - `unauthenticated_write_checkouts`
-   - `unauthenticated_write_customers`
-   - `unauthenticated_read_customers`
 4. Install the app and copy the **Storefront API access token**.
-5. Under **Settings → Customer accounts**, enable **Classic customer accounts** (email/password) so storefront login works.
+5. Install the **Headless** sales channel. Under **Customer Account API**, copy the client ID, add callback `{SITE_URL}/api/auth/callback`, and logout `{SITE_URL}/account`.
+6. In **Settings → Customer accounts**, enable **Customer accounts** (the new system — not Classic).
 
 ### 3. Environment variables
 
@@ -37,6 +36,8 @@ cp .env.example .env.local
 ```
 
 Fill in your credentials (see `.env.example`). Optionally set `NEXT_PUBLIC_WHATSAPP_URL` to a real `https://wa.me/62…` link (or bare number).
+
+For Customer Account login, Shopify **rejects localhost**. Use a tunnel (ngrok) or a Vercel preview URL as `NEXT_PUBLIC_SITE_URL` when testing accounts.
 
 ### 4. Run the dev server
 
@@ -67,7 +68,7 @@ Complete these in Shopify Admin before taking real orders — they are not contr
 - [ ] **Taxes** — Indonesia tax settings as needed
 - [ ] **Domain** — connect custom domain; set `NEXT_PUBLIC_SITE_URL` to the public URL
 - [ ] **Transactional email** — sender domain / branding for order + abandoned-checkout emails
-- [ ] **Customer accounts** — Classic accounts enabled (see scopes above)
+- [ ] **Customer accounts** — enable **new Customer accounts** + Headless channel Customer Account API client (callback `/api/auth/callback`)
 - [ ] **Catalog data** — per-SKU `specs.front_colour` / `specs.lens_color` (today the storefront prefers title/description because group-level metafields are unreliable)
 - [ ] **Reviews app** (optional) — Judge.me, Loox, or Shopify Product Reviews; expose rating metafields under `reviews.rating` + `reviews.rating_count`
 - [ ] **WhatsApp** — set `NEXT_PUBLIC_WHATSAPP_URL`
@@ -75,11 +76,11 @@ Complete these in Shopify Admin before taking real orders — they are not contr
 ## Storefront features
 
 - [x] Cart state and checkout via Storefront API
-- [x] Customer login, signup, order history (Classic Customer Access Token)
+- [x] Customer login via **new Customer Account API** (OAuth) + order history
 - [x] Cart discount codes
 - [x] Inventory quantity messaging (`quantityAvailable`)
 - [x] Product JSON-LD, per-page canonicals, analytics
-- [ ] Configure custom domain and deploy (Vercel recommended)
+- [ ] Configure custom domain and deploy (Vercel recommended — Shopify does **not** host this Next.js site)
 - [ ] Set up Shopify payments for Indonesia
 - [ ] Set `NEXT_PUBLIC_WHATSAPP_URL` to the store WhatsApp number
 

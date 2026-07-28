@@ -221,3 +221,26 @@ body:has(.account-page) .site-footer {
 .product-description li + li {
   margin-top: 0.5rem;
 }
+
+@keyframes nav-progress {
+  0% {
+    transform: scaleX(0.08);
+  }
+  40% {
+    transform: scaleX(0.55);
+  }
+  100% {
+    transform: scaleX(0.85);
+  }
+}
+
+.nav-progress-active {
+  animation: nav-progress 1.6s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-progress-active {
+    animation: none;
+    transform: scaleX(0.7);
+  }
+}
