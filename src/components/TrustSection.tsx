@@ -69,7 +69,7 @@ function buildSlides(points: readonly TrustPoint[]): Slide[] {
 
 function TrustSlide({ title, body }: { title: string; body: string }) {
   return (
-    <div className="flex h-full min-h-0 w-full min-w-full shrink-0 basis-full flex-col justify-end px-8 py-10 sm:px-12 sm:py-14">
+    <div className="flex h-full w-full shrink-0 basis-full flex-col justify-end bg-cream px-8 py-10 sm:px-12 sm:py-14">
       <h2 className="font-poster text-5xl uppercase leading-none sm:text-6xl lg:text-7xl">
         {title}
       </h2>
@@ -81,121 +81,85 @@ function TrustSlide({ title, body }: { title: string; body: string }) {
 }
 
 export function TrustSection() {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const settlingRef = useRef(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
   const slides = useMemo(() => buildSlides(trustPoints), []);
   const looping = trustPoints.length > 1;
+  const initialPage = looping ? 1 : 0;
 
-  const jumpToSlide = useCallback((slideIndex: number) => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    const width = scroller.clientWidth;
-    if (!width) return;
+  const [page, setPage] = useState(initialPage);
+  const [dragX, setDragX] = useState(0);
+  const [animate, setAnimate] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const pageRef = useRef(page);
+  pageRef.current = page;
 
-    settlingRef.current = true;
-    scroller.scrollTo({
-      left: width * slideIndex,
-      behavior: "auto",
-    });
-
-    window.requestAnimationFrame(() => {
-      settlingRef.current = false;
-    });
-  }, []);
-
-  const settleLoop = useCallback(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller || !looping || settlingRef.current) return;
-
-    const width = scroller.clientWidth;
-    if (!width) return;
-
-    const index = Math.round(scroller.scrollLeft / width);
-    const slide = slides[index];
-    if (!slide) return;
-
-    setActiveIndex(slide.realIndex);
-
-    if (index === slides.length - 1) {
-      jumpToSlide(1);
-      return;
-    }
-
-    if (index === 0) {
-      jumpToSlide(slides.length - 2);
-    }
-  }, [jumpToSlide, looping, slides]);
-
-  useEffect(() => {
-    if (!looping) return;
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-
-    let primed = false;
-    const prime = () => {
-      if (primed || !scroller.clientWidth) return;
-      primed = true;
-      jumpToSlide(1);
-    };
-
-    prime();
-    const observer = new ResizeObserver(prime);
-    observer.observe(scroller);
-    return () => observer.disconnect();
-  }, [jumpToSlide, looping]);
-
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller || !looping) return;
-
-    let timeout: number | undefined;
-
-    const onScroll = () => {
-      if (settlingRef.current) return;
-
-      const width = scroller.clientWidth;
-      if (!width) return;
-      const index = Math.round(scroller.scrollLeft / width);
-      const slide = slides[index];
+  const goToPage = useCallback(
+    (nextPage: number, withAnimation: boolean) => {
+      const clamped = Math.max(0, Math.min(slides.length - 1, nextPage));
+      setAnimate(withAnimation);
+      setDragX(0);
+      setPage(clamped);
+      const slide = slides[clamped];
       if (slide) setActiveIndex(slide.realIndex);
+    },
+    [slides],
+  );
 
-      window.clearTimeout(timeout);
-      timeout = window.setTimeout(settleLoop, 80);
-    };
-
-    scroller.addEventListener("scroll", onScroll, { passive: true });
-    scroller.addEventListener("scrollend", settleLoop);
-
-    return () => {
-      window.clearTimeout(timeout);
-      scroller.removeEventListener("scroll", onScroll);
-      scroller.removeEventListener("scrollend", settleLoop);
-    };
-  }, [looping, settleLoop, slides]);
-
-  // Native horizontal scroll is stolen by the mobile #site-main vertical
-  // snap shell. Drive the carousel with pointer capture instead.
+  // After an animated move onto a clone, jump to the matching real slide.
   useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller || !looping) return;
+    if (!looping || draggingRef.current) return;
+    const slide = slides[page];
+    if (!slide?.isClone) return;
+
+    const realPage =
+      page === 0 ? slides.length - 2 : page === slides.length - 1 ? 1 : page;
+
+    const timeout = window.setTimeout(() => {
+      setAnimate(false);
+      setPage(realPage);
+      const real = slides[realPage];
+      if (real) setActiveIndex(real.realIndex);
+    }, 280);
+
+    return () => window.clearTimeout(timeout);
+  }, [looping, page, slides]);
+
+  useEffect(() => {
+    const surface = surfaceRef.current;
+    if (!surface || !looping) return;
 
     let pointerId: number | null = null;
     let startX = 0;
     let startY = 0;
-    let startScroll = 0;
     let startMainScroll = 0;
+    let startPage = 0;
+    let width = 0;
+    let lastX = 0;
+    let lastT = 0;
+    let velocityX = 0;
     let axis: "undecided" | "x" | "y" = "undecided";
 
     const onDown = (event: PointerEvent) => {
       if (event.pointerType === "mouse" && event.button !== 0) return;
+      if ((event.target as HTMLElement | null)?.closest?.("button")) return;
+
+      width = surface.clientWidth;
+      if (!width) return;
+
       pointerId = event.pointerId;
       startX = event.clientX;
       startY = event.clientY;
-      startScroll = scroller.scrollLeft;
+      lastX = event.clientX;
+      lastT = performance.now();
+      velocityX = 0;
+      startPage = pageRef.current;
       startMainScroll = getSnapScrollRoot()?.scrollTop ?? 0;
       axis = "undecided";
-      scroller.setPointerCapture(event.pointerId);
+      draggingRef.current = true;
+      setAnimate(false);
+      surface.setPointerCapture(event.pointerId);
     };
 
     const onMove = (event: PointerEvent) => {
@@ -203,22 +167,22 @@ export function TrustSection() {
 
       const dx = event.clientX - startX;
       const dy = event.clientY - startY;
+      const now = performance.now();
+      const dt = now - lastT;
+      if (dt > 0) {
+        velocityX = (event.clientX - lastX) / dt;
+        lastX = event.clientX;
+        lastT = now;
+      }
 
       if (axis === "undecided") {
         if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
         axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
-        if (axis === "x") settlingRef.current = true;
       }
 
       if (axis === "x") {
         event.preventDefault();
-        scroller.scrollLeft = startScroll - dx;
-        const width = scroller.clientWidth;
-        if (width) {
-          const index = Math.round(scroller.scrollLeft / width);
-          const slide = slides[index];
-          if (slide) setActiveIndex(slide.realIndex);
-        }
+        setDragX(dx);
         return;
       }
 
@@ -233,49 +197,50 @@ export function TrustSection() {
     const onUp = (event: PointerEvent) => {
       if (pointerId !== event.pointerId) return;
       pointerId = null;
+      draggingRef.current = false;
 
       if (axis === "x") {
-        const width = scroller.clientWidth;
-        if (width) {
-          const index = Math.round(scroller.scrollLeft / width);
-          scroller.scrollTo({ left: width * index, behavior: "smooth" });
-          window.setTimeout(() => {
-            settlingRef.current = false;
-            settleLoop();
-          }, 280);
-        } else {
-          settlingRef.current = false;
+        const dx = event.clientX - startX;
+        const distanceThreshold = width * 0.2;
+        const velocityThreshold = 0.4;
+        let target = startPage;
+
+        if (dx <= -distanceThreshold || velocityX <= -velocityThreshold) {
+          target = startPage + 1;
+        } else if (dx >= distanceThreshold || velocityX >= velocityThreshold) {
+          target = startPage - 1;
         }
+
+        goToPage(target, true);
       } else {
-        settlingRef.current = false;
+        setDragX(0);
       }
 
       axis = "undecided";
+      velocityX = 0;
     };
 
-    scroller.addEventListener("pointerdown", onDown);
-    scroller.addEventListener("pointermove", onMove, { passive: false });
-    scroller.addEventListener("pointerup", onUp);
-    scroller.addEventListener("pointercancel", onUp);
+    surface.addEventListener("pointerdown", onDown);
+    surface.addEventListener("pointermove", onMove, { passive: false });
+    surface.addEventListener("pointerup", onUp);
+    surface.addEventListener("pointercancel", onUp);
 
     return () => {
-      scroller.removeEventListener("pointerdown", onDown);
-      scroller.removeEventListener("pointermove", onMove);
-      scroller.removeEventListener("pointerup", onUp);
-      scroller.removeEventListener("pointercancel", onUp);
+      surface.removeEventListener("pointerdown", onDown);
+      surface.removeEventListener("pointermove", onMove);
+      surface.removeEventListener("pointerup", onUp);
+      surface.removeEventListener("pointercancel", onUp);
     };
-  }, [looping, settleLoop, slides]);
+  }, [goToPage, looping]);
 
   function goTo(realIndex: number) {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    const width = scroller.clientWidth;
-    if (!width) return;
-    scroller.scrollTo({
-      left: width * (looping ? realIndex + 1 : realIndex),
-      behavior: "smooth",
-    });
+    goToPage(looping ? realIndex + 1 : realIndex, true);
   }
+
+  const trackStyle = {
+    transform: `translate3d(calc(${-page * 100}% + ${dragX}px), 0, 0)`,
+    transition: animate && dragX === 0 ? "transform 280ms ease-out" : "none",
+  } as const;
 
   return (
     <div
@@ -284,12 +249,16 @@ export function TrustSection() {
     >
       <LabelBar label="Why buy from iWear" />
 
-      {/* Mobile: infinite swipe carousel */}
-      <div className="relative min-h-0 flex-1 md:hidden">
+      {/* Mobile: page-snap carousel — whole panel is the drag surface */}
+      <div
+        ref={surfaceRef}
+        className="relative min-h-0 flex-1 cursor-grab overflow-hidden bg-cream active:cursor-grabbing md:hidden"
+        style={{ touchAction: "none" }}
+      >
         <div
-          ref={scrollerRef}
-          className="flex h-full w-full cursor-grab overflow-x-auto active:cursor-grabbing [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ touchAction: "none" }}
+          ref={trackRef}
+          className="absolute inset-0 flex will-change-transform"
+          style={trackStyle}
         >
           {slides.map((slide) => (
             <TrustSlide
