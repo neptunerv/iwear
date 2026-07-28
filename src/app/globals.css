@@ -238,9 +238,36 @@ body:has(.account-page) .site-footer {
   animation: nav-progress 1.6s ease-out forwards;
 }
 
+@keyframes page-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.page-spinner {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgb(13 11 9 / 0.18);
+  border-top-color: var(--ink);
+  border-radius: 9999px;
+  animation: page-spinner 0.7s linear infinite;
+}
+
+.page-spinner-on-dark {
+  border-color: rgb(250 247 242 / 0.25);
+  border-top-color: var(--cream);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nav-progress-active {
     animation: none;
     transform: scaleX(0.7);
+  }
+
+  .page-spinner {
+    animation: none;
+    border-top-color: inherit;
+    opacity: 0.7;
   }
 }

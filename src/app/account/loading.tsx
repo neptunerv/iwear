@@ -1,7 +1,5 @@
 import { PageLoading } from "@/components/PageLoading";
 
-export default function AccountLoading() {
-  return (
-    <PageLoading title="Account" message="Loading your account…" />
-  );
+export default function Loading() {
+  return <PageLoading />;
 }

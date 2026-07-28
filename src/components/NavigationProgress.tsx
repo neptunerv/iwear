@@ -66,7 +66,7 @@ export function NavigationProgress() {
       if (!isInternalNavClick(event)) return;
       if (clearTimer.current) clearTimeout(clearTimer.current);
       setActive(true);
-      // Safety: don't leave the bar stuck if navigation is cancelled.
+      // Safety: don't leave the overlay stuck if navigation is cancelled.
       clearTimer.current = setTimeout(() => setActive(false), 8000);
     }
 
@@ -80,13 +80,27 @@ export function NavigationProgress() {
   return (
     <div
       aria-hidden={!active}
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-[60] h-0.5 overflow-hidden"
+      aria-busy={active}
+      className="pointer-events-none fixed inset-0 z-[100]"
     >
+      {/* Left-to-right bar — fixed to viewport so it shows on ghost/brand headers */}
+      <div className="absolute inset-x-0 top-0 h-0.5 overflow-hidden">
+        <div
+          className={`h-full origin-left bg-brand transition-[transform,opacity] duration-300 ease-out ${
+            active ? "nav-progress-active opacity-100" : "scale-x-0 opacity-0"
+          }`}
+        />
+      </div>
+
       <div
-        className={`h-full origin-left bg-ink transition-[transform,opacity] duration-300 ease-out ${
-          active ? "nav-progress-active opacity-100" : "scale-x-0 opacity-0"
+        className={`absolute inset-0 flex items-center justify-center bg-ink/40 transition-opacity duration-200 ${
+          active ? "opacity-100" : "opacity-0"
         }`}
-      />
+      >
+        <span
+          className={`page-spinner page-spinner-on-dark ${active ? "" : "invisible"}`}
+        />
+      </div>
     </div>
   );
 }
