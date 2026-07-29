@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { ProductCatalogGrid } from "@/components/ProductCatalogGrid";
 import { getBrandPage, featuredBrands } from "@/lib/brands";
 import {
+  firstSearchParam,
   parseFiltersFromSearchParams,
   type CatalogSearchParams,
 } from "@/lib/catalog-filters";
@@ -35,8 +36,9 @@ export async function generateMetadata({
     return { title: "Shop not found" };
   }
 
-  if (query.family) {
-    const modelName = formatModelLabel(query.family);
+  const family = firstSearchParam(query.family);
+  if (family) {
+    const modelName = formatModelLabel(family);
     return {
       title: `${modelName} · ${brand.name}`,
       description: `Browse all ${modelName} colors from ${brand.name} at iWear Sunglasses Bali.`,
@@ -64,11 +66,10 @@ export default async function BrandShopPage({
     getProductsByBrand(brand.name),
     getBestSellerHandles(100),
   ]);
+  const family = firstSearchParam(query.family);
   const initialFilters = parseFiltersFromSearchParams(query);
-  const initialPage = parseCatalogPage(query.page);
-  const title = query.family
-    ? formatModelLabel(query.family)
-    : brand.name;
+  const initialPage = parseCatalogPage(firstSearchParam(query.page));
+  const title = family ? formatModelLabel(family) : brand.name;
 
   return (
     <>
@@ -81,8 +82,8 @@ export default async function BrandShopPage({
           initialFilters={initialFilters}
           initialPage={initialPage}
           emptyMessage={
-            query.family
-              ? `No ${formatModelLabel(query.family)} styles found.`
+            family
+              ? `No ${formatModelLabel(family)} styles found.`
               : `No ${brand.name} products yet — check back soon.`
           }
         />

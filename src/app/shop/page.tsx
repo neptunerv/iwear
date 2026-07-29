@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { ProductCatalogGrid } from "@/components/ProductCatalogGrid";
 import { onlineBrandNames } from "@/lib/brands";
 import {
+  firstSearchParam,
   parseFiltersFromSearchParams,
   type CatalogSearchParams,
 } from "@/lib/catalog-filters";
@@ -29,6 +30,8 @@ export const revalidate = 300;
 
 function resolveBrandFilter(brand?: string): string | undefined {
   if (!brand) return undefined;
+  // Title uses a single brand when the URL has exactly one known vendor.
+  if (brand.includes(",")) return undefined;
   return onlineBrandNames.find(
     (name) => name.toLowerCase() === brand.toLowerCase(),
   );
@@ -36,12 +39,12 @@ function resolveBrandFilter(brand?: string): string | undefined {
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {
   const query = await searchParams;
-  const brand = resolveBrandFilter(query.brand);
+  const brand = resolveBrandFilter(firstSearchParam(query.brand));
   const initialFilters = parseFiltersFromSearchParams({
     ...query,
     ...(brand ? { brand } : {}),
   });
-  const initialPage = parseCatalogPage(query.page);
+  const initialPage = parseCatalogPage(firstSearchParam(query.page));
 
   const [allProducts, bestSellerHandles] = await Promise.all([
     getShopProducts(),

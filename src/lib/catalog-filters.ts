@@ -152,6 +152,14 @@ function csvParam(value?: string | string[]): string[] {
     .filter(Boolean);
 }
 
+/** First scalar from a Next searchParam (string | string[] | undefined). */
+export function firstSearchParam(
+  value?: string | string[],
+): string | undefined {
+  if (Array.isArray(value)) return value[0];
+  return value;
+}
+
 function isSortOption(value: string | undefined): value is SortOption {
   return Boolean(value && sortOptions.some((option) => option.id === value));
 }
