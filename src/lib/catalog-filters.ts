@@ -30,7 +30,7 @@ export type CatalogFilters = {
   lensTypes: string[];
   /** Frame category from tags: "sunglasses" | "optical". */
   frameTypes: string[];
-  /** specs.shape metafield values (Ray-Ban). */
+  /** specs.shape metafield values (any brand that has shape data). */
   frameShapes: string[];
   /** Oakley model-family tags, matched loosely (see matchesModelFamilies). */
   modelFamilies: string[];
@@ -85,8 +85,8 @@ export const frameTypeOptions = [
 ];
 
 // Matches the values actually present in the specs.shape metafield across
-// the live catalog. Wayfarer/Aviator/Clubmaster are Ray-Ban *model* names,
-// not shape data — there's no shape tag/metafield for them.
+// the live catalog (Ray-Ban, Oakley, and others). Wayfarer/Aviator/Clubmaster
+// are Ray-Ban *model* names, not shape data.
 export const frameShapeOptions = [
   { id: "round", label: "Round" },
   { id: "square", label: "Square" },

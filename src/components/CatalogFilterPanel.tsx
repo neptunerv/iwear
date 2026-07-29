@@ -94,19 +94,20 @@ function toggleBrand(
   brand: string,
 ): CatalogFilters {
   const nextBrands = toggle(filters.brands, brand);
-  const hasRayBan = nextBrands.some((b) => b.toLowerCase() === "ray-ban");
   const hasOakley = nextBrands.some((b) => b.toLowerCase() === "oakley");
-  const hasFeaturedBrand = hasRayBan || hasOakley;
 
   return {
     ...filters,
     brands: nextBrands,
-    // Drop brand-specific extras once their brand is no longer selected.
-    frameShapes: hasRayBan ? filters.frameShapes : [],
+    // Shape / gender / frame type are cross-brand — keep them when brand pills change.
+    // Model is Oakley-only; lens extras stay Ray-Ban+Oakley for now.
     modelFamilies: hasOakley ? filters.modelFamilies : [],
-    genders: hasFeaturedBrand ? filters.genders : [],
-    frameTypes: hasFeaturedBrand ? filters.frameTypes : [],
-    lensTypes: hasFeaturedBrand ? filters.lensTypes : [],
+    lensTypes: nextBrands.some((b) => {
+      const name = b.toLowerCase();
+      return name === "ray-ban" || name === "oakley";
+    })
+      ? filters.lensTypes
+      : [],
   };
 }
 
@@ -126,11 +127,11 @@ export function CatalogFilterPanel({
   const brands = fixedBrand ? [] : [...onlineBrandNames];
   const activeCount = countActiveFilters(filters, fixedBrand);
 
-  // Extra filters match Shop Ray-Ban / Shop Oakley — also when those brands
-  // are picked in Shop All (via filters.brands), not only on brand pages.
-  const isRayBan = brandSelected("Ray-Ban", filters, fixedBrand);
+  // Model stays Oakley-only. Lens type still gated to Ray-Ban/Oakley for now.
+  // Shape / gender / frame type are always available.
   const isOakley = brandSelected("Oakley", filters, fixedBrand);
-  const showBrandExtras = isRayBan || isOakley;
+  const showLensExtras =
+    brandSelected("Ray-Ban", filters, fixedBrand) || isOakley;
 
   useEffect(() => {
     if (!open) return;
@@ -204,45 +205,41 @@ export function CatalogFilterPanel({
             </FilterSection>
           )}
 
-          {showBrandExtras && (
-            <FilterSection title="Gender">
-              <div className="flex flex-wrap gap-2">
-                {genderOptions.map((option) => (
-                  <TogglePill
-                    key={option.id}
-                    label={option.label}
-                    active={filters.genders.includes(option.id)}
-                    onClick={() =>
-                      onChange({
-                        ...filters,
-                        genders: toggle(filters.genders, option.id),
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            </FilterSection>
-          )}
+          <FilterSection title="Frame shape">
+            <div className="flex flex-wrap gap-2">
+              {frameShapeOptions.map((option) => (
+                <TogglePill
+                  key={option.id}
+                  label={option.label}
+                  active={filters.frameShapes.includes(option.id)}
+                  onClick={() =>
+                    onChange({
+                      ...filters,
+                      frameShapes: toggle(filters.frameShapes, option.id),
+                    })
+                  }
+                />
+              ))}
+            </div>
+          </FilterSection>
 
-          {isRayBan && (
-            <FilterSection title="Frame shape">
-              <div className="flex flex-wrap gap-2">
-                {frameShapeOptions.map((option) => (
-                  <TogglePill
-                    key={option.id}
-                    label={option.label}
-                    active={filters.frameShapes.includes(option.id)}
-                    onClick={() =>
-                      onChange({
-                        ...filters,
-                        frameShapes: toggle(filters.frameShapes, option.id),
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            </FilterSection>
-          )}
+          <FilterSection title="Gender">
+            <div className="flex flex-wrap gap-2">
+              {genderOptions.map((option) => (
+                <TogglePill
+                  key={option.id}
+                  label={option.label}
+                  active={filters.genders.includes(option.id)}
+                  onClick={() =>
+                    onChange({
+                      ...filters,
+                      genders: toggle(filters.genders, option.id),
+                    })
+                  }
+                />
+              ))}
+            </div>
+          </FilterSection>
 
           {isOakley && (
             <FilterSection title="Model">
@@ -264,27 +261,25 @@ export function CatalogFilterPanel({
             </FilterSection>
           )}
 
-          {showBrandExtras && (
-            <FilterSection title="Frame type">
-              <div className="flex flex-wrap gap-2">
-                {frameTypeOptions.map((option) => (
-                  <TogglePill
-                    key={option.id}
-                    label={option.label}
-                    active={filters.frameTypes.includes(option.id)}
-                    onClick={() =>
-                      onChange({
-                        ...filters,
-                        frameTypes: toggle(filters.frameTypes, option.id),
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            </FilterSection>
-          )}
+          <FilterSection title="Frame type">
+            <div className="flex flex-wrap gap-2">
+              {frameTypeOptions.map((option) => (
+                <TogglePill
+                  key={option.id}
+                  label={option.label}
+                  active={filters.frameTypes.includes(option.id)}
+                  onClick={() =>
+                    onChange({
+                      ...filters,
+                      frameTypes: toggle(filters.frameTypes, option.id),
+                    })
+                  }
+                />
+              ))}
+            </div>
+          </FilterSection>
 
-          {showBrandExtras && (
+          {showLensExtras && (
             <FilterSection title="Lens type">
               <div className="flex flex-wrap gap-2">
                 {lensTypeOptions.map((option) => (

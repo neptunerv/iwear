@@ -17,7 +17,7 @@ type ProductImage = {
 type ProductGridTileProps = {
   product: Product;
   fill?: boolean;
-  /** Show title + price footer. Off for image-led homepage strips. */
+  /** Show title + price footer. */
   showMeta?: boolean;
 };
 

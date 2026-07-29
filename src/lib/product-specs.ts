@@ -102,6 +102,8 @@ const LENS_TOKEN_ALIASES: Record<string, string> = {
   light: "Light",
   dark: "Dark",
   green: "Green",
+  grn: "Green",
+  gn: "Green",
   brown: "Brown",
   brw: "Brown",
   brn: "Brown",
@@ -111,6 +113,7 @@ const LENS_TOKEN_ALIASES: Record<string, string> = {
   clear: "Clear",
   polarized: "Polarized",
   pol: "Polarized",
+  polgrn: "Polarized Green",
   int: "Internal",
   gld: "Gold",
   gold: "Gold",
@@ -206,13 +209,12 @@ function formatMetafieldValue(
 }
 
 /**
- * Lens color metafield values sometimes arrive as clean text ("Prizm Black")
- * and sometimes as glued factory codes ("PrizmBlack") — handle both.
+ * Lens color metafield values sometimes arrive as clean text ("Prizm Black"),
+ * glued factory codes ("PrizmBlack"), or abbreviated catalog copy
+ * ("Polarized Grn,") — always run through the lens formatter.
  */
 function formatLensColorValue(raw: string): string {
-  const spaced = formatSpecLabel(raw);
-  if (spaced.includes(" ") || spaced.length <= 6) return spaced;
-  return formatLensLabel(raw) ?? spaced;
+  return formatLensLabel(raw) ?? formatSpecLabel(raw);
 }
 
 const SPEC_FIELD_FORMATTERS: Partial<Record<string, (raw: string) => string>> =
@@ -250,13 +252,14 @@ export function formatLensLabel(raw: string): string | null {
     .replace(/\+?\d*NosePads?/gi, "")
     .replace(/\+?\d*NoseP\b/gi, "")
     .replace(/\.\d{2,3}$/u, "")
-    .replace(/[_./]+/g, " ")
+    // Catalog copy often trails commas / punctuation: "Polarized Grn,"
+    .replace(/[_./,;]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
   if (!value) return null;
 
-  // Prefer whole-string aliases (PrizmBlack, GryGradient).
+  // Prefer whole-string aliases (PrizmBlack, GryGradient, PolGrn).
   const compact = value.toLowerCase().replace(/[\s-]+/g, "");
   if (LENS_TOKEN_ALIASES[compact]) return LENS_TOKEN_ALIASES[compact];
 
@@ -270,9 +273,10 @@ export function formatLensLabel(raw: string): string | null {
 
   const words = spaced.split(/\s+/).flatMap((part) => {
     const key = part.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (!key) return [];
     if (LENS_TOKEN_ALIASES[key]) return [LENS_TOKEN_ALIASES[key]];
     if (/^\d+$/.test(part)) return [];
-    return [titleCaseWord(part)];
+    return [titleCaseWord(key)];
   });
 
   // Merge "Prizm" + next word when still split oddly.

@@ -28,7 +28,9 @@ function StorePanel({
           {store.area}
         </p>
         <p className="mt-8 text-sm font-bold uppercase tracking-[0.18em]">
-          {[store.mall, store.level].join(" · ")}
+          {store.mall}
+          <br />
+          {store.level}
         </p>
         <p className="font-display mt-4 text-xl italic leading-snug text-ink/75 sm:mt-5 sm:text-2xl">
           {store.hours}

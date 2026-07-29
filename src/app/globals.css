@@ -282,7 +282,8 @@ html.snap-scroll {
 body:has(.home-footer) .site-footer,
 body:has(.shop-footer) .site-footer,
 body:has(.account-page) .site-footer,
-body:has(.legal-page) .site-footer {
+body:has(.legal-page) .site-footer,
+body:has(.about-page) .site-footer {
   display: none;
 }
 

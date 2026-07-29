@@ -95,7 +95,7 @@ function StripGrid({
           }
         >
           {product ? (
-            <ProductGridTile product={product} fill showMeta={false} />
+            <ProductGridTile product={product} fill />
           ) : (
             <ProductGridPlaceholder fill />
           )}

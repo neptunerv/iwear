@@ -8,7 +8,6 @@ import {
   findVariantByOptions,
   getProductOptions,
 } from "@/lib/product-options";
-import type { ProductSpecRow } from "@/lib/product-specs";
 import type { ProductVariant } from "@/lib/shopify";
 
 type ProductFormProps = {
@@ -19,7 +18,6 @@ type ProductFormProps = {
   collection: string | null;
   color: string | null;
   lens: string | null;
-  specRows: ProductSpecRow[];
   variants: ProductVariant[];
   availableForSale: boolean;
   selected: Record<string, string>;
@@ -34,7 +32,6 @@ export function ProductForm({
   collection,
   color,
   lens,
-  specRows,
   variants,
   availableForSale,
   selected,
@@ -84,16 +81,16 @@ export function ProductForm({
   };
 
   return (
-    <div className="flex flex-col gap-8 px-5 py-8 sm:px-8 sm:py-10 lg:px-10">
+    <div className="flex h-full flex-col justify-center gap-5 px-5 py-6 sm:gap-6 sm:px-8 sm:py-8 lg:px-10">
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
           {brand}
         </p>
-        <h1 className="mt-2 font-display text-3xl leading-tight text-ink sm:text-4xl">
+        <h1 className="mt-1.5 font-display text-3xl leading-tight text-ink sm:text-4xl">
           {title}
         </h1>
         {collection ? (
-          <p className="mt-2 text-sm font-semibold leading-relaxed text-ink-muted">
+          <p className="mt-1.5 text-sm font-semibold leading-relaxed text-ink-muted">
             {collection}
           </p>
         ) : null}
@@ -129,7 +126,7 @@ export function ProductForm({
 
       {options.map((option) => (
         <div key={option.name}>
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
+          <p className="mb-2.5 text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
             {option.name}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -155,7 +152,7 @@ export function ProductForm({
         </div>
       ))}
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         {lowStock ? (
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
             Only {quantityAvailable} left in stock
@@ -183,27 +180,7 @@ export function ProductForm({
         )}
       </div>
 
-      {specRows.length > 0 ? (
-        <div className="border-t-2 border-ink/15 pt-6">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
-            Fit &amp; specifications
-          </p>
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
-            {specRows.map((row) => (
-              <div key={row.key}>
-                <dt className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-muted">
-                  {row.label}
-                </dt>
-                <dd className="mt-1 text-sm font-semibold text-ink">
-                  {row.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      ) : null}
-
-      <ul className="space-y-3 border-t-2 border-ink/15 pt-6 text-sm font-semibold text-ink-muted">
+      <ul className="space-y-2 border-t-2 border-ink/15 pt-4 text-sm font-semibold text-ink-muted">
         <li>Full manufacturer warranty on every frame</li>
         <li>Free delivery across Bali · international shipping at checkout</li>
       </ul>
