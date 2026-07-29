@@ -143,20 +143,117 @@ export function buildShopFilterHref(
   return query ? `${baseHref}?${query}` : baseHref;
 }
 
-export function parseFiltersFromSearchParams(params: {
-  brand?: string;
-  gender?: string;
-  frame?: string;
-  model?: string;
+function csvParam(value?: string | string[]): string[] {
+  if (!value) return [];
+  const raw = Array.isArray(value) ? value.join(",") : value;
+  return raw
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function isSortOption(value: string | undefined): value is SortOption {
+  return Boolean(value && sortOptions.some((option) => option.id === value));
+}
+
+/** Catalog query keys — keep in sync with serializeCatalogSearchParams. */
+export type CatalogSearchParams = {
+  brand?: string | string[];
+  gender?: string | string[];
+  frame?: string | string[];
+  model?: string | string[];
   family?: string;
-}): Partial<CatalogFilters> {
+  price?: string | string[];
+  lens?: string | string[];
+  type?: string | string[];
+  sort?: string;
+  sale?: string;
+  stock?: string;
+  page?: string;
+};
+
+export function parseFiltersFromSearchParams(
+  params: CatalogSearchParams,
+): Partial<CatalogFilters> {
+  const sort = typeof params.sort === "string" ? params.sort : undefined;
+  const family = typeof params.family === "string" ? params.family : undefined;
+  const stock = typeof params.stock === "string" ? params.stock : undefined;
+  const sale = typeof params.sale === "string" ? params.sale : undefined;
+
   return {
-    ...(params.brand ? { brands: [params.brand] } : {}),
-    ...(params.gender ? { genders: [params.gender] } : {}),
-    ...(params.frame ? { frameShapes: [params.frame] } : {}),
-    ...(params.model ? { modelFamilies: [params.model] } : {}),
-    ...(params.family ? { family: params.family } : {}),
+    ...(csvParam(params.brand).length ? { brands: csvParam(params.brand) } : {}),
+    ...(csvParam(params.gender).length
+      ? { genders: csvParam(params.gender) }
+      : {}),
+    ...(csvParam(params.frame).length
+      ? { frameShapes: csvParam(params.frame) }
+      : {}),
+    ...(csvParam(params.model).length
+      ? { modelFamilies: csvParam(params.model) }
+      : {}),
+    ...(family ? { family } : {}),
+    ...(csvParam(params.price).length
+      ? { priceRanges: csvParam(params.price) }
+      : {}),
+    ...(csvParam(params.lens).length
+      ? { lensTypes: csvParam(params.lens) }
+      : {}),
+    ...(csvParam(params.type).length
+      ? { frameTypes: csvParam(params.type) }
+      : {}),
+    ...(isSortOption(sort) ? { sort } : {}),
+    // Default: hide sold out. `stock=all` shows everything.
+    inStockOnly: stock !== "all",
+    onSaleOnly: sale === "1",
   };
+}
+
+/** Write filters + page into the shop URL so back/forward keeps them. */
+export function serializeCatalogSearchParams(
+  filters: CatalogFilters,
+  page: number,
+  options?: { fixedBrand?: string },
+): string {
+  const params = new URLSearchParams();
+
+  if (!options?.fixedBrand && filters.brands.length > 0) {
+    params.set("brand", filters.brands.join(","));
+  }
+  if (filters.genders.length > 0) {
+    params.set("gender", filters.genders.join(","));
+  }
+  if (filters.frameShapes.length > 0) {
+    params.set("frame", filters.frameShapes.join(","));
+  }
+  if (filters.modelFamilies.length > 0) {
+    params.set("model", filters.modelFamilies.join(","));
+  }
+  if (filters.family) {
+    params.set("family", filters.family);
+  }
+  if (filters.priceRanges.length > 0) {
+    params.set("price", filters.priceRanges.join(","));
+  }
+  if (filters.lensTypes.length > 0) {
+    params.set("lens", filters.lensTypes.join(","));
+  }
+  if (filters.frameTypes.length > 0) {
+    params.set("type", filters.frameTypes.join(","));
+  }
+  if (filters.sort !== "newest") {
+    params.set("sort", filters.sort);
+  }
+  if (filters.onSaleOnly) {
+    params.set("sale", "1");
+  }
+  if (!filters.inStockOnly) {
+    params.set("stock", "all");
+  }
+  if (page > 1) {
+    params.set("page", String(page));
+  }
+
+  return params.toString();
 }
 
 export function createDefaultFilters(
@@ -165,7 +262,8 @@ export function createDefaultFilters(
   return {
     brands: [],
     priceRanges: [],
-    inStockOnly: false,
+    // Hide sold-out by default; uncheck "In stock only" to show them.
+    inStockOnly: true,
     onSaleOnly: false,
     sort: "newest",
     genders: [],
@@ -475,7 +573,8 @@ export function countActiveFilters(
 
   if (!fixedBrand && filters.brands.length > 0) count += 1;
   if (filters.priceRanges.length > 0) count += 1;
-  if (filters.inStockOnly) count += 1;
+  // Default is in-stock only — only count when shopper opts into sold-out too.
+  if (!filters.inStockOnly) count += 1;
   if (filters.onSaleOnly) count += 1;
   if (filters.sort !== "newest") count += 1;
   if (filters.genders.length > 0) count += 1;

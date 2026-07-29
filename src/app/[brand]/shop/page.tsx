@@ -1,22 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Footer } from "@/components/Footer";
 import { ProductCatalogGrid } from "@/components/ProductCatalogGrid";
 import { getBrandPage, featuredBrands } from "@/lib/brands";
-import { parseFiltersFromSearchParams } from "@/lib/catalog-filters";
+import {
+  parseFiltersFromSearchParams,
+  type CatalogSearchParams,
+} from "@/lib/catalog-filters";
 import { parseCatalogPage } from "@/lib/catalog-pagination";
 import { formatModelLabel } from "@/lib/product-model-family";
 import { getBestSellerHandles, getProductsByBrand } from "@/lib/shopify";
 
 type BrandShopPageProps = {
   params: Promise<{ brand: string }>;
-  searchParams: Promise<{
-    gender?: string;
-    frame?: string;
-    model?: string;
-    family?: string;
-    page?: string;
-  }>;
+  searchParams: Promise<CatalogSearchParams>;
 };
 
 export function generateStaticParams() {
@@ -74,19 +72,21 @@ export default async function BrandShopPage({
 
   return (
     <>
-      <ProductCatalogGrid
-        title={title}
-        products={products}
-        bestSellerHandles={bestSellerHandles}
-        fixedBrand={brand.name}
-        initialFilters={initialFilters}
-        initialPage={initialPage}
-        emptyMessage={
-          query.family
-            ? `No ${formatModelLabel(query.family)} styles found.`
-            : `No ${brand.name} products yet — check back soon.`
-        }
-      />
+      <Suspense fallback={null}>
+        <ProductCatalogGrid
+          title={title}
+          products={products}
+          bestSellerHandles={bestSellerHandles}
+          fixedBrand={brand.name}
+          initialFilters={initialFilters}
+          initialPage={initialPage}
+          emptyMessage={
+            query.family
+              ? `No ${formatModelLabel(query.family)} styles found.`
+              : `No ${brand.name} products yet — check back soon.`
+          }
+        />
+      </Suspense>
 
       <Footer viewport className="shop-footer" />
     </>

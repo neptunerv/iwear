@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CatalogFilterPanel } from "@/components/CatalogFilterPanel";
 import { CatalogPagination } from "@/components/CatalogPagination";
@@ -9,13 +9,17 @@ import {
   applyCatalogFilters,
   countActiveFilters,
   createDefaultFilters,
+  parseFiltersFromSearchParams,
+  serializeCatalogSearchParams,
   type CatalogFilters,
+  type CatalogSearchParams,
 } from "@/lib/catalog-filters";
 import {
   CATALOG_PAGE_SIZE,
   clampCatalogPage,
   getCatalogPageCount,
   paginateItems,
+  parseCatalogPage,
 } from "@/lib/catalog-pagination";
 import { observeSnapHeaderTheme } from "@/lib/header-theme";
 import { productInModelFamily } from "@/lib/product-model-family";
@@ -32,13 +36,27 @@ type ProductCatalogGridProps = {
   initialPage?: number;
 };
 
-function catalogHref(pathname: string, page: number): string {
-  const params = new URLSearchParams(
-    typeof window !== "undefined" ? window.location.search : "",
+function searchParamsRecord(
+  searchParams: URLSearchParams,
+): CatalogSearchParams {
+  return Object.fromEntries(searchParams.entries()) as CatalogSearchParams;
+}
+
+function filtersFromSearchParams(
+  searchParams: URLSearchParams,
+): CatalogFilters {
+  return createDefaultFilters(
+    parseFiltersFromSearchParams(searchParamsRecord(searchParams)),
   );
-  if (page <= 1) params.delete("page");
-  else params.set("page", String(page));
-  const query = params.toString();
+}
+
+function catalogHref(
+  pathname: string,
+  filters: CatalogFilters,
+  page: number,
+  fixedBrand?: string,
+): string {
+  const query = serializeCatalogSearchParams(filters, page, { fixedBrand });
   return query ? `${pathname}?${query}` : pathname;
 }
 
@@ -74,20 +92,28 @@ export function ProductCatalogGrid({
 }: ProductCatalogGridProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const routerRef = useRef(router);
-  const pathnameRef = useRef(pathname);
-  routerRef.current = router;
-  pathnameRef.current = pathname;
+  const searchParams = useSearchParams();
+  const searchKey = searchParams.toString();
+  const writingUrl = useRef(false);
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [page, setPage] = useState(initialPage);
   const [filters, setFilters] = useState(() =>
     createDefaultFilters(initialFilters),
   );
-  const skipFilterPageReset = useRef(true);
 
   // Cream shop catalog — black nav, white type (same as about / account).
   useEffect(() => observeSnapHeaderTheme({ forceTheme: "ink" }), []);
+
+  // Back/forward: rehydrate filters from the URL (source of truth).
+  useEffect(() => {
+    if (writingUrl.current) {
+      writingUrl.current = false;
+      return;
+    }
+    setFilters(filtersFromSearchParams(searchParams));
+    setPage(parseCatalogPage(searchParams.get("page") ?? undefined));
+  }, [searchKey, searchParams]);
 
   const filteredProducts = useMemo(
     () =>
@@ -113,32 +139,30 @@ export function ProductCatalogGrid({
   );
 
   useEffect(() => {
-    setPage(initialPage);
-  }, [initialPage]);
-
-  useEffect(() => {
-    if (skipFilterPageReset.current) {
-      skipFilterPageReset.current = false;
-      return;
-    }
-    setPage(1);
-    routerRef.current.replace(catalogHref(pathnameRef.current, 1), {
-      scroll: false,
-    });
-  }, [filters, fixedBrand]);
-
-  useEffect(() => {
     if (page === safePage) return;
     setPage(safePage);
-    routerRef.current.replace(catalogHref(pathnameRef.current, safePage), {
+    writingUrl.current = true;
+    router.replace(catalogHref(pathname, filters, safePage, fixedBrand), {
       scroll: false,
     });
-  }, [page, safePage]);
+  }, [page, safePage, filters, fixedBrand, pathname, router]);
+
+  function commitFilters(next: CatalogFilters) {
+    setFilters(next);
+    setPage(1);
+    writingUrl.current = true;
+    router.replace(catalogHref(pathname, next, 1, fixedBrand), {
+      scroll: false,
+    });
+  }
 
   function handlePageChange(nextPage: number) {
     const next = clampCatalogPage(nextPage, pageCount);
     setPage(next);
-    router.push(catalogHref(pathname, next), { scroll: false });
+    writingUrl.current = true;
+    router.push(catalogHref(pathname, filters, next, fixedBrand), {
+      scroll: false,
+    });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -182,7 +206,7 @@ export function ProductCatalogGrid({
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <button
                 type="button"
-                onClick={() => setFilters(createDefaultFilters())}
+                onClick={() => commitFilters(createDefaultFilters())}
                 className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
               >
                 Clear filters
@@ -234,7 +258,7 @@ export function ProductCatalogGrid({
         open={filterOpen}
         onClose={() => setFilterOpen(false)}
         filters={filters}
-        onChange={setFilters}
+        onChange={commitFilters}
         products={products}
         fixedBrand={fixedBrand}
         hideSaleFilter={hideSaleFilter}

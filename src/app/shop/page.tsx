@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Footer } from "@/components/Footer";
 import { ProductCatalogGrid } from "@/components/ProductCatalogGrid";
 import { onlineBrandNames } from "@/lib/brands";
-import { parseFiltersFromSearchParams } from "@/lib/catalog-filters";
+import {
+  parseFiltersFromSearchParams,
+  type CatalogSearchParams,
+} from "@/lib/catalog-filters";
 import { parseCatalogPage } from "@/lib/catalog-pagination";
 import { filterOnlineBrandProducts } from "@/lib/product-utils";
 import { getBestSellerHandles, getShopProducts } from "@/lib/shopify";
 
 type ShopPageProps = {
-  searchParams: Promise<{
-    brand?: string;
-    gender?: string;
-    frame?: string;
-    model?: string;
-    family?: string;
-    page?: string;
-  }>;
+  searchParams: Promise<CatalogSearchParams>;
 };
 
 export const metadata: Metadata = {
@@ -54,14 +51,16 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
   return (
     <>
-      <ProductCatalogGrid
-        title={brand ?? "Shop all"}
-        products={products}
-        bestSellerHandles={bestSellerHandles}
-        initialFilters={initialFilters}
-        initialPage={initialPage}
-        emptyMessage="Products coming soon — browse the layout or visit us in store."
-      />
+      <Suspense fallback={null}>
+        <ProductCatalogGrid
+          title={brand ?? "Shop all"}
+          products={products}
+          bestSellerHandles={bestSellerHandles}
+          initialFilters={initialFilters}
+          initialPage={initialPage}
+          emptyMessage="Products coming soon — browse the layout or visit us in store."
+        />
+      </Suspense>
 
       <Footer viewport className="shop-footer" />
     </>
