@@ -24,7 +24,10 @@ export function ProductSquare({ product }: ProductSquareProps) {
       href={`/products/${product.handle}`}
       className="group flex flex-col border-2 border-ink bg-cream transition-colors hover:bg-ink"
     >
-      <div className="relative aspect-square overflow-hidden border-b-2 border-ink bg-white">
+      <div
+        className="relative aspect-square overflow-hidden border-b-2 border-ink bg-white"
+        style={{ position: "relative" }}
+      >
         {image ? (
           <>
             <Image

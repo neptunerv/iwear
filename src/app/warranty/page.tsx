@@ -11,10 +11,9 @@ export default function WarrantyPage() {
   return (
     <LegalPage eyebrow="Trust" title="Warranty">
       <p>
-        Every Ray-Ban, Oakley, and other authorized brand frame sold at{" "}
-        {site.name} includes the full manufacturer warranty. As an authorized
-        Luxottica reseller, we sell only authentic product and can help with
-        warranty service in store.
+        Every Ray-Ban, Oakley, and other brand frame sold at {site.name} includes
+        the full manufacturer warranty. We can help with warranty service in
+        store.
       </p>
 
       <h2 className="font-poster text-2xl uppercase text-ink">What&apos;s covered</h2>

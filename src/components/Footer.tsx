@@ -31,12 +31,12 @@ const bodyClass = "text-[10px] font-semibold sm:text-base";
 const mutedClass = `${bodyClass} text-ink/80`;
 
 const footerAbout = [
-  "iWear is an authorized Luxottica retailer based in Bali. Shop authentic Ray-Ban, Oakley, Swarovski, and Scuderia Ferrari online, with more brands in store.",
+  "iWear is a Bali eyewear shop. Browse Ray-Ban, Oakley, Swarovski, and Scuderia Ferrari online, with more brands in store.",
   "Visit Beachwalk Kuta or Icon Mall Sanur to try on frames and get fitted. Free delivery across Bali.",
 ] as const;
 
 const footerAboutMobile =
-  "Authorized Luxottica retailer in Bali. Authentic Ray-Ban, Oakley & more — online and in store.";
+  "Bali eyewear shop. Ray-Ban, Oakley & more — online and in store.";
 
 const exploreLinks: FooterNavItem[] = [
   { href: "/account", label: "Account" },

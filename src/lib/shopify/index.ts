@@ -215,7 +215,8 @@ const getCachedProductsPage = unstable_cache(
       after: after || null,
       pageSize,
     }),
-  ["shopify-products-page-v4"],
+  // Bump key when catalog media changes so stale page caches don't hide new images.
+  ["shopify-products-page-v5"],
   {
     revalidate: SHOPIFY_CACHE_REVALIDATE,
     tags: ["products"],
@@ -396,7 +397,7 @@ async function fetchProductByHandle(handle: string): Promise<Product | null> {
 
 const getCachedProductByHandle = unstable_cache(
   async (handle: string) => fetchProductByHandle(handle),
-  ["shopify-product-by-handle-v2"],
+  ["shopify-product-by-handle-v3"],
   {
     revalidate: SHOPIFY_CACHE_REVALIDATE,
     tags: ["products"],

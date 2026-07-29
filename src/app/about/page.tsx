@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `The story behind ${site.name} — authorized eyewear reseller in Bali.`,
+  description: `The story behind ${site.name} — eyewear in Bali.`,
 };
 
 export default function AboutPage() {
@@ -14,15 +14,14 @@ export default function AboutPage() {
         Our story
       </p>
       <h1 className="mt-3 font-display text-4xl text-ink md:text-5xl">
-        Authorized eyewear in Bali
+        Eyewear in Bali
       </h1>
 
       <div className="mt-10 space-y-6 text-lg font-semibold leading-relaxed text-ink-muted">
         <p>
-          {site.name} is a Bali-based authorized reseller of premium sunglasses.
-          We stock authentic Ray-Ban, Oakley, Swarovski, Scuderia Ferrari, and
-          dozens of other brands — online and in our Beachwalk Kuta and Icon Mall
-          Sanur stores.
+          {site.name} is a Bali-based shop for premium sunglasses. We stock
+          Ray-Ban, Oakley, Swarovski, Scuderia Ferrari, and dozens of other
+          brands — online and in our Beachwalk Kuta and Icon Mall Sanur stores.
         </p>
         <p>
           Island light is sharp and the days run long. Whether you need polarized

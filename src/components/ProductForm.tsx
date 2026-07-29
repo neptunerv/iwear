@@ -204,7 +204,6 @@ export function ProductForm({
       ) : null}
 
       <ul className="space-y-3 border-t-2 border-ink/15 pt-6 text-sm font-semibold text-ink-muted">
-        <li>Authorized Luxottica reseller — authentic Ray-Ban & Oakley</li>
         <li>Full manufacturer warranty on every frame</li>
         <li>Free delivery across Bali · international shipping at checkout</li>
       </ul>

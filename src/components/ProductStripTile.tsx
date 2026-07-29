@@ -34,6 +34,8 @@ export function ProductStripTile({
     <Link
       href={`/products/${product.handle}`}
       className={`group relative block overflow-hidden bg-white ${fill ? "h-full" : "aspect-square"}`}
+      // Inline position so next/image fill check passes before Tailwind applies.
+      style={{ position: "relative" }}
     >
       {image ? (
         <>

@@ -183,6 +183,8 @@ export function ProductGridTile({
         <Link
           href={`/products/${product.handle}`}
           className="absolute inset-0"
+          // Inline position so next/image fill check passes before Tailwind applies.
+          style={{ position: "absolute" }}
           aria-label={displayTitle}
           onClick={(event) => {
             if (didSwipeRef.current) {
@@ -220,6 +222,7 @@ export function ProductGridTile({
       <Link
         href={`/products/${product.handle}`}
         className="relative hidden min-h-0 flex-1 sm:block"
+        style={{ position: "relative" }}
         aria-label={displayTitle}
       >
         {primaryImage ? (

@@ -21,7 +21,7 @@ type ShopPageProps = {
 export const metadata: Metadata = {
   title: "Shop all",
   description:
-    "Shop Ray-Ban, Oakley, Swarovski and Scuderia Ferrari online at iWear Sunglasses Bali. More authorized brands in store.",
+    "Shop Ray-Ban, Oakley, Swarovski and Scuderia Ferrari online at iWear Sunglasses Bali. More brands in store.",
   alternates: {
     canonical: "/shop",
   },

@@ -5,9 +5,9 @@ const whatsappUrl = normalizeWhatsAppUrl(process.env.NEXT_PUBLIC_WHATSAPP_URL);
 export const site = {
   name: "iWear Sunglasses",
   shortName: "iWear",
-  tagline: "Authorized eyewear in Bali",
+  tagline: "Eyewear in Bali",
   description:
-    "Authorized eyewear reseller in Bali. Shop Ray-Ban, Oakley, Swarovski and Scuderia Ferrari online — more brands in store.",
+    "Bali eyewear shop. Shop Ray-Ban, Oakley, Swarovski and Scuderia Ferrari online — more brands in store.",
   location: "Bali, Indonesia",
   /**
    * Set NEXT_PUBLIC_WHATSAPP_URL to a real wa.me link (e.g. https://wa.me/62…).
