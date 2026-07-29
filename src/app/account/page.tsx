@@ -73,7 +73,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Link
                 href="/shop"
-                className="border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+                className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
               >
                 Shop all
               </Link>
@@ -81,7 +81,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                 href={site.messageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+                className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
               >
                 {site.whatsappLabel}
               </a>

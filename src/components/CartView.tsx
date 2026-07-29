@@ -88,7 +88,7 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
     return (
       <div
         className={`flex flex-col items-center text-center ${
-          compact ? "px-4 py-12 sm:px-5 sm:py-16" : "border-2 border-dashed border-ink/20 px-8 py-16"
+          compact ? "px-4 py-12 sm:px-5 sm:py-16" : "border border-dashed border-ink/20 px-8 py-16"
         }`}
       >
         <p className="font-display text-3xl italic leading-none text-ink-muted sm:text-4xl">
@@ -101,14 +101,14 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
           <Link
             href="/shop"
             onClick={onNavigate}
-            className="border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+            className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
           >
             Shop all
           </Link>
           <Link
             href="/stores"
             onClick={onNavigate}
-            className="border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+            className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
           >
             Find a store
           </Link>
@@ -120,8 +120,8 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
   return (
     <div className={`flex h-full flex-col ${compact ? "" : "gap-8"}`}>
       <ul
-        className={`divide-y-2 divide-ink/10 ${
-          compact ? "flex-1 overflow-y-auto px-4 sm:px-5" : "space-y-0 border-2 border-ink/15"
+        className={`divide-y divide-ink/10 ${
+          compact ? "flex-1 overflow-y-auto px-4 sm:px-5" : "space-y-0 border border-ink/15"
         }`}
       >
         {lines.map((line) => {
@@ -174,7 +174,7 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
                 ) : null}
 
                 <div className="mt-3 flex items-center gap-3">
-                  <div className="flex items-center border-2 border-ink">
+                  <div className="flex items-center border border-ink">
                     <button
                       type="button"
                       aria-label="Decrease quantity"
@@ -221,7 +221,7 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
       </ul>
 
       <div
-        className={`shrink-0 border-t-2 border-ink ${
+        className={`shrink-0 border-t border-ink ${
           compact ? "bg-cream px-4 py-4 sm:px-5" : "pt-6"
         }`}
       >
@@ -239,12 +239,12 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
               value={discountInput}
               onChange={(event) => setDiscountInput(event.target.value)}
               placeholder="Enter code"
-              className="min-w-0 flex-1 border-2 border-ink/20 bg-transparent px-3 py-2 text-sm font-semibold text-ink outline-none placeholder:text-ink-muted focus:border-ink"
+              className="min-w-0 flex-1 border border-ink/20 bg-transparent px-3 py-2 text-sm font-semibold text-ink outline-none placeholder:text-ink-muted focus:border-ink"
             />
             <button
               type="submit"
               disabled={isPending}
-              className="shrink-0 border-2 border-ink px-4 py-2 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:bg-ink hover:text-brand disabled:opacity-50"
+              className="shrink-0 border border-ink px-4 py-2 text-[10px] font-bold uppercase tracking-[0.16em] transition-colors hover:bg-ink hover:text-brand disabled:opacity-50"
             >
               Apply
             </button>
@@ -257,7 +257,7 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
                     type="button"
                     disabled={isPending}
                     onClick={() => handleRemoveDiscount(code.code)}
-                    className="border-2 border-ink bg-ink px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-cream disabled:opacity-50"
+                    className="border border-ink bg-ink px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-cream disabled:opacity-50"
                   >
                     {code.code} ×
                   </button>
@@ -309,7 +309,7 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
 
         <a
           href={cart.checkoutUrl}
-          className="mt-4 flex w-full items-center justify-center border-2 border-ink bg-ink px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-colors hover:bg-brand hover:text-ink"
+          className="mt-4 flex w-full items-center justify-center border border-ink bg-ink px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-colors hover:bg-brand hover:text-ink"
         >
           Checkout
         </a>
@@ -334,7 +334,7 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
           <Link
             href="/cart"
             onClick={onNavigate}
-            className="mt-3 flex w-full items-center justify-center border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+            className="mt-3 flex w-full items-center justify-center border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
           >
             View bag
           </Link>

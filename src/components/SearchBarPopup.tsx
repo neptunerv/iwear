@@ -37,7 +37,7 @@ export function SearchBarPopup({ open, onClose }: SearchBarPopupProps) {
         className="fixed inset-0 z-40 bg-ink/20"
       />
 
-      <div className="relative z-50 border-t-2 border-ink bg-cream text-ink">
+      <div className="relative z-50 border-t border-ink bg-cream text-ink">
         <form
           className="flex items-center gap-4 px-5 py-4 sm:px-8"
           onSubmit={(event) => {

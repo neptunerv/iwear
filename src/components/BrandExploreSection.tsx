@@ -25,14 +25,14 @@ export function BrandExploreSection({
 }: BrandExploreSectionProps) {
   return (
     <section className="snap-section flex flex-col bg-cream text-ink">
-      <div className="grid min-h-0 flex-1 grid-rows-2 border-t-2 border-ink md:grid-cols-2 md:grid-rows-1">
+      <div className="grid min-h-0 flex-1 grid-rows-2 border-t border-ink md:grid-cols-2 md:grid-rows-1">
         {genderLinks.map(({ id, label, imageSrc, imageAlt }, index) => (
           <Link
             key={id}
             href={buildShopFilterHref(shopHref, { genders: [id] })}
             className={`group relative flex min-h-0 flex-col justify-end overflow-hidden ${
               index === 0
-                ? "border-b-2 border-ink md:border-b-0 md:border-r-2"
+                ? "border-b border-ink md:border-b-0 md:border-r"
                 : ""
             }`}
           >

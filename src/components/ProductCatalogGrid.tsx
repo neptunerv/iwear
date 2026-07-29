@@ -17,6 +17,7 @@ import {
   getCatalogPageCount,
   paginateItems,
 } from "@/lib/catalog-pagination";
+import { observeSnapHeaderTheme } from "@/lib/header-theme";
 import { productInModelFamily } from "@/lib/product-model-family";
 import type { Product } from "@/lib/shopify";
 
@@ -85,6 +86,9 @@ export function ProductCatalogGrid({
   );
   const skipFilterPageReset = useRef(true);
 
+  // Cream shop catalog — black nav, white type (same as about / account).
+  useEffect(() => observeSnapHeaderTheme({ forceTheme: "ink" }), []);
+
   const filteredProducts = useMemo(
     () =>
       applyCatalogFilters(
@@ -145,7 +149,7 @@ export function ProductCatalogGrid({
   return (
     <>
       <div className="bg-cream">
-        <div className="grid grid-cols-[1fr_auto_1fr] border-b-2 border-ink text-[10px] font-bold uppercase tracking-[0.16em] sm:text-xs">
+        <div className="grid grid-cols-[1fr_auto_1fr] border-b border-ink text-[10px] font-bold uppercase tracking-[0.16em] sm:text-xs">
           <div className="flex items-center px-3 py-2.5 sm:px-5">
             <button
               type="button"
@@ -179,14 +183,14 @@ export function ProductCatalogGrid({
               <button
                 type="button"
                 onClick={() => setFilters(createDefaultFilters())}
-                className="border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+                className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
               >
                 Clear filters
               </button>
               <button
                 type="button"
                 onClick={() => setFilterOpen(true)}
-                className="border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+                className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
               >
                 Adjust filters
               </button>
@@ -197,14 +201,14 @@ export function ProductCatalogGrid({
             <div className="grid grid-cols-2 sm:grid-cols-4">
               {showPlaceholders
                 ? placeholderSlots.map((slot) => (
-                    <div key={slot} className="border-b-2 border-r-2 border-ink">
+                    <div key={slot} className="border-b border-r border-ink">
                       <ProductGridPlaceholder />
                     </div>
                   ))
                 : pageProducts.map((product) => (
                     <div
                       key={product.id}
-                      className="border-b-2 border-r-2 border-ink"
+                      className="border-b border-r border-ink"
                     >
                       <ProductGridTile product={product} />
                     </div>
@@ -212,7 +216,7 @@ export function ProductCatalogGrid({
             </div>
 
             {showPlaceholders ? (
-              <div className="border-t-2 border-ink px-5 py-4 text-center text-xs font-bold uppercase tracking-[0.16em] text-ink-muted">
+              <div className="border-t border-ink px-5 py-4 text-center text-xs font-bold uppercase tracking-[0.16em] text-ink-muted">
                 {emptyMessage}
               </div>
             ) : (

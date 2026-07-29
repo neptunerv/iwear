@@ -304,11 +304,11 @@ export function TrustSection() {
             key={point.title}
             className={`flex min-h-0 flex-col justify-end px-8 py-12 transition-colors hover:bg-sand-50 sm:px-10 sm:py-14 md:px-12 md:py-16 ${
               index === 0
-                ? "border-b-2 border-r-2 border-ink"
+                ? "border-b border-r border-ink"
                 : index === 1
-                  ? "border-b-2 border-ink"
+                  ? "border-b border-ink"
                   : index === 2
-                    ? "border-r-2 border-ink"
+                    ? "border-r border-ink"
                     : ""
             }`}
           >

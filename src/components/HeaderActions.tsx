@@ -80,7 +80,7 @@ export function HeaderActions({
       >
         <HeartIcon className={iconClassName} />
         {wishlistCount > 0 ? (
-          <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center bg-ink px-1 text-[9px] font-bold leading-none text-cream">
+          <span className="header-badge absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center bg-ink px-1 text-[9px] font-bold leading-none text-cream">
             {wishlistCount > 99 ? "99+" : wishlistCount}
           </span>
         ) : null}
@@ -95,7 +95,7 @@ export function HeaderActions({
       >
         <BagIcon className={iconClassName} />
         {cartCount > 0 ? (
-          <span className="absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center bg-ink px-1 text-[9px] font-bold leading-none text-cream">
+          <span className="header-badge absolute -right-2 -top-1.5 flex h-4 min-w-4 items-center justify-center bg-ink px-1 text-[9px] font-bold leading-none text-cream">
             {cartCount > 99 ? "99+" : cartCount}
           </span>
         ) : null}

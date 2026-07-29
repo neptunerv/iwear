@@ -22,8 +22,8 @@ export function ProductRelatedRail({
   const lastRowMobile = Math.floor((products.length - 1) / 2);
 
   return (
-    <section className={`bg-cream${isLast ? "" : " border-b-2 border-ink"}`}>
-      <div className="flex items-center justify-between gap-3 border-b-2 border-ink px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] sm:px-5 sm:text-xs">
+    <section className={`bg-cream${isLast ? "" : " border-b border-ink"}`}>
+      <div className="flex items-center justify-between gap-3 border-b border-ink px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] sm:px-5 sm:text-xs">
         <h2>{title}</h2>
         {viewAllHref ? (
           <Link
@@ -53,10 +53,10 @@ export function ProductRelatedRail({
               key={product.id}
               className={[
                 "border-ink",
-                isLastCol ? "sm:border-r-0" : "sm:border-r-2",
-                isLastColMobile ? "max-sm:border-r-0" : "max-sm:border-r-2",
-                omitBottomDesktop ? "sm:border-b-0" : "sm:border-b-2",
-                omitBottomMobile ? "max-sm:border-b-0" : "max-sm:border-b-2",
+                isLastCol ? "sm:border-r-0" : "sm:border-r",
+                isLastColMobile ? "max-sm:border-r-0" : "max-sm:border-r",
+                omitBottomDesktop ? "sm:border-b-0" : "sm:border-b",
+                omitBottomMobile ? "max-sm:border-b-0" : "max-sm:border-b",
               ].join(" ")}
             >
               <ProductGridTile product={product} />

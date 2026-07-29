@@ -1,7 +1,7 @@
 import type { SVGProps } from "react";
 
 const stroke = {
-  strokeWidth: 2.25,
+  strokeWidth: 1.5,
   strokeLinecap: "round" as const,
   strokeLinejoin: "round" as const,
 };

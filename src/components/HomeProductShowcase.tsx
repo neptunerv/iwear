@@ -29,7 +29,7 @@ function stripCellBorderClass(index: number) {
   const isLastColDesktop = (index + 1) % 4 === 0;
 
   return [
-    "border-b-2 border-r-2 border-ink",
+    "border-b border-r border-ink",
     isLastColMobile && "max-md:border-r-0",
     isLastColDesktop && "md:border-r-0",
   ]
@@ -46,8 +46,8 @@ function StripHeader({
 }) {
   return (
     <div
-      className={`flex shrink-0 items-center justify-between border-b-2 border-ink px-5 py-2 sm:px-8 sm:py-2.5 ${
-        borderedTop ? "border-t-2" : ""
+      className={`flex shrink-0 items-center justify-between border-b border-ink px-5 py-2 sm:px-8 sm:py-2.5 ${
+        borderedTop ? "border-t" : ""
       }`}
     >
       <h2 className="text-xs font-bold uppercase tracking-[0.12em] text-ink sm:text-sm">
@@ -115,7 +115,7 @@ export function HomeProductShowcase({
       {strips.map((strip) => (
         <section
           key={`mobile-${strip.title}`}
-          className="snap-section flex flex-col overflow-hidden border-x-2 border-ink bg-cream md:hidden"
+          className="snap-section flex flex-col overflow-hidden border-x border-ink bg-cream md:hidden"
         >
           <StripHeader title={strip.title} />
           <StripGrid strip={strip} slotCount={slotCount} fill />
@@ -123,7 +123,7 @@ export function HomeProductShowcase({
       ))}
 
       {/* Desktop — both strips share one snap page */}
-      <section className="hidden snap-section flex-col overflow-hidden border-x-2 border-ink bg-cream md:flex">
+      <section className="hidden snap-section flex-col overflow-hidden border-x border-ink bg-cream md:flex">
         {strips.map((strip, index) => (
           <div
             key={`desktop-${strip.title}`}

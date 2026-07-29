@@ -12,7 +12,7 @@ export function ProductReviews({ product }: ProductReviewsProps) {
   const rounded = Math.round(summary.ratingValue * 10) / 10;
 
   return (
-    <div className="border-t-2 border-ink/15 px-5 py-6 sm:px-8 lg:px-10">
+    <div className="border-t border-ink/15 px-5 py-6 sm:px-8 lg:px-10">
       <p className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
         Customer reviews
       </p>

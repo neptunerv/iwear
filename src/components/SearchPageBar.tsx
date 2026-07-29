@@ -21,7 +21,7 @@ export function SearchPageBar({ defaultQuery = "" }: SearchPageBarProps) {
       ) : null}
 
       <div
-        className={`relative border-b-2 border-ink bg-cream ${
+        className={`relative border-b border-ink bg-cream ${
           active ? "z-50" : ""
         }`}
       >

@@ -27,7 +27,7 @@ function gridCellBorderClass(
   const isLastRow = Math.floor(index / columns) === rows - 1;
 
   return [
-    "border-b-2 border-r-2 border-ink",
+    "border-b border-r border-ink",
     isLastCol && "border-r-0",
     isLastRow && "border-b-0",
   ]
@@ -144,9 +144,9 @@ export function BrandProductRow({
     <section
       className={`flex flex-col bg-cream text-ink ${
         viewportGrid ? "snap-section" : ""
-      } ${borderTop ? "border-t-2 border-ink" : ""}`}
+      } ${borderTop ? "border-t border-ink" : ""}`}
     >
-      <div className="flex shrink-0 items-center justify-between border-b-2 border-ink px-5 py-2.5 sm:px-8 sm:py-3">
+      <div className="flex shrink-0 items-center justify-between border-b border-ink px-5 py-2.5 sm:px-8 sm:py-3">
         <h2 className="text-xs font-bold uppercase tracking-[0.12em] sm:text-sm">
           {title}
         </h2>
@@ -176,7 +176,7 @@ export function BrandProductRow({
                 key={product?.id ?? `${title}-slot-${slotIndex}`}
                 product={product}
                 borderClassName={[
-                  "border-b-2 border-r-2 border-ink",
+                  "border-b border-r border-ink",
                   isLastColMobile && "max-md:border-r-0",
                   isLastColDesktop && "md:border-r-0",
                 ]

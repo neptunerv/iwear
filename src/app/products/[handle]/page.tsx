@@ -89,7 +89,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <div>
         <nav
           aria-label="Breadcrumb"
-          className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b-2 border-ink px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-muted sm:px-5 sm:text-xs"
+          className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-ink px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-ink-muted sm:px-5 sm:text-xs"
         >
           <Link href="/shop" className="transition-colors hover:text-ink">
             Shop
@@ -109,7 +109,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <ProductReviews product={product} />
 
         {(moreColorsResult.products.length > 0 || similar.length > 0) && (
-          <div className="border-t-2 border-ink">
+          <div className="border-t border-ink">
             <ProductRelatedRail
               title={labels.moreColorsTitle}
               products={moreColorsResult.products}

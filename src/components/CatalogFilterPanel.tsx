@@ -35,7 +35,7 @@ function FilterSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-b-2 border-ink px-4 py-4 sm:px-5">
+    <section className="border-b border-ink px-4 py-4 sm:px-5">
       <h3 className="text-[10px] font-bold uppercase tracking-[0.18em] sm:text-xs sm:tracking-[0.2em]">
         {title}
       </h3>
@@ -60,7 +60,7 @@ function TogglePill({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`border-2 px-2 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] transition-colors sm:px-2.5 sm:py-2 sm:text-[10px] sm:tracking-[0.14em] ${
+      className={`border px-2 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] transition-colors sm:px-2.5 sm:py-2 sm:text-[10px] sm:tracking-[0.14em] ${
         disabled
           ? "cursor-not-allowed border-ink/10 bg-cream text-ink/30"
           : active
@@ -157,9 +157,9 @@ export function CatalogFilterPanel({
 
       <aside
         aria-labelledby={titleId}
-        className="absolute inset-y-0 left-0 flex w-1/2 flex-col border-r-2 border-ink bg-cream shadow-[4px_0_24px_rgba(13,11,9,0.08)] sm:w-1/4"
+        className="absolute inset-y-0 left-0 flex w-1/2 flex-col border-r border-ink bg-cream shadow-[4px_0_24px_rgba(13,11,9,0.08)] sm:w-1/4"
       >
-        <div className="flex h-14 shrink-0 items-center justify-between border-b-2 border-ink px-4 sm:px-5">
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-ink px-4 sm:px-5">
           <h2
             id={titleId}
             className="text-xs font-bold uppercase tracking-[0.2em]"
@@ -348,11 +348,11 @@ export function CatalogFilterPanel({
           )}
         </div>
 
-        <div className="grid shrink-0 grid-cols-2 border-t-2 border-ink">
+        <div className="grid shrink-0 grid-cols-2 border-t border-ink">
           <button
             type="button"
             onClick={() => onChange(createDefaultFilters())}
-            className="border-r-2 border-ink px-3 py-3 text-[10px] font-bold uppercase tracking-[0.14em] transition-colors hover:bg-sand-50 sm:text-xs sm:tracking-[0.16em]"
+            className="border-r border-ink px-3 py-3 text-[10px] font-bold uppercase tracking-[0.14em] transition-colors hover:bg-sand-50 sm:text-xs sm:tracking-[0.16em]"
           >
             Clear all
           </button>

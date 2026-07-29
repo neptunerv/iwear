@@ -40,7 +40,7 @@ export function MarqueeStrip({ items }: MarqueeStripProps) {
   const duration = loopWidth > 0 ? loopWidth / 45 : 28;
 
   return (
-    <div className="shrink-0 overflow-hidden border-b-2 border-ink bg-cream py-3">
+    <div className="shrink-0 overflow-hidden border-b border-ink bg-cream py-3">
       <div
         ref={trackRef}
         className="marquee-track flex w-max items-center gap-8 sm:gap-10"

@@ -38,9 +38,9 @@ export function SideDrawer({ open, onClose, title, children }: SideDrawerProps) 
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="absolute inset-y-0 right-0 flex w-1/2 flex-col border-l-2 border-ink bg-cream text-ink shadow-[-4px_0_24px_rgba(13,11,9,0.08)] sm:w-1/4"
+        className="absolute inset-y-0 right-0 flex w-1/2 flex-col border-l border-ink bg-cream text-ink shadow-[-4px_0_24px_rgba(13,11,9,0.08)] sm:w-1/4"
       >
-        <div className="flex h-14 shrink-0 items-center justify-between border-b-2 border-ink px-4 sm:px-5">
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-ink px-4 sm:px-5">
           <h2
             id={titleId}
             className="text-xs font-bold uppercase tracking-[0.2em]"

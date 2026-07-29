@@ -278,7 +278,7 @@ export function AccountAuthForm({
       {configured ? (
         <div className="space-y-5">
           <div
-            className={`overflow-hidden border-2 border-ink transition-opacity ${
+            className={`overflow-hidden border border-ink transition-opacity ${
               shopReady ? "opacity-100" : "min-h-[52px] opacity-40"
             }`}
           >
@@ -311,7 +311,7 @@ export function AccountAuthForm({
             <label className="sr-only" htmlFor={emailInputId}>
               Email
             </label>
-            <div className="flex border-2 border-ink bg-cream focus-within:bg-white">
+            <div className="flex border border-ink bg-cream focus-within:bg-white">
               <input
                 id={emailInputId}
                 name="email"
@@ -326,7 +326,7 @@ export function AccountAuthForm({
                 type="submit"
                 disabled={signingIn}
                 aria-label="Continue with email"
-                className="border-l-2 border-ink px-4 text-base text-ink transition-colors hover:bg-ink hover:text-brand disabled:opacity-60"
+                className="border-l border-ink px-4 text-base text-ink transition-colors hover:bg-ink hover:text-brand disabled:opacity-60"
               >
                 <span aria-hidden="true">→</span>
               </button>
@@ -345,7 +345,7 @@ export function AccountAuthForm({
                 }
                 setSigningIn(true);
               }}
-              className={`flex w-full items-center justify-center border-2 border-ink px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${
+              className={`flex w-full items-center justify-center border border-ink px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${
                 signingIn
                   ? "pointer-events-none bg-ink text-brand"
                   : "hover:bg-ink hover:text-brand"
@@ -365,7 +365,7 @@ export function AccountAuthForm({
           </p>
         </div>
       ) : (
-        <p className="border-2 border-dashed border-ink/20 px-5 py-6 text-sm font-semibold leading-relaxed text-ink-muted">
+        <p className="border border-dashed border-ink/20 px-5 py-6 text-sm font-semibold leading-relaxed text-ink-muted">
           Online accounts aren’t connected yet. Ask the store to finish Customer
           Account API setup, or message us for order help.
         </p>

@@ -34,13 +34,13 @@ export default function StoresPage() {
               href={site.messageUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="border-2 border-ink px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+              className="border border-ink px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
             >
               {site.whatsappLabel}
             </a>
             <Link
               href="/shop"
-              className="border-2 border-ink px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+              className="border border-ink px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
             >
               Shop online
             </Link>
@@ -50,7 +50,7 @@ export default function StoresPage() {
 
       <VisitUsSection />
 
-      <div className="snap-section snap-section-scroll flex flex-col border-t-2 border-ink bg-cream text-ink">
+      <div className="snap-section snap-section-scroll flex flex-col border-t border-ink bg-cream text-ink">
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-12 sm:px-10 sm:py-16">
           <h2 className="font-display text-center text-5xl italic leading-none sm:text-6xl lg:text-7xl">
             Exclusive in store

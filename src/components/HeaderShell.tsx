@@ -44,7 +44,7 @@ export function HeaderShell({ logo, nav }: HeaderShellProps) {
     <>
       <header
         id="site-header"
-        className="sticky top-0 z-50 border-b-2 border-ink bg-brand text-ink"
+        className="sticky top-0 z-50 border-b border-ink bg-brand text-ink"
       >
         <div className="relative flex h-14 items-center justify-between px-5 sm:px-8">
           {logo}

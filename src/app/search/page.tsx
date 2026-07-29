@@ -46,7 +46,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           </p>
           <Link
             href="/shop"
-            className="mt-8 border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+            className="mt-8 border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
           >
             Shop all
           </Link>
@@ -69,7 +69,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           </p>
           <Link
             href="/shop"
-            className="mt-8 border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+            className="mt-8 border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
           >
             Shop all
           </Link>

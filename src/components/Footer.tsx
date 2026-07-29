@@ -62,7 +62,7 @@ function FooterNavList({
   borderLast?: boolean;
 }) {
   return (
-    <ul className="divide-y-2 divide-ink">
+    <ul className="divide-y divide-ink">
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
         const className =
@@ -71,7 +71,7 @@ function FooterNavList({
         return (
           <li
             key={item.href}
-            className={isLast && borderLast ? "border-b-2 border-ink" : undefined}
+            className={isLast && borderLast ? "border-b border-ink" : undefined}
           >
             {item.external ? (
               <a
@@ -111,7 +111,7 @@ function StoreAddress({ store }: { store: StoreLocation }) {
           href={store.mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 flex w-full items-center justify-center border-2 border-ink px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors hover:bg-ink hover:text-brand sm:mt-6 sm:px-4 sm:py-3 sm:text-xs"
+          className="mt-2 flex w-full items-center justify-center border border-ink px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] transition-colors hover:bg-ink hover:text-brand sm:mt-6 sm:px-4 sm:py-3 sm:text-xs"
         >
           Get directions
         </a>
@@ -134,7 +134,7 @@ function FooterNavCell({
       <p className={`shrink-0 ${labelClass}`}>{title}</p>
       {/* Full-bleed rules under the title — keep bottom padding so last item
           border doesn't stack with the grid gutter into a double line. */}
-      <div className="-mx-3 mt-2 flex min-h-0 flex-1 flex-col border-t-2 border-ink sm:-mx-8 sm:mt-8 lg:-mx-10">
+      <div className="-mx-3 mt-2 flex min-h-0 flex-1 flex-col border-t border-ink sm:-mx-8 sm:mt-8 lg:-mx-10">
         <FooterNavList items={items} borderLast={borderLast} />
       </div>
     </div>
@@ -146,7 +146,7 @@ function FooterContent({ fill = false }: { fill?: boolean }) {
 
   return (
     <div
-      className={`grid grid-cols-2 gap-[2px] bg-ink md:grid-cols-4 ${
+      className={`grid grid-cols-2 gap-[1.5px] bg-ink md:grid-cols-4 ${
         fill
           ? // Fit one mobile viewport; desktop keeps two equal body rows.
             "h-full min-h-0 w-full flex-1 grid-rows-[auto_minmax(0,1fr)_minmax(0,1fr)_auto] overflow-hidden md:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto]"
@@ -190,7 +190,7 @@ function FooterMark({ fill = false }: { fill?: boolean }) {
       className={
         fill
           ? "flex flex-1 flex-col items-center justify-center px-5 sm:px-8"
-          : "flex flex-col items-center justify-center border-t-2 border-ink px-5 py-20 sm:px-8 sm:py-28 lg:py-32"
+          : "flex flex-col items-center justify-center border-t border-ink px-5 py-20 sm:px-8 sm:py-28 lg:py-32"
       }
     >
       <Link href="/" className="block w-[min(92vw,58rem)]">
@@ -235,7 +235,7 @@ export function Footer({
         {snap ? <FooterScrollSnap /> : null}
 
         <footer
-          className={`${infoClass} flex flex-col bg-brand text-ink md:border-t-2 md:border-ink ${className}`.trim()}
+          className={`${infoClass} flex flex-col bg-brand text-ink md:border-t md:border-ink ${className}`.trim()}
         >
           <FooterInfo fill />
         </footer>
@@ -252,7 +252,7 @@ export function Footer({
 
   return (
     <footer
-      className={`mt-auto border-t-2 border-ink bg-brand text-ink ${className}`.trim()}
+      className={`mt-auto border-t border-ink bg-brand text-ink ${className}`.trim()}
     >
       <FooterInfo />
       <FooterMark />

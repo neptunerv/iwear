@@ -65,7 +65,7 @@ export function BrandEditorialHero({
         <div className="flex items-end justify-between gap-4">
           <Link
             href={shopHref}
-            className={`border-2 px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${
+            className={`border px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors ${
               hasVideo
                 ? "border-cream hover:bg-cream hover:text-ink"
                 : "border-ink hover:bg-ink hover:text-cream"

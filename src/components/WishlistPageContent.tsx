@@ -18,7 +18,7 @@ export function WishlistPageContent() {
       </h1>
 
       {items.length === 0 ? (
-        <div className="mt-12 border-2 border-dashed border-ink/20 px-8 py-16 text-center">
+        <div className="mt-12 border border-dashed border-ink/20 px-8 py-16 text-center">
           <p className="font-display text-3xl italic leading-none text-ink-muted sm:text-4xl">
             Nothing saved yet
           </p>
@@ -28,13 +28,13 @@ export function WishlistPageContent() {
           </p>
           <Link
             href="/shop"
-            className="mt-8 inline-block border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+            className="mt-8 inline-block border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
           >
             Shop all
           </Link>
         </div>
       ) : (
-        <ul className="mt-12 divide-y-2 divide-ink/10 border-2 border-ink/15">
+        <ul className="mt-12 divide-y divide-ink/10 border border-ink/15">
           {items.map((item) => (
             <li key={item.handle} className="flex gap-4 px-4 py-5 sm:px-5">
               <Link

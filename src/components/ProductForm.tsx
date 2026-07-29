@@ -8,6 +8,7 @@ import {
   findVariantByOptions,
   getProductOptions,
 } from "@/lib/product-options";
+import type { ProductSpecRow } from "@/lib/product-specs";
 import type { ProductVariant } from "@/lib/shopify";
 
 type ProductFormProps = {
@@ -18,6 +19,7 @@ type ProductFormProps = {
   collection: string | null;
   color: string | null;
   lens: string | null;
+  specRows: ProductSpecRow[];
   variants: ProductVariant[];
   availableForSale: boolean;
   selected: Record<string, string>;
@@ -32,6 +34,7 @@ export function ProductForm({
   collection,
   color,
   lens,
+  specRows,
   variants,
   availableForSale,
   selected,
@@ -81,16 +84,16 @@ export function ProductForm({
   };
 
   return (
-    <div className="flex h-full flex-col justify-center gap-5 px-5 py-6 sm:gap-6 sm:px-8 sm:py-8 lg:px-10">
+    <div className="flex flex-col gap-8 px-5 py-8 sm:px-8 sm:py-10 lg:px-10">
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
           {brand}
         </p>
-        <h1 className="mt-1.5 font-display text-3xl leading-tight text-ink sm:text-4xl">
+        <h1 className="mt-2 font-display text-3xl leading-tight text-ink sm:text-4xl">
           {title}
         </h1>
         {collection ? (
-          <p className="mt-1.5 text-sm font-semibold leading-relaxed text-ink-muted">
+          <p className="mt-2 text-sm font-semibold leading-relaxed text-ink-muted">
             {collection}
           </p>
         ) : null}
@@ -126,7 +129,7 @@ export function ProductForm({
 
       {options.map((option) => (
         <div key={option.name}>
-          <p className="mb-2.5 text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
             {option.name}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -138,7 +141,7 @@ export function ProductForm({
                   key={value}
                   type="button"
                   onClick={() => handleSelect(option.name, value)}
-                  className={`border-2 px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] transition-colors sm:text-sm ${
+                  className={`border px-4 py-2.5 text-xs font-bold uppercase tracking-[0.12em] transition-colors sm:text-sm ${
                     isSelected
                       ? "border-ink bg-ink text-cream"
                       : "border-ink/20 bg-cream text-ink hover:border-ink"
@@ -152,7 +155,7 @@ export function ProductForm({
         </div>
       ))}
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3">
         {lowStock ? (
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
             Only {quantityAvailable} left in stock
@@ -163,13 +166,13 @@ export function ProductForm({
             type="button"
             onClick={handleAddToCart}
             disabled={soldOut || isPending}
-            className="min-w-0 flex-1 border-2 border-ink bg-brand px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-ink transition-colors hover:bg-ink hover:text-cream disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
+            className="min-w-0 flex-1 border border-ink bg-brand px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-ink transition-colors hover:bg-ink hover:text-cream disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
           >
             {isPending ? "Adding…" : soldOut ? "Sold out" : "Add to bag"}
           </button>
           <WishlistButton
             item={wishlistItem}
-            className="flex items-center justify-center border-2 border-ink px-4"
+            className="flex items-center justify-center border border-ink px-4"
           />
         </div>
 
@@ -180,7 +183,27 @@ export function ProductForm({
         )}
       </div>
 
-      <ul className="space-y-2 border-t-2 border-ink/15 pt-4 text-sm font-semibold text-ink-muted">
+      {specRows.length > 0 ? (
+        <div className="border-t border-ink/15 pt-6">
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-ink-muted">
+            Fit &amp; specifications
+          </p>
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3">
+            {specRows.map((row) => (
+              <div key={row.key}>
+                <dt className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-muted">
+                  {row.label}
+                </dt>
+                <dd className="mt-1 text-sm font-semibold text-ink">
+                  {row.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      ) : null}
+
+      <ul className="space-y-3 border-t border-ink/15 pt-6 text-sm font-semibold text-ink-muted">
         <li>Full manufacturer warranty on every frame</li>
         <li>Free delivery across Bali · international shipping at checkout</li>
       </ul>

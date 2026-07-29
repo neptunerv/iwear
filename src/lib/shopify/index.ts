@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { onlineBrandNames } from "@/lib/brands";
 import {
   productHasImage,
   productsWithImages,
@@ -174,12 +175,14 @@ async function fetchProductsPage({
 
   if (response.errors) {
     console.error("Shopify getAllProducts error:", response.errors);
-    return { nodes: [], hasNextPage: false, endCursor: null };
+    // Throw so unstable_cache does not store a fake "end of catalog" page
+    // (empty + hasNextPage:false), which silently truncates /shop.
+    throw new Error("Shopify products page request failed");
   }
 
   const page = response.data?.products;
   if (!page) {
-    return { nodes: [], hasNextPage: false, endCursor: null };
+    throw new Error("Shopify products page returned no data");
   }
 
   return {
@@ -216,7 +219,8 @@ const getCachedProductsPage = unstable_cache(
       pageSize,
     }),
   // Bump key when catalog media changes so stale page caches don't hide new images.
-  ["shopify-products-page-v5"],
+  // v6: stop caching truncated "error = end of list" pages.
+  ["shopify-products-page-v6"],
   {
     revalidate: SHOPIFY_CACHE_REVALIDATE,
     tags: ["products"],
@@ -556,9 +560,34 @@ export async function getProductsByBrand(
   });
 }
 
-/** Full catalog — every brand, products with images only. */
+/**
+ * Full online catalog.
+ *
+ * Built by merging per-brand Storefront queries (same source as /ray-ban/shop
+ * etc.) instead of one giant unfiltered `products` walk. The unfiltered walk
+ * needs ~50 sequential pages and was timing out / caching a truncated list
+ * (~300), while brand shops (fewer pages each) returned the full counts.
+ */
 export async function getShopProducts(maxWithImages?: number): Promise<Product[]> {
-  return getAllProducts({ maxWithImages });
+  const brandLists = await Promise.all(
+    onlineBrandNames.map((brand) => getProductsByBrand(brand)),
+  );
+
+  const seen = new Set<string>();
+  const merged: Product[] = [];
+
+  for (const list of brandLists) {
+    for (const product of list) {
+      if (seen.has(product.handle)) continue;
+      seen.add(product.handle);
+      merged.push(product);
+      if (maxWithImages != null && merged.length >= maxWithImages) {
+        return merged;
+      }
+    }
+  }
+
+  return merged;
 }
 
 export { isShopifyConfigured } from "./client";

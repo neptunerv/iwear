@@ -16,7 +16,7 @@ function stripCellBorderClass(index: number) {
   const isLastColDesktop = (index + 1) % 4 === 0;
 
   return [
-    "border-b-2 border-r-2 border-ink",
+    "border-b border-r border-ink",
     isLastColMobile && "max-md:border-r-0",
     isLastColDesktop && "md:border-r-0",
   ]
@@ -45,11 +45,11 @@ export function ProductSection({
       <div
         className={
           embedded
-            ? "border-x-2 border-ink"
-            : "mx-auto w-full max-w-7xl border-x-2 border-ink py-20"
+            ? "border-x border-ink"
+            : "mx-auto w-full max-w-7xl border-x border-ink py-20"
         }
       >
-        <div className="flex items-center justify-between border-b-2 border-t-2 border-ink px-5 py-3 sm:px-8 sm:py-3.5">
+        <div className="flex items-center justify-between border-b border-t border-ink px-5 py-3 sm:px-8 sm:py-3.5">
           <h2
             className={`uppercase tracking-[0.12em] text-ink ${
               embedded

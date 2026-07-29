@@ -76,7 +76,7 @@ export function ProductStripTile({
         </span>
       )}
 
-      <div className="absolute inset-x-0 bottom-0 translate-y-full border-t-2 border-ink bg-cream px-3 py-2.5 transition-transform duration-300 group-hover:translate-y-0 sm:px-4 sm:py-3">
+      <div className="absolute inset-x-0 bottom-0 translate-y-full border-t border-ink bg-cream px-3 py-2.5 transition-transform duration-300 group-hover:translate-y-0 sm:px-4 sm:py-3">
         {onSale && (
           <span className="absolute right-0 top-0 bg-brand px-2 py-1 text-[9px] font-bold uppercase tracking-[0.15em] text-ink">
             Sale

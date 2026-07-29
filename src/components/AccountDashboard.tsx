@@ -34,7 +34,7 @@ export function AccountDashboard({ customer }: AccountDashboardProps) {
 
   return (
     <div className="w-full text-left">
-      <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-ink/15 pb-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-ink/15 pb-6">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink-muted">
             Signed in
@@ -57,7 +57,7 @@ export function AccountDashboard({ customer }: AccountDashboardProps) {
             }
             setSigningOut(true);
           }}
-          className={`border-2 border-ink px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors ${
+          className={`border border-ink px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-colors ${
             signingOut
               ? "pointer-events-none bg-ink text-brand"
               : "hover:bg-ink hover:text-brand"
@@ -79,7 +79,7 @@ export function AccountDashboard({ customer }: AccountDashboardProps) {
         </div>
 
         {customer.orders.length === 0 ? (
-          <div className="mt-6 border-2 border-dashed border-ink/20 px-6 py-10 text-center">
+          <div className="mt-6 border border-dashed border-ink/20 px-6 py-10 text-center">
             <p className="font-display text-2xl italic text-ink-muted">
               No orders yet
             </p>
@@ -89,13 +89,13 @@ export function AccountDashboard({ customer }: AccountDashboardProps) {
             </p>
             <Link
               href="/shop"
-              className="mt-6 inline-flex border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+              className="mt-6 inline-flex border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
             >
               Shop all
             </Link>
           </div>
         ) : (
-          <ul className="mt-6 divide-y-2 divide-ink/10 border-2 border-ink/15">
+          <ul className="mt-6 divide-y divide-ink/10 border border-ink/15">
             {customer.orders.map((order) => {
               const preview = order.lineItems[0];
               return (

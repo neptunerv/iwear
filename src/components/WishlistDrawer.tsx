@@ -24,13 +24,13 @@ export function WishlistDrawer() {
           <Link
             href="/shop"
             onClick={closeWishlist}
-            className="mt-8 border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+            className="mt-8 border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
           >
             Shop all
           </Link>
         </div>
       ) : (
-        <ul className="divide-y-2 divide-ink/10 px-4 sm:px-5">
+        <ul className="divide-y divide-ink/10 px-4 sm:px-5">
           {items.map((item) => (
             <li key={item.handle} className="flex gap-3 py-4">
               <Link

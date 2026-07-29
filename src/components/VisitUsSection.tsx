@@ -41,7 +41,7 @@ function StorePanel({
         href={store.mapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex w-full items-center justify-center border-2 border-ink px-5 py-3.5 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand md:w-auto md:self-end md:py-3"
+        className="flex w-full items-center justify-center border border-ink px-5 py-3.5 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand md:w-auto md:self-end md:py-3"
       >
         Get directions
       </a>
@@ -58,7 +58,7 @@ export function VisitUsSection({
       <section
         id="stores"
         className={`grid grid-rows-2 bg-brand text-ink md:grid-cols-2 md:grid-rows-1 ${
-          borderTop ? "border-t-2 border-ink" : ""
+          borderTop ? "border-t border-ink" : ""
         }`}
       >
         {site.stores.map((store, index) => (
@@ -67,7 +67,7 @@ export function VisitUsSection({
             store={store}
             className={
               index === 0
-                ? "border-b-2 border-ink md:border-b-0 md:border-r-2"
+                ? "border-b border-ink md:border-b-0 md:border-r"
                 : ""
             }
           />
@@ -84,7 +84,7 @@ export function VisitUsSection({
           key={store.slug}
           id={index === 0 ? "stores" : undefined}
           className={`snap-section flex flex-col bg-brand text-ink md:hidden ${
-            borderTop || index > 0 ? "border-t-2 border-ink" : ""
+            borderTop || index > 0 ? "border-t border-ink" : ""
           }`}
         >
           <StorePanel store={store} className="flex-1" />
@@ -94,7 +94,7 @@ export function VisitUsSection({
       {/* Desktop: side by side in one snap page */}
       <section
         className={`snap-section hidden bg-brand text-ink md:grid md:grid-cols-2 ${
-          borderTop ? "border-t-2 border-ink" : ""
+          borderTop ? "border-t border-ink" : ""
         }`}
       >
         {site.stores.map((store, index) => (
@@ -102,7 +102,7 @@ export function VisitUsSection({
             key={store.slug}
             store={store}
             withAnchor={false}
-            className={index === 0 ? "md:border-r-2 md:border-ink" : ""}
+            className={index === 0 ? "md:border-r md:border-ink" : ""}
           />
         ))}
       </section>

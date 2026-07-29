@@ -49,13 +49,13 @@ export default function AboutPage() {
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Link
               href="/shop"
-              className="border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+              className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
             >
               Shop online
             </Link>
             <Link
               href="/stores"
-              className="border-2 border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
+              className="border border-ink px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors hover:bg-ink hover:text-brand"
             >
               Find a store
             </Link>
