@@ -291,7 +291,9 @@ async function uploadBrandFolder(brand) {
     return true;
   }
 
-  const outputPath = path.join(PROJECT_ROOT, "data", `${brand}_image_urls.json`);
+  const outputDir = path.join(PROJECT_ROOT, "data", "image_batches", brand);
+  fs.mkdirSync(outputDir, { recursive: true });
+  const outputPath = path.join(outputDir, "image_urls.json");
   const results = {};
   if (fs.existsSync(outputPath)) {
     Object.assign(results, JSON.parse(fs.readFileSync(outputPath, "utf8")));

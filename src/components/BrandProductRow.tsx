@@ -40,19 +40,13 @@ function ProductCell({
   borderClassName,
   /** Fill the grid cell (viewport snap). Otherwise use a fixed aspect. */
   fill = false,
-  rotatePortrait = false,
 }: {
   product: Product | undefined;
   borderClassName: string;
   fill?: boolean;
-  rotatePortrait?: boolean;
 }) {
   const content = product ? (
-    <ProductStripTile
-      product={product}
-      fill
-      rotatePortrait={rotatePortrait}
-    />
+    <ProductStripTile product={product} fill />
   ) : (
     <ProductStripPlaceholder fill />
   );
@@ -101,7 +95,6 @@ function ViewportProductGrid({
               mobileRows,
             )}
             fill
-            rotatePortrait
           />
         ))}
       </div>

@@ -31,6 +31,11 @@ export function filterOnlineBrandProducts(products: Product[]): Product[] {
   );
 }
 
+/** Hide sold-out styles from merchandising surfaces (home, brand landings). */
+export function filterInStockProducts(products: Product[]): Product[] {
+  return products.filter((product) => product.availableForSale);
+}
+
 export function getProductBrand(product: Product): string {
   if (product.vendor) return product.vendor;
 

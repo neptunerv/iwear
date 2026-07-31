@@ -1,0 +1,196 @@
+{
+  "summary": {
+    "zips": 1,
+    "files": 160,
+    "style_colors": 20,
+    "satisfied_missing": 20,
+    "missing_before_brand": 27,
+    "missing_after_brand": 7,
+    "orphan_pairs": 0,
+    "unmatched_missing": 7,
+    "catalog_handles_matched_by_zips": 20,
+    "unparsed_files": 0
+  },
+  "satisfied": [
+    {
+      "handle": "ferrari-fz5001-101v960",
+      "sku": "FZ5001-101V960",
+      "title": "Ferrari 5001 \u2014 Track Endurance, Metal Matte Black-Yellow",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ5001__101_V9",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz5001-1076g60",
+      "sku": "FZ5001-1076G60",
+      "title": "Ferrari 5001 \u2014 Track Endurance, Metal BrushedSilver-Yellow",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ5001__107_6G",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz5001-1099r60",
+      "sku": "FZ5001-1099R60",
+      "title": "Ferrari 5001 \u2014 Track Endurance, Metal Dark GunMtl-Black",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ5001__109_9R",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6001-5018740",
+      "sku": "FZ6001-5018740",
+      "title": "Ferrari 6001 \u2014 Adrenaline Performance, Plastic Black(sport)",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6001__501_87",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6001-5047p40",
+      "sku": "FZ6001-5047P40",
+      "title": "Ferrari 6001 \u2014 Adrenaline Performance, Plastic Matte Black(sport)",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6001__504_7P",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6001-5078740",
+      "sku": "FZ6001-5078740",
+      "title": "Ferrari 6001 \u2014 Adrenaline Performance, Plastic OpalM.Yellow(Sport)",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6001__507_87",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6002u-5103r59",
+      "sku": "FZ6002U-5103R59",
+      "title": "Ferrari 6002 \u2014 Aerodynamic, Plastic BluMatte-Grey",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6002U__510_3R",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6003u-5018159",
+      "sku": "FZ6003U-5018159",
+      "title": "Ferrari 6003 \u2014 Aerodynamic, Plastic Black-Black",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6003U__501_81",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6004u-5016q41",
+      "sku": "FZ6004U-5016Q41",
+      "title": "Ferrari 6004 \u2014 Aerodynamic, Plastic Black",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6004U__501_6Q",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6004u-5076g41",
+      "sku": "FZ6004U-5076G41",
+      "title": "Ferrari 6004 \u2014 Aerodynamic, Plastic OpalM.Yellow",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6004U__507_6G",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6005u-5018740",
+      "sku": "FZ6005U-5018740",
+      "title": "Ferrari 6005 \u2014 Aerodynamic, Plastic Black-Red(Sport)",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6005U__501_87",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6005u-5047v40",
+      "sku": "FZ6005U-5047V40",
+      "title": "Ferrari 6005 \u2014 Aerodynamic, Plastic Matte Black(Sport)",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6005U__504_7V",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6005u-5056q40",
+      "sku": "FZ6005U-5056Q40",
+      "title": "Ferrari 6005 \u2014 Aerodynamic, Plastic OpalGrey",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6005U__505_6Q",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6005u-5103r40",
+      "sku": "FZ6005U-5103R40",
+      "title": "Ferrari 6005 \u2014 Aerodynamic, Plastic Matte Blue",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6005U__510_3R",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6006f-5018758",
+      "sku": "FZ6006F-5018758",
+      "title": "Ferrari 6006 \u2014 Adrenaline Performance, Plastic Black-Red",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6006F__501_87",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6006f-5055558",
+      "sku": "FZ6006F-5055558",
+      "title": "Ferrari 6006 \u2014 Adrenaline Performance, Plastic GryTransparent",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6006F__505_55",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6007u-5046g64",
+      "sku": "FZ6007U-5046G64",
+      "title": "Ferrari 6007 \u2014 Adrenaline Performance, Plastic Matte Black-Black",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6007U__504_6G",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6007u-5048n64",
+      "sku": "FZ6007U-5048N64",
+      "title": "Ferrari 6007 \u2014 Adrenaline Performance, Plastic Matte Black-Lime",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6007U__504_8N",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6007u-5052564",
+      "sku": "FZ6007U-5052564",
+      "title": "Ferrari 6007 \u2014 Adrenaline Performance, Plastic Transparent.Grey-Blue",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6007U__505_25",
+      "files": 8,
+      "price": ""
+    },
+    {
+      "handle": "ferrari-fz6007u-5078764",
+      "sku": "FZ6007U-5078764",
+      "title": "Ferrari 6007 \u2014 Adrenaline Performance, Plastic YlwOpalMatte",
+      "vendor": "Scuderia Ferrari",
+      "img_key": "0FZ6007U__507_87",
+      "files": 8,
+      "price": ""
+    }
+  ]
+}

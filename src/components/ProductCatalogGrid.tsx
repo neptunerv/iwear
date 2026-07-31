@@ -4,6 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CatalogFilterPanel } from "@/components/CatalogFilterPanel";
 import { CatalogPagination } from "@/components/CatalogPagination";
+import { InStoreAvailabilityNote } from "@/components/InStoreAvailabilityNote";
 import { ProductGridTile } from "@/components/ProductGridTile";
 import {
   applyCatalogFilters,
@@ -193,6 +194,8 @@ export function ProductCatalogGrid({
             </span>
           </div>
         </div>
+
+        <InStoreAvailabilityNote compact />
 
         {showEmptyState ? (
           <div className="flex min-h-[min(70dvh,40rem)] flex-col items-center justify-center px-6 py-20 text-center sm:px-10">

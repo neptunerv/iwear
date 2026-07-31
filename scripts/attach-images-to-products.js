@@ -1,7 +1,7 @@
 /**
  * attach-images-to-products.js
  *
- * Attaches already-uploaded Shopify CDN images (from data/<brand>_image_urls.json)
+ * Attaches already-uploaded Shopify CDN images (from data/image_batches/<brand>/image_urls.json)
  * to existing products that are missing media, via Admin API productUpdate.
  *
  * Matching (same as prior CSV import):
@@ -67,9 +67,10 @@ if (!brand) {
 }
 
 const GRAPHQL_URL = `https://${STORE}/admin/api/${API_VERSION}/graphql.json`;
-const urlMapPath = path.join(PROJECT_ROOT, "data", `${brand}_image_urls.json`);
-const progressPath = path.join(PROJECT_ROOT, "data", `${brand}_attach_progress.json`);
-const coveragePath = path.join(PROJECT_ROOT, "data", `${brand}_zip_coverage.json`);
+const batchDir = path.join(PROJECT_ROOT, "data", "image_batches", brand);
+const urlMapPath = path.join(batchDir, "image_urls.json");
+const progressPath = path.join(batchDir, "attach_progress.json");
+const coveragePath = path.join(batchDir, "zip_coverage.json");
 
 async function shopifyGraphQL(query, variables) {
   const res = await fetch(GRAPHQL_URL, {

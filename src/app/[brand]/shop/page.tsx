@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Footer } from "@/components/Footer";
-import { ProductCatalogGrid } from "@/components/ProductCatalogGrid";
+import { PageLoading } from "@/components/PageLoading";
+import { ShopCatalogShell } from "@/components/ShopCatalogShell";
 import { getBrandPage, featuredBrands } from "@/lib/brands";
 import {
   firstSearchParam,
@@ -72,24 +73,22 @@ export default async function BrandShopPage({
   const title = family ? formatModelLabel(family) : brand.name;
 
   return (
-    <>
-      <Suspense fallback={null}>
-        <ProductCatalogGrid
-          title={title}
-          products={products}
-          bestSellerHandles={bestSellerHandles}
-          fixedBrand={brand.name}
-          initialFilters={initialFilters}
-          initialPage={initialPage}
-          emptyMessage={
-            family
-              ? `No ${formatModelLabel(family)} styles found.`
-              : `No ${brand.name} products yet — check back soon.`
-          }
-        />
-      </Suspense>
-
-      <Footer viewport className="shop-footer" />
-    </>
+    <Suspense fallback={<PageLoading />}>
+      <ShopCatalogShell
+        title={title}
+        products={products}
+        bestSellerHandles={bestSellerHandles}
+        fixedBrand={brand.name}
+        initialFilters={initialFilters}
+        initialPage={initialPage}
+        emptyMessage={
+          family
+            ? `No ${formatModelLabel(family)} styles found.`
+            : `No ${brand.name} products yet — check back soon.`
+        }
+      >
+        <Footer viewport className="shop-footer" />
+      </ShopCatalogShell>
+    </Suspense>
   );
 }

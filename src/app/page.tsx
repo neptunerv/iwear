@@ -7,7 +7,7 @@ import { HomeProductShowcase } from "@/components/HomeProductShowcase";
 import { TrustSection } from "@/components/TrustSection";
 import { VisitUsSection } from "@/components/VisitUsSection";
 import { featuredBrands } from "@/lib/brands";
-import { filterOnlineBrandProducts } from "@/lib/product-utils";
+import { filterInStockProducts, filterOnlineBrandProducts } from "@/lib/product-utils";
 import { getBestSellers, getNewProducts } from "@/lib/shopify";
 
 export const metadata: Metadata = {
@@ -17,12 +17,17 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  // Over-fetch so we still fill 4 slots after dropping sold-out / non-online.
   const [bestSellersRaw, newProductsRaw] = await Promise.all([
-    getBestSellers(12),
-    getNewProducts(12),
+    getBestSellers(36),
+    getNewProducts(36),
   ]);
-  const bestSellers = filterOnlineBrandProducts(bestSellersRaw).slice(0, 4);
-  const newProducts = filterOnlineBrandProducts(newProductsRaw).slice(0, 4);
+  const bestSellers = filterInStockProducts(
+    filterOnlineBrandProducts(bestSellersRaw),
+  ).slice(0, 4);
+  const newProducts = filterInStockProducts(
+    filterOnlineBrandProducts(newProductsRaw),
+  ).slice(0, 4);
 
   return (
     <>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useCart } from "@/components/CartProvider";
+import { InStoreAvailabilityNote } from "@/components/InStoreAvailabilityNote";
 import { WishlistButton } from "@/components/WishlistButton";
 import { formatPrice } from "@/lib/format";
 import {
@@ -206,6 +207,9 @@ export function ProductForm({
       <ul className="space-y-3 border-t border-ink/15 pt-6 text-sm font-semibold text-ink-muted">
         <li>Full manufacturer warranty on every frame</li>
         <li>Free delivery across Bali · international shipping at checkout</li>
+        <li>
+          <InStoreAvailabilityNote />
+        </li>
       </ul>
     </div>
   );

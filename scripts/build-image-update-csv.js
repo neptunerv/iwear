@@ -2,12 +2,12 @@
  * build-image-update-csv.js
  *
  * Builds a Shopify product CSV with only Handle + Image Src (+ Image Position)
- * for products covered by data/<brand>_zip_coverage.json, using CDN URLs from
- * data/<brand>_image_urls.json. Same attachment method as the Jul 25 import.
+ * for products covered by data/image_batches/<brand>/zip_coverage.json, using CDN URLs from
+ * data/image_batches/<brand>/image_urls.json. Same attachment method as the Jul 25 import.
  *
  * Usage:
  *   node scripts/build-image-update-csv.js oakley
- *   node scripts/build-image-update-csv.js oakley --out data/oakley_image_update.csv
+ *   node scripts/build-image-update-csv.js oakley --out data/image_batches/oakley/image_update.csv
  */
 
 const fs = require("fs");
@@ -17,21 +17,24 @@ const PROJECT_ROOT = path.join(__dirname, "..");
 const args = process.argv.slice(2);
 const brand = args.find((a) => !a.startsWith("--"));
 const outArgIdx = args.indexOf("--out");
+const batchDir = brand
+  ? path.join(PROJECT_ROOT, "data", "image_batches", brand)
+  : null;
 const outPath =
   outArgIdx >= 0
     ? path.resolve(args[outArgIdx + 1])
-    : path.join(PROJECT_ROOT, "data", `${brand}_image_update.csv`);
+    : path.join(batchDir || "", "image_update.csv");
 
 if (!brand) {
   console.error("Usage: node scripts/build-image-update-csv.js <brand> [--out path]");
   process.exit(1);
 }
 
-const urlMapPath = path.join(PROJECT_ROOT, "data", `${brand}_image_urls.json`);
-const coveragePath = path.join(PROJECT_ROOT, "data", `${brand}_zip_coverage.json`);
+const urlMapPath = path.join(batchDir, "image_urls.json");
+const coveragePath = path.join(batchDir, "zip_coverage.json");
 
 if (!fs.existsSync(urlMapPath) || !fs.existsSync(coveragePath)) {
-  console.error("Missing url map or coverage JSON under data/");
+  console.error(`Missing url map or coverage JSON under data/image_batches/${brand}/`);
   process.exit(1);
 }
 

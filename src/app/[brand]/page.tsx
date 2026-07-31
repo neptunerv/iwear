@@ -6,7 +6,7 @@ import { BrandProductRow } from "@/components/BrandProductRow";
 import { Footer } from "@/components/Footer";
 import { BrandScrollSnap } from "@/components/BrandScrollSnap";
 import { featuredBrands, getBrandPage } from "@/lib/brands";
-import { productHasImage } from "@/lib/product-utils";
+import { filterInStockProducts, productHasImage } from "@/lib/product-utils";
 import {
   getBestSellerHandles,
   getProductsByBrand,
@@ -63,12 +63,14 @@ export default async function BrandLandingPage({ params }: BrandLandingPageProps
   }
 
   const [brandProducts, bestSellerHandles] = await Promise.all([
-    getProductsByBrand(brand.name, brandProductSlotCount * 4),
+    // Over-fetch so sold-out drops don’t leave empty merchandising slots.
+    getProductsByBrand(brand.name, brandProductSlotCount * 8),
     getBestSellerHandles(100),
   ]);
+  const inStock = filterInStockProducts(brandProducts);
   // getProductsByBrand returns CREATED_AT desc — newest first.
-  const newIn = brandProducts.slice(0, brandProductSlotCount);
-  const bestSellers = sortByBestSellers(brandProducts, bestSellerHandles).slice(
+  const newIn = inStock.slice(0, brandProductSlotCount);
+  const bestSellers = sortByBestSellers(inStock, bestSellerHandles).slice(
     0,
     brandProductSlotCount,
   );

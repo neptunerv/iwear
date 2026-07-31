@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Footer } from "@/components/Footer";
-import { ProductCatalogGrid } from "@/components/ProductCatalogGrid";
+import { PageLoading } from "@/components/PageLoading";
+import { ShopCatalogShell } from "@/components/ShopCatalogShell";
 import { onlineBrandNames } from "@/lib/brands";
 import {
   firstSearchParam,
@@ -53,19 +54,17 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   const products = filterOnlineBrandProducts(allProducts);
 
   return (
-    <>
-      <Suspense fallback={null}>
-        <ProductCatalogGrid
-          title={brand ?? "Shop all"}
-          products={products}
-          bestSellerHandles={bestSellerHandles}
-          initialFilters={initialFilters}
-          initialPage={initialPage}
-          emptyMessage="Products coming soon — browse the layout or visit us in store."
-        />
-      </Suspense>
-
-      <Footer viewport className="shop-footer" />
-    </>
+    <Suspense fallback={<PageLoading />}>
+      <ShopCatalogShell
+        title={brand ?? "Shop all"}
+        products={products}
+        bestSellerHandles={bestSellerHandles}
+        initialFilters={initialFilters}
+        initialPage={initialPage}
+        emptyMessage="Products coming soon — browse the layout or visit us in store."
+      >
+        <Footer viewport className="shop-footer" />
+      </ShopCatalogShell>
+    </Suspense>
   );
 }

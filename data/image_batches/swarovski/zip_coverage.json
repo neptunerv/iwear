@@ -1,0 +1,196 @@
+{
+  "summary": {
+    "zips": 1,
+    "files": 224,
+    "style_colors": 20,
+    "satisfied_missing": 20,
+    "missing_before_brand": 24,
+    "missing_after_brand": 4,
+    "orphan_pairs": 0,
+    "unmatched_missing": 4,
+    "catalog_handles_matched_by_zips": 20,
+    "unparsed_files": 0
+  },
+  "satisfied": [
+    {
+      "handle": "swarovski-sk6002f-10079c",
+      "sku": "SK6002F-10079C",
+      "title": "Swarovski 6002 \u2014 Science Of Facets, Plastic Dark Green",
+      "vendor": "Swarovski",
+      "img_key": "0SK6002F__10079C",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6003f-100111",
+      "sku": "SK6003F-100111",
+      "title": "Swarovski 6003 \u2014 Science Of Facets, Plastic Black",
+      "vendor": "Swarovski",
+      "img_key": "0SK6003F__100111",
+      "files": 19,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6003f-103411",
+      "sku": "SK6003F-103411",
+      "title": "Swarovski 6003 \u2014 Science Of Facets, Plastic OpalineL.Brown",
+      "vendor": "Swarovski",
+      "img_key": "0SK6003F__103411",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6004f-10061u",
+      "sku": "SK6004F-10061U",
+      "title": "Swarovski 6004 \u2014 Science Of Facets, Plastic ClrBlue",
+      "vendor": "Swarovski",
+      "img_key": "0SK6004F__10061U",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6005-10091353",
+      "sku": "SK6005-10091353",
+      "title": "Swarovski 6005 \u2014 Science Of Industry, Plastic MediumHavana",
+      "vendor": "Swarovski",
+      "img_key": "0SK6005__100913",
+      "files": 19,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6015d-100187",
+      "sku": "SK6015D-100187",
+      "title": "Swarovski 6015 \u2014 Science Of Elegance, Plastic Black",
+      "vendor": "Swarovski",
+      "img_key": "0SK6015D__100187",
+      "files": 19,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6015d-100273",
+      "sku": "SK6015D-100273",
+      "title": "Swarovski 6015 \u2014 Science Of Elegance, Plastic Dark Havana",
+      "vendor": "Swarovski",
+      "img_key": "0SK6015D__100273",
+      "files": 19,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6018f-102787",
+      "sku": "SK6018F-102787",
+      "title": "Swarovski 6018 \u2014 Science Of Facets, Plastic Crystal",
+      "vendor": "Swarovski",
+      "img_key": "0SK6018F__102787",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6018f-104073",
+      "sku": "SK6018F-104073",
+      "title": "Swarovski 6018 \u2014 Science Of Facets, Plastic HvnMedia",
+      "vendor": "Swarovski",
+      "img_key": "0SK6018F__104073",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6019f-10317n",
+      "sku": "SK6019F-10317N",
+      "title": "Swarovski 6019 \u2014 Science Of Industry, Plastic MilkyPink",
+      "vendor": "Swarovski",
+      "img_key": "0SK6019F__10317N",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6020-10461155",
+      "sku": "SK6020-10461155",
+      "title": "Swarovski 6020 \u2014 Science Of Industry, Plastic Transparent.Dark GrytoClear",
+      "vendor": "Swarovski",
+      "img_key": "0SK6020__104611",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6021f-100187",
+      "sku": "SK6021F-100187",
+      "title": "Swarovski 6021 \u2014 Science Of Industry, Plastic Black",
+      "vendor": "Swarovski",
+      "img_key": "0SK6021F__100187",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6022f-102671",
+      "sku": "SK6022F-102671",
+      "title": "Swarovski 6022 \u2014 Science Of Industry, Plastic Dark Green",
+      "vendor": "Swarovski",
+      "img_key": "0SK6022F__102671",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk6023d-10311n",
+      "sku": "SK6023D-10311N",
+      "title": "Swarovski 6023 \u2014 Science Of Elegance, Plastic MilkyPink",
+      "vendor": "Swarovski",
+      "img_key": "0SK6023D__10311N",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk7005-4004t561",
+      "sku": "SK7005-4004T561",
+      "title": "Swarovski 7005 \u2014 Science Of Facets, Metal Gold",
+      "vendor": "Swarovski",
+      "img_key": "0SK7005__4004T5",
+      "files": 19,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk7005-40098f61",
+      "sku": "SK7005-40098F61",
+      "title": "Swarovski 7005 \u2014 Science Of Facets, Metal GunMtl",
+      "vendor": "Swarovski",
+      "img_key": "0SK7005__40098F",
+      "files": 19,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk7006-4003u558",
+      "sku": "SK7006-4003U558",
+      "title": "Swarovski 7006 \u2014 Science Of Elegance, Metal Dark Yellow",
+      "vendor": "Swarovski",
+      "img_key": "0SK7006__4003U5",
+      "files": 19,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk7015-40094u56",
+      "sku": "SK7015-40094U56",
+      "title": "Swarovski 7015 \u2014 Science Of Elegance, Metal GunMtl",
+      "vendor": "Swarovski",
+      "img_key": "0SK7015__40094U",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk7021d-40132q",
+      "sku": "SK7021D-40132Q",
+      "title": "Swarovski 7021 \u2014 Science Of Elegance, Metal PaleGold",
+      "vendor": "Swarovski",
+      "img_key": "0SK7021D__40132Q",
+      "files": 7,
+      "price": ""
+    },
+    {
+      "handle": "swarovski-sk7023-40138d37",
+      "sku": "SK7023-40138D37",
+      "title": "Swarovski 7023 \u2014 Science Of Elegance, Metal PaleGold",
+      "vendor": "Swarovski",
+      "img_key": "0SK7023__40138D",
+      "files": 7,
+      "price": ""
+    }
+  ]
+}

@@ -5,9 +5,9 @@ from collections import defaultdict
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 IMPORT = "/Users/vittorihuang/Downloads/shopify import 07:25/rayban/RayBan_FINAL_Shopify_Import.csv"
-COVERAGE = os.path.join(ROOT, "data/rayban_zip_coverage.json")
-URL_MAP = os.path.join(ROOT, "data/rayban_image_urls.json")
-OUT = os.path.join(ROOT, "data/rayban_image_update.csv")
+COVERAGE = os.path.join(ROOT, "data/image_batches/rayban/zip_coverage.json")
+URL_MAP = os.path.join(ROOT, "data/image_batches/rayban/image_urls.json")
+OUT = os.path.join(ROOT, "data/image_batches/rayban/image_update.csv")
 
 named = re.compile(
     r"^(0[A-Z0-9]+__[A-Z0-9_]+?)__(P21|STD)__(noshad|shad)__([a-z0-9]+)\.jpg$",
