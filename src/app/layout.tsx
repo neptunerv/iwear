@@ -42,11 +42,20 @@ export const metadata: Metadata = {
     title: `${site.name} — Authentic Ray-Ban & Oakley in Bali`,
     description: site.description,
     url: site.url,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: `${site.name} — Authentic Ray-Ban & Oakley in Bali`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.name} — Authentic Ray-Ban & Oakley in Bali`,
     description: site.description,
+    images: ["/opengraph-image"],
   },
 };
 
