@@ -7,7 +7,11 @@ import {
   getProductShapeLabel,
   productInModelFamily,
 } from "@/lib/product-model-family";
-import { getProductBrand, productsWithImages } from "@/lib/product-utils";
+import {
+  filterInStockProducts,
+  getProductBrand,
+  productsWithImages,
+} from "@/lib/product-utils";
 import {
   getAllProducts,
   vendorSearchQuery,
@@ -88,13 +92,15 @@ export async function getMoreColorProducts(
   const query = `${vendorSearchQuery(brand)} AND (${tagQueries.join(" OR ")})`;
   const products = await getAllProducts({
     query,
-    maxWithImages: 64,
+    maxWithImages: 96,
   });
 
   const all = dedupeVisualColorways(
-    productsWithImages(products)
-      .filter((item) => item.handle !== product.handle)
-      .filter((item) => productInModelFamily(item, modelTag)),
+    filterInStockProducts(
+      productsWithImages(products)
+        .filter((item) => item.handle !== product.handle)
+        .filter((item) => productInModelFamily(item, modelTag)),
+    ),
   );
 
   return {
@@ -153,8 +159,9 @@ export async function getSimilarProducts(
   const excluded = new Set([product.handle, ...excludeHandles]);
 
   async function search(query: string): Promise<Product[]> {
-    const products = await getAllProducts({ query, maxWithImages: first + 24 });
-    return productsWithImages(products).filter(
+    // Over-fetch so sold-out drops don’t leave empty similar-product slots.
+    const products = await getAllProducts({ query, maxWithImages: first * 8 });
+    return filterInStockProducts(productsWithImages(products)).filter(
       (item) => !excluded.has(item.handle),
     );
   }

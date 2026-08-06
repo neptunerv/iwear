@@ -302,6 +302,21 @@ function getMetafieldByKey(product: Product, key: string): Metafield {
   return product.metafields?.find((field) => field?.key === key) ?? null;
 }
 
+/**
+ * `specs.polarized` sometimes lags behind the actual lens copy (e.g. lens
+ * color reads "Dark Grey Polarized" while the boolean metafield still says
+ * false). Mirrors the fallback already used for shop filtering
+ * (`isProductPolarized` in catalog-filters.ts) so the PDP spec box agrees
+ * with search/filtering instead of contradicting it.
+ */
+function isPolarizedFromText(product: Product): boolean {
+  const lensMeta = getMetafieldByKey(product, "lens_color")?.value ?? "";
+  const text = [product.title, product.description, lensMeta]
+    .join(" ")
+    .toLowerCase();
+  return /\b(polarized|pol)\b/.test(text);
+}
+
 export function getProductSpecRows(product: Product): ProductSpecRow[] {
   const fromDescription = parseDescriptionDetails(
     product.description || product.descriptionHtml || "",
@@ -325,6 +340,12 @@ export function getProductSpecRows(product: Product): ProductSpecRow[] {
         formatLensColorValue,
       );
       value = resolveColorField(fromDescription.lens, lensMeta);
+    }
+
+    // Metafield says "No" (or is missing) but the lens copy clearly says
+    // otherwise — trust the text, same as the shop's polarized filter does.
+    if (key === "polarized" && value !== "Yes" && isPolarizedFromText(product)) {
+      value = "Yes";
     }
 
     if (!value) continue;
