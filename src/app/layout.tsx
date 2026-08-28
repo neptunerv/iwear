@@ -1,7 +1,8 @@
 import { Anton, Instrument_Serif } from "next/font/google";
 import localFont from "next/font/local";
 import type { Metadata } from "next";
-import { Analytics } from "@/components/Analytics";
+import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Providers } from "@/components/Providers";
@@ -79,6 +80,7 @@ export default async function RootLayout({
           </main>
           <Footer className="site-footer" />
           <Analytics />
+          <GoogleAnalytics />
         </Providers>
       </body>
     </html>
