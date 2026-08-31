@@ -31,7 +31,7 @@ const aspekta = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: `${site.name} — Authentic Ray-Ban & Oakley in Bali`,
+    default: `${site.name}: Authentic Ray-Ban & Oakley in Bali`,
     template: `%s | ${site.name}`,
   },
   description: site.description,
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_ID",
     siteName: site.name,
-    title: `${site.name} — Authentic Ray-Ban & Oakley in Bali`,
+    title: `${site.name}: Authentic Ray-Ban & Oakley in Bali`,
     description: site.description,
     url: site.url,
     images: [
@@ -48,13 +48,13 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: `${site.name} — Authentic Ray-Ban & Oakley in Bali`,
+        alt: `${site.name}: Authentic Ray-Ban & Oakley in Bali`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} — Authentic Ray-Ban & Oakley in Bali`,
+    title: `${site.name}: Authentic Ray-Ban & Oakley in Bali`,
     description: site.description,
     images: ["/opengraph-image"],
   },

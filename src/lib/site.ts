@@ -7,7 +7,7 @@ export const site = {
   shortName: "iWear",
   tagline: "Eyewear in Bali",
   description:
-    "Bali eyewear shop. Shop Ray-Ban, Oakley, Swarovski and Scuderia Ferrari online — more brands in store.",
+    "Bali eyewear shop. Shop Ray-Ban, Oakley, Swarovski and Scuderia Ferrari online. More brands in store.",
   location: "Bali, Indonesia",
   /**
    * Set NEXT_PUBLIC_WHATSAPP_URL to a real wa.me link (e.g. https://wa.me/62…).

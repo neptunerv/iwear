@@ -20,22 +20,22 @@ export default function PrivacyPage() {
       <h2 className="font-poster text-xl uppercase">Information we collect</h2>
       <ul>
         <li>
-          <span className="text-ink">Contact &amp; order details</span> — name,
+          <span className="text-ink">Contact &amp; order details</span>: name,
           email, phone, shipping address, and the items you order, collected
           when you check out or create an account.
         </li>
         <li>
-          <span className="text-ink">Account information</span> — if you sign
+          <span className="text-ink">Account information</span>: if you sign
           in with a Shopify customer account, we can see your order history
           and saved details.
         </li>
         <li>
-          <span className="text-ink">Browsing data</span> — pages viewed,
+          <span className="text-ink">Browsing data</span>: pages viewed,
           device and browser type, and approximate location, collected
           automatically via cookies and analytics tools.
         </li>
         <li>
-          <span className="text-ink">Communications</span> — messages you send
+          <span className="text-ink">Communications</span>: messages you send
           us over WhatsApp, Instagram, or email when asking about an order,
           fit, or warranty claim.
         </li>
@@ -94,7 +94,7 @@ export default function PrivacyPage() {
       <h2 className="font-poster text-xl uppercase">Changes to this policy</h2>
       <p>
         We may update this policy as our practices change. The date above
-        reflects the latest revision — check back occasionally for updates.
+        reflects the latest revision. Check back occasionally for updates.
       </p>
 
       <h2 className="font-poster text-xl uppercase">Contact us</h2>

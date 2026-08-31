@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "FAQ",
-  description: `Common questions about shopping at ${site.name} — authenticity, fit, shipping, and stores.`,
+  description: `Common questions about shopping at ${site.name}: authenticity, fit, shipping, and stores.`,
 };
 
 function Question({ q, children }: { q: string; children: ReactNode }) {
@@ -23,20 +23,20 @@ export default function FaqPage() {
     <LegalPage eyebrow="Help" title="FAQ">
       <Question q="Are your sunglasses authentic?">
         Yes. {site.name} is an authorized retail partner for every brand we
-        sell — sourced directly from the manufacturer, never grey market.
+        sell, sourced directly from the manufacturer, never grey market.
         Every pair comes with the full manufacturer warranty.
       </Question>
 
       <Question q="Which brands can I buy online?">
         {site.brands.join(", ")} are available for online checkout. We also
-        carry {site.inStoreBrands.length}+ additional luxury brands —
-        including {site.inStoreBrands.slice(0, 4).join(", ")}, and more — in
+        carry {site.inStoreBrands.length}+ additional luxury brands,
+        including {site.inStoreBrands.slice(0, 4).join(", ")}, and more, in
         our Bali stores only.
       </Question>
 
       <Question q="Do you sell polarized or prescription lenses?">
         Many of our Ray-Ban and Oakley frames are available with polarized
-        lenses — check the product page for lens options. For prescription
+        lenses. Check the product page for lens options. For prescription
         lenses, visit us in store so our team can fit you properly.
       </Question>
 
@@ -63,7 +63,7 @@ export default function FaqPage() {
       </Question>
 
       <Question q="Can I return or exchange an online order in store?">
-        Yes — bring your order confirmation and the unworn item to either
+        Yes. Bring your order confirmation and the unworn item to either
         store within 7 days of delivery. See our{" "}
         <Link href="/shipping" className="text-ink underline underline-offset-4">
           shipping &amp; returns

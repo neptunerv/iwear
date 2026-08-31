@@ -65,7 +65,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             Find frames
           </p>
           <p className="mt-4 max-w-sm text-sm font-semibold leading-relaxed text-ink-muted">
-            Search by brand, model, or style — or browse the full collection.
+            Search by brand, model, or style, or browse the full collection.
           </p>
           <Link
             href="/shop"

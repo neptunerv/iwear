@@ -707,7 +707,7 @@ export function getProductDisplayTitle(product: Product): ProductDisplayTitle {
   const parts = product.title.split(/\s+[—–]\s+/);
   const name = formatModelName(parts[0]?.trim() || product.title, brand);
 
-  const remainder = parts.slice(1).join(" — ").trim();
+  const remainder = parts.slice(1).join(" - ").trim();
   const fromDescription = parseDescriptionDetails(
     product.description || product.descriptionHtml || "",
   );

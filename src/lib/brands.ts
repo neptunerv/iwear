@@ -106,7 +106,7 @@ export const featuredBrands: BrandPage[] = [
     shopHref: "/ray-ban/shop",
     collectionHandle: "ray-ban",
     blurb:
-      "Wayfarer, Aviator, Clubmaster — the icons, in stock and ready to wear out of the store.",
+      "Wayfarer, Aviator, Clubmaster. The icons, in stock and ready to wear out of the store.",
     heroVideo: resolveRayBanHeroVideo(),
     cardImage: {
       src: "/images/home/ray-ban.jpg",

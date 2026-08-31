@@ -20,7 +20,7 @@ export default function WarrantyPage() {
       <p>
         Manufacturer warranties typically cover manufacturing defects in
         materials and workmanship for a limited period from the date of
-        purchase. Coverage varies by brand — ask in store or check the materials
+        purchase. Coverage varies by brand. Ask in store or check the materials
         included with your frame for exact terms.
       </p>
 
@@ -28,7 +28,7 @@ export default function WarrantyPage() {
       <p>
         Normal wear, accidental damage, scratches from use, lost parts, and
         unauthorized repairs are generally excluded. Keep your original receipt
-        or order confirmation — warranty claims require proof of purchase from{" "}
+        or order confirmation. Warranty claims require proof of purchase from{" "}
         {site.name}.
       </p>
 

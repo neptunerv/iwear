@@ -61,7 +61,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         bestSellerHandles={bestSellerHandles}
         initialFilters={initialFilters}
         initialPage={initialPage}
-        emptyMessage="Products coming soon — browse the layout or visit us in store."
+        emptyMessage="Products coming soon. Browse the layout or visit us in store."
       >
         <Footer viewport className="shop-footer" />
       </ShopCatalogShell>

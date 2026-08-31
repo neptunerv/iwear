@@ -9,7 +9,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Stores",
   description:
-    "Visit iWear Sunglasses at Beachwalk Kuta or Icon Mall Sanur. Try on frames in person — Michael Kors, Prada, Gucci, Dior and more brands only in store.",
+    "Visit iWear Sunglasses at Beachwalk Kuta or Icon Mall Sanur. Try on frames in person. Michael Kors, Prada, Gucci, Dior and more brands only in store.",
 };
 
 export default function StoresPage() {
@@ -56,7 +56,7 @@ export default function StoresPage() {
             Exclusive in store
           </h2>
           <p className="mt-5 max-w-md text-center text-sm font-semibold leading-relaxed text-ink/80 sm:text-base">
-            Prada, Gucci, Dior and more — try them at Beachwalk or Sanur.
+            Prada, Gucci, Dior and more. Try them at Beachwalk or Sanur.
           </p>
 
           <ul className="mt-8 flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-4 sm:mt-12 sm:gap-x-10 sm:gap-y-10">

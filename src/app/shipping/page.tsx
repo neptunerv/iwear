@@ -22,7 +22,7 @@ export default function ShippingPage() {
       <h2 className="font-poster text-xl uppercase">In-store pickup</h2>
       <p>
         Choose in-store pickup at checkout to collect your order at
-        Beachwalk Kuta or Icon Mall Sanur — free of charge. We&rsquo;ll
+        Beachwalk Kuta or Icon Mall Sanur, free of charge. We&rsquo;ll
         message you as soon as it&rsquo;s ready.
       </p>
 
@@ -30,7 +30,7 @@ export default function ShippingPage() {
       <ul>
         <li>Unworn frames in original condition, with all packaging and tags, can be returned or exchanged within 7 days of delivery.</li>
         <li>Prescription lenses and other made-to-order items are final sale unless faulty.</li>
-        <li>To start a return, message us on {site.whatsappLabel} or email {site.email} with your order number — we&rsquo;ll confirm the next step before you send anything back.</li>
+        <li>To start a return, message us on {site.whatsappLabel} or email {site.email} with your order number. We&rsquo;ll confirm the next step before you send anything back.</li>
         <li>Approved returns can also be dropped off in person at either store.</li>
       </ul>
 
@@ -45,7 +45,7 @@ export default function ShippingPage() {
       <h2 className="font-poster text-xl uppercase">Manufacturer warranty</h2>
       <p>
         Manufacturing defects are covered separately under each
-        brand&rsquo;s warranty — see our{" "}
+        brand&rsquo;s warranty. See our{" "}
         <Link href="/warranty" className="text-ink underline underline-offset-4">
           warranty page
         </Link>{" "}

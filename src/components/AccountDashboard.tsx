@@ -22,7 +22,7 @@ function formatOrderDate(value: string) {
 }
 
 function statusLabel(value: string | null) {
-  if (!value) return "—";
+  if (!value) return "-";
   return value.replace(/_/g, " ").toLowerCase();
 }
 
@@ -84,7 +84,7 @@ export function AccountDashboard({ customer }: AccountDashboardProps) {
               No orders yet
             </p>
             <p className="mt-2 text-sm font-semibold text-ink-muted">
-              Guest checkout works anytime — orders appear here after you shop
+              Guest checkout works anytime. Orders appear here after you shop
               while signed in.
             </p>
             <Link

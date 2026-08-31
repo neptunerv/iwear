@@ -35,7 +35,7 @@ export default function TermsPage() {
       <h2 className="font-poster text-xl uppercase">Products &amp; pricing</h2>
       <ul>
         <li>All prices are listed in Indonesian Rupiah (IDR) and include applicable taxes unless stated otherwise.</li>
-        <li>We try to keep prices and stock accurate, but errors can happen — if a listed price or availability is wrong, we&rsquo;ll contact you before processing the order.</li>
+        <li>We try to keep prices and stock accurate, but errors can happen. If a listed price or availability is wrong, we&rsquo;ll contact you before processing the order.</li>
         <li>Product photos are representative; frame color and lens tint can vary slightly by screen and batch.</li>
       </ul>
 
@@ -44,8 +44,8 @@ export default function TermsPage() {
         Orders are placed and paid for through Shopify&rsquo;s secure
         checkout. An order is confirmed once payment is authorized and you
         receive an order confirmation email. We reserve the right to cancel
-        or refuse any order — for example, in cases of suspected fraud,
-        pricing errors, or stock unavailability — and will refund any
+        or refuse any order, for example, in cases of suspected fraud,
+        pricing errors, or stock unavailability, and will refund any
         payment already taken.
       </p>
 
@@ -67,7 +67,7 @@ export default function TermsPage() {
       <p>
         You must provide accurate information when ordering or creating an
         account, and be legally able to enter a binding contract in
-        Indonesia. Keep your account credentials confidential — you&rsquo;re
+        Indonesia. Keep your account credentials confidential. You&rsquo;re
         responsible for activity under your account.
       </p>
 

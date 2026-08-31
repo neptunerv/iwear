@@ -36,7 +36,7 @@ const footerAbout = [
 ] as const;
 
 const footerAboutMobile =
-  "Bali eyewear shop. Ray-Ban, Oakley & more — online and in store.";
+  "Bali eyewear shop. Ray-Ban, Oakley & more, online and in store.";
 
 const exploreLinks: FooterNavItem[] = [
   { href: "/account", label: "Account" },

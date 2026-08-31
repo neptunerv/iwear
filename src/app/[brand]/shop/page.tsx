@@ -84,7 +84,7 @@ export default async function BrandShopPage({
         emptyMessage={
           family
             ? `No ${formatModelLabel(family)} styles found.`
-            : `No ${brand.name} products yet — check back soon.`
+            : `No ${brand.name} products yet. Check back soon.`
         }
       >
         <Footer viewport className="shop-footer" />
