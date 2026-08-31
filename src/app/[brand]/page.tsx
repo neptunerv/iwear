@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BrandEditorialHero } from "@/components/BrandEditorialHero";
-import { BrandExploreSection } from "@/components/BrandExploreSection";
 import { BrandProductRow } from "@/components/BrandProductRow";
 import { Footer } from "@/components/Footer";
 import { BrandScrollSnap } from "@/components/BrandScrollSnap";
@@ -86,10 +85,6 @@ export default async function BrandLandingPage({ params }: BrandLandingPageProps
         videoSrc={brand.heroVideo?.src}
         videoScale={brand.heroVideo?.scale}
       />
-
-      {brand.slug === "ray-ban" || brand.slug === "oakley" ? (
-        <BrandExploreSection shopHref={brand.shopHref} />
-      ) : null}
 
       <BrandProductRow
         title="Best sellers"

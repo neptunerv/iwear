@@ -1,10 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { HomeScrollSnap } from "@/components/HomeScrollSnap";
 import { Footer } from "@/components/Footer";
 import { IwearWordmark } from "@/components/IwearWordmark";
 import { HomeProductShowcase } from "@/components/HomeProductShowcase";
-import { TrustSection } from "@/components/TrustSection";
 import { VisitUsSection } from "@/components/VisitUsSection";
 import { featuredBrands } from "@/lib/brands";
 import { filterInStockProducts, filterOnlineBrandProducts } from "@/lib/product-utils";
@@ -76,25 +76,44 @@ export default async function HomePage() {
       </section>
 
       {/* Featured brands — one viewport, equal split */}
-      <section className="snap-section grid grid-rows-2 bg-cream md:grid-cols-2 md:grid-rows-1 md:border-t md:border-ink">
+      <section className="snap-section grid grid-rows-2 bg-ink md:grid-cols-2 md:grid-rows-1 md:border-t md:border-ink">
         {featuredBrands.map((brand, index) => (
           <Link
             key={brand.name}
             href={brand.shopHref}
-            className={`group flex min-h-0 flex-col justify-end bg-cream px-6 py-8 transition-colors hover:bg-sand-50 sm:px-12 sm:py-16 ${
+            className={`group relative flex min-h-0 flex-col justify-end overflow-hidden ${
               index === 0
                 ? "border-b border-ink md:border-b-0 md:border-r"
                 : ""
             }`}
           >
-            <div className="min-h-0">
+            {brand.cardImage ? (
+              <>
+                <Image
+                  src={brand.cardImage.src}
+                  alt={brand.cardImage.alt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  style={{
+                    objectPosition: brand.cardImage.objectPosition,
+                  }}
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/45 to-transparent"
+                />
+              </>
+            ) : null}
+
+            <div className="relative z-10 px-6 py-8 text-cream sm:px-12 sm:py-16">
               <h2 className="font-poster text-5xl uppercase leading-none sm:text-7xl lg:text-8xl">
                 {brand.name}
               </h2>
-              <p className="mt-3 max-w-sm text-sm font-semibold leading-relaxed text-ink-muted sm:mt-4">
+              <p className="mt-3 max-w-sm text-sm font-semibold leading-relaxed text-cream/80 sm:mt-4">
                 {brand.blurb}
               </p>
-              <p className="mt-5 inline-block border border-ink px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors group-hover:bg-ink group-hover:text-cream sm:mt-8 sm:px-8 sm:py-4 sm:text-base">
+              <p className="mt-5 inline-block border border-cream px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors group-hover:bg-cream group-hover:text-ink sm:mt-8 sm:px-8 sm:py-4 sm:text-base">
                 Shop {brand.name}
               </p>
             </div>
@@ -108,8 +127,6 @@ export default async function HomePage() {
           { title: "New in store", products: newProducts },
         ]}
       />
-
-      <TrustSection />
 
       <VisitUsSection />
 

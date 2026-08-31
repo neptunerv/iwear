@@ -3,6 +3,12 @@ export type BrandHeroVideo = {
   scale?: number;
 };
 
+export type BrandCardImage = {
+  src: string;
+  alt: string;
+  objectPosition?: string;
+};
+
 export type BrandPage = {
   name: string;
   slug: string;
@@ -11,6 +17,7 @@ export type BrandPage = {
   blurb: string;
   collectionHandle: string;
   heroVideo?: BrandHeroVideo;
+  cardImage?: BrandCardImage;
 };
 
 const rayBanHeroVideos = {
@@ -101,6 +108,11 @@ export const featuredBrands: BrandPage[] = [
     blurb:
       "Wayfarer, Aviator, Clubmaster — the icons, in stock and ready to wear out of the store.",
     heroVideo: resolveRayBanHeroVideo(),
+    cardImage: {
+      src: "/images/home/ray-ban.jpg",
+      alt: "Jennie wearing Ray-Ban sunglasses",
+      objectPosition: "center top",
+    },
   },
   {
     name: "Oakley",
@@ -111,6 +123,11 @@ export const featuredBrands: BrandPage[] = [
     blurb:
       "Holbrook, Frogskins and performance Prizm lenses for surf, sport and everything after.",
     heroVideo: resolveOakleyHeroVideo(),
+    cardImage: {
+      src: "/images/home/oakley.jpg",
+      alt: "Kylian Mbappé wearing Oakley sunglasses",
+      objectPosition: "center",
+    },
   },
 ];
 

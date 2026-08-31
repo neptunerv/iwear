@@ -7,7 +7,6 @@ import {
   createDefaultFilters,
   frameShapeOptions,
   frameTypeOptions,
-  genderOptions,
   getAvailableBrands,
   lensTypeOptions,
   oakleyModelOptions,
@@ -99,7 +98,7 @@ function toggleBrand(
   return {
     ...filters,
     brands: nextBrands,
-    // Shape / gender / frame type are cross-brand — keep them when brand pills change.
+    // Shape / frame type are cross-brand — keep them when brand pills change.
     // Model is Oakley-only; lens extras stay Ray-Ban+Oakley for now.
     modelFamilies: hasOakley ? filters.modelFamilies : [],
     lensTypes: nextBrands.some((b) => {
@@ -128,7 +127,7 @@ export function CatalogFilterPanel({
   const activeCount = countActiveFilters(filters, fixedBrand);
 
   // Model stays Oakley-only. Lens type still gated to Ray-Ban/Oakley for now.
-  // Shape / gender / frame type are always available.
+  // Shape / frame type are always available.
   const isOakley = brandSelected("Oakley", filters, fixedBrand);
   const showLensExtras =
     brandSelected("Ray-Ban", filters, fixedBrand) || isOakley;
@@ -216,24 +215,6 @@ export function CatalogFilterPanel({
                     onChange({
                       ...filters,
                       frameShapes: toggle(filters.frameShapes, option.id),
-                    })
-                  }
-                />
-              ))}
-            </div>
-          </FilterSection>
-
-          <FilterSection title="Gender">
-            <div className="flex flex-wrap gap-2">
-              {genderOptions.map((option) => (
-                <TogglePill
-                  key={option.id}
-                  label={option.label}
-                  active={filters.genders.includes(option.id)}
-                  onClick={() =>
-                    onChange({
-                      ...filters,
-                      genders: toggle(filters.genders, option.id),
                     })
                   }
                 />
