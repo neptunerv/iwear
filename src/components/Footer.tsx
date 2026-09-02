@@ -31,7 +31,7 @@ const bodyClass = "text-[10px] font-semibold sm:text-base";
 const mutedClass = `${bodyClass} text-ink/80`;
 
 const footerAbout = [
-  "iWear is a Bali eyewear shop. Browse Ray-Ban, Oakley, Swarovski, and Scuderia Ferrari online, with more brands in store.",
+  "iWear Sunglasses is a Bali-based eyewear retailer that stocks Ray-Ban, Oakley, Swarovski, and Scuderia Ferrari online, with more brands in store.",
   "Visit Beachwalk Kuta or Icon Mall Sanur to try on frames and get fitted. Free delivery across Bali.",
 ] as const;
 
