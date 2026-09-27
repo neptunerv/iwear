@@ -204,13 +204,9 @@ export function ProductForm({
         </div>
       ) : null}
 
-      <ul className="space-y-3 border-t border-ink/15 pt-6 text-sm font-semibold text-ink-muted">
-        <li>Full manufacturer warranty on every frame</li>
-        <li>Free delivery across Bali · international shipping at checkout</li>
-        <li>
-          <InStoreAvailabilityNote />
-        </li>
-      </ul>
+      <p className="border-t border-ink/15 pt-6 text-sm font-semibold text-ink-muted">
+        <InStoreAvailabilityNote />
+      </p>
     </div>
   );
 }

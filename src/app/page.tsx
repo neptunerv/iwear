@@ -7,8 +7,9 @@ import { IwearWordmark } from "@/components/IwearWordmark";
 import { HomeProductShowcase } from "@/components/HomeProductShowcase";
 import { VisitUsSection } from "@/components/VisitUsSection";
 import { featuredBrands } from "@/lib/brands";
+import { homePopularHandles } from "@/lib/home-picks";
 import { filterInStockProducts, filterOnlineBrandProducts } from "@/lib/product-utils";
-import { getBestSellers, getNewProducts } from "@/lib/shopify";
+import { getNewProducts, getProductByHandle } from "@/lib/shopify";
 
 export const metadata: Metadata = {
   alternates: {
@@ -17,14 +18,13 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // Over-fetch so we still fill 4 slots after dropping sold-out / non-online.
-  const [bestSellersRaw, newProductsRaw] = await Promise.all([
-    getBestSellers(36),
+  const [popularRaw, newProductsRaw] = await Promise.all([
+    Promise.all(homePopularHandles.map((handle) => getProductByHandle(handle))),
     getNewProducts(36),
   ]);
-  const bestSellers = filterInStockProducts(
-    filterOnlineBrandProducts(bestSellersRaw),
-  ).slice(0, 4);
+  const popular = filterInStockProducts(
+    popularRaw.flatMap((product) => (product ? [product] : [])),
+  );
   const newProducts = filterInStockProducts(
     filterOnlineBrandProducts(newProductsRaw),
   ).slice(0, 4);
@@ -123,7 +123,7 @@ export default async function HomePage() {
 
       <HomeProductShowcase
         strips={[
-          { title: "Best sellers", products: bestSellers },
+          { title: "Popular", products: popular },
           { title: "New in store", products: newProducts },
         ]}
       />

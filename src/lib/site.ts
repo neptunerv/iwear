@@ -97,6 +97,11 @@ export const site = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   currency: "IDR",
   locale: "en-ID",
+  /**
+   * Online checkout is paused until payments and fulfillment are ready.
+   * Set to true to restore the Shopify checkout button.
+   */
+  checkoutEnabled: false as boolean,
 } as const;
 
 export const primaryStore = site.stores[0];

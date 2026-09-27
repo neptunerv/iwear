@@ -13,12 +13,9 @@ type LegalPageProps = {
 export function LegalPage({ eyebrow, title, updated, children }: LegalPageProps) {
   return (
     <>
-      <HomeScrollSnap keepHeaderBorder />
+      <HomeScrollSnap keepHeaderBorder documentFlow />
 
-      <section
-        id="hero"
-        className="snap-section relative flex flex-col overflow-y-auto bg-cream text-ink"
-      >
+      <section className="bg-cream text-ink">
         <div className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center px-6 py-12 text-center sm:py-16">
           <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-ink-muted">
             {eyebrow}
@@ -37,7 +34,7 @@ export function LegalPage({ eyebrow, title, updated, children }: LegalPageProps)
         </div>
       </section>
 
-      <Footer viewport snap className="legal-page" />
+      <Footer className="legal-page" />
     </>
   );
 }

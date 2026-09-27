@@ -298,7 +298,9 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
           </div>
         ) : null}
         <p className="mt-1 text-xs font-semibold text-ink-muted">
-          Shipping and taxes calculated at checkout.
+          {site.checkoutEnabled
+            ? "Shipping and taxes calculated at checkout."
+            : "Online checkout isn’t available yet."}
         </p>
 
         {error ? (
@@ -307,16 +309,35 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
           </p>
         ) : null}
 
-        <a
-          href={cart.checkoutUrl}
-          className="mt-4 flex w-full items-center justify-center border border-ink bg-ink px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-colors hover:bg-brand hover:text-ink"
-        >
-          Checkout
-        </a>
+        {site.checkoutEnabled ? (
+          <a
+            href={cart.checkoutUrl}
+            className="mt-4 flex w-full items-center justify-center border border-ink bg-ink px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-cream transition-colors hover:bg-brand hover:text-ink"
+          >
+            Checkout
+          </a>
+        ) : (
+          <>
+            <p className="mt-4 text-xs font-semibold leading-relaxed text-ink">
+              Message us to place an order, or visit us in store.
+            </p>
+            <button
+              type="button"
+              disabled
+              className="mt-3 flex w-full cursor-not-allowed items-center justify-center border border-ink/30 bg-ink/10 px-6 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-ink-muted"
+            >
+              Checkout unavailable
+            </button>
+          </>
+        )}
 
         <ul className="mt-4 space-y-1.5 text-[11px] font-semibold leading-relaxed text-ink-muted">
-          <li>Secure checkout powered by Shopify</li>
-          <li>Order confirmation email after payment</li>
+          {site.checkoutEnabled ? (
+            <>
+              <li>Secure checkout powered by Shopify</li>
+              <li>Order confirmation email after payment</li>
+            </>
+          ) : null}
           <li>
             Need help?{" "}
             <a

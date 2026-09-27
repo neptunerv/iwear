@@ -26,7 +26,7 @@ export function InStoreAvailabilityNote({
   if (compact) {
     return (
       <p className="border-b border-ink bg-cream px-3 py-2 text-center text-[10px] font-semibold leading-relaxed text-ink-muted sm:px-5 sm:text-xs">
-        Online ships from our warehouse. More frames in store. {messageLink}
+        More frames in store. {messageLink}
       </p>
     );
   }

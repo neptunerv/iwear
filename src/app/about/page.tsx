@@ -36,8 +36,7 @@ export default function AboutPage() {
             <p>
               Island light is sharp and the days run long. Whether you need
               polarized lenses for the water or a classic frame for everyday
-              wear, our team helps you find the right fit in person or ship your
-              pair across Bali and beyond.
+              wear, visit us in store to find the right fit.
             </p>
             <p>
               Shop Ray-Ban and Oakley online anytime. Visit us in store to try on

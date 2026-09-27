@@ -84,8 +84,7 @@ export function AccountDashboard({ customer }: AccountDashboardProps) {
               No orders yet
             </p>
             <p className="mt-2 text-sm font-semibold text-ink-muted">
-              Guest checkout works anytime. Orders appear here after you shop
-              while signed in.
+              Orders appear here after you shop while signed in.
             </p>
             <Link
               href="/shop"

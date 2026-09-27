@@ -32,7 +32,7 @@ const mutedClass = `${bodyClass} text-ink/80`;
 
 const footerAbout = [
   "iWear Sunglasses is a Bali-based eyewear retailer that stocks Ray-Ban, Oakley, Swarovski, and Scuderia Ferrari online, with more brands in store.",
-  "Visit Beachwalk Kuta or Icon Mall Sanur to try on frames and get fitted. Free delivery across Bali.",
+  "Visit Beachwalk Kuta or Icon Mall Sanur to try on frames and get fitted.",
 ] as const;
 
 const footerAboutMobile =
@@ -47,8 +47,6 @@ const exploreLinks: FooterNavItem[] = [
 ];
 
 const legalLinks: FooterNavItem[] = [
-  { href: "/warranty", label: "Warranty" },
-  { href: "/shipping", label: "Shipping" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
 ];

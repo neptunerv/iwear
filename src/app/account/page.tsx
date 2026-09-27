@@ -51,8 +51,8 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             </h1>
             <p className="mt-4 text-sm font-semibold leading-relaxed text-ink-muted">
               {customer
-                ? "View recent orders and track shipments. Guest checkout still works anytime."
-                : "Sign in or create an account. Guest checkout and wishlist stay available anytime."}
+                ? "View recent orders."
+                : "Sign in or create an account. Your wishlist stays available anytime."}
             </p>
           </div>
 

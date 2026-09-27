@@ -2,21 +2,38 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { observeSnapHeaderTheme } from "@/lib/header-theme";
+import {
+  clearHeaderTheme,
+  observeSnapHeaderTheme,
+  setHeaderTheme,
+} from "@/lib/header-theme";
 import { resetSnapScroll } from "@/lib/snap-scroll";
 import { lockSnapViewportHeight } from "@/lib/snap-viewport";
 
 type HomeScrollSnapProps = {
   /** Cream-only pages (about / legal / account) — always black nav. */
   keepHeaderBorder?: boolean;
+  /**
+   * Long text pages scroll with the document. Snap panels lock each
+   * section to one viewport and clip anything past the fold.
+   */
+  documentFlow?: boolean;
 };
 
 export function HomeScrollSnap({
   keepHeaderBorder = false,
+  documentFlow = false,
 }: HomeScrollSnapProps) {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (documentFlow) {
+      setHeaderTheme("ink");
+      return () => {
+        clearHeaderTheme();
+      };
+    }
+
     document.documentElement.classList.add("snap-scroll");
     document.body.classList.add("snap-scroll-page");
     const unlockSnapVh = lockSnapViewportHeight();
@@ -32,9 +49,11 @@ export function HomeScrollSnap({
       document.body.classList.remove("scrolled");
       resetSnapScroll();
     };
-  }, [keepHeaderBorder]);
+  }, [documentFlow, keepHeaderBorder]);
 
   useEffect(() => {
+    if (documentFlow) return;
+
     const previous = history.scrollRestoration;
     history.scrollRestoration = "manual";
     resetSnapScroll();
@@ -42,7 +61,7 @@ export function HomeScrollSnap({
     return () => {
       history.scrollRestoration = previous;
     };
-  }, [pathname]);
+  }, [documentFlow, pathname]);
 
   return null;
 }

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { LegalPage } from "@/components/LegalPage";
 import { site } from "@/lib/site";
 
@@ -13,15 +12,7 @@ export default function TermsPage() {
     <LegalPage eyebrow="Legal" title="Terms of use" updated="August 2026">
       <p>
         By using this site or ordering from {site.name}, you agree to the
-        terms below. Please read them alongside our{" "}
-        <Link href="/shipping" className="text-ink underline underline-offset-4">
-          shipping &amp; returns
-        </Link>{" "}
-        and{" "}
-        <Link href="/warranty" className="text-ink underline underline-offset-4">
-          warranty
-        </Link>{" "}
-        pages, which form part of these terms.
+        terms below.
       </p>
 
       <h2 className="font-poster text-xl uppercase">About iWear</h2>
@@ -50,18 +41,7 @@ export default function TermsPage() {
       </p>
 
       <h2 className="font-poster text-xl uppercase">Shipping, returns &amp; warranty</h2>
-      <p>
-        Delivery timelines, return eligibility, and manufacturer warranty
-        coverage are set out on our{" "}
-        <Link href="/shipping" className="text-ink underline underline-offset-4">
-          shipping &amp; returns
-        </Link>{" "}
-        and{" "}
-        <Link href="/warranty" className="text-ink underline underline-offset-4">
-          warranty
-        </Link>{" "}
-        pages.
-      </p>
+      <p>Coming soon. Those details aren&rsquo;t published yet.</p>
 
       <h2 className="font-poster text-xl uppercase">Your account</h2>
       <p>
