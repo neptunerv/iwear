@@ -70,12 +70,6 @@ export function ProductForm({
   }
 
   const soldOut = !availableForSale || !variant?.availableForSale;
-  const quantityAvailable = variant?.quantityAvailable;
-  const lowStock =
-    !soldOut &&
-    typeof quantityAvailable === "number" &&
-    quantityAvailable > 0 &&
-    quantityAvailable <= 3;
   const wishlistItem = {
     handle,
     title,
@@ -157,11 +151,6 @@ export function ProductForm({
       ))}
 
       <div className="flex flex-col gap-3">
-        {lowStock ? (
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
-            Only {quantityAvailable} left in stock
-          </p>
-        ) : null}
         <div className="flex gap-3">
           <button
             type="button"

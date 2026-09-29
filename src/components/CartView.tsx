@@ -127,10 +127,6 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
         {lines.map((line) => {
           const image = lineImage(line);
           const qtyAvailable = line.merchandise.quantityAvailable;
-          const lowStock =
-            typeof qtyAvailable === "number" &&
-            qtyAvailable > 0 &&
-            qtyAvailable <= 3;
 
           return (
             <li
@@ -167,12 +163,6 @@ export function CartView({ compact = false, onNavigate }: CartViewProps) {
                     line.cost.totalAmount.currencyCode,
                   )}
                 </p>
-                {lowStock ? (
-                  <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.16em] text-brand">
-                    Only {qtyAvailable} left
-                  </p>
-                ) : null}
-
                 <div className="mt-3 flex items-center gap-3">
                   <div className="flex items-center border border-ink">
                     <button

@@ -6,8 +6,8 @@ type InStoreAvailabilityNoteProps = {
 };
 
 /**
- * Points shoppers at retail for frames that aren’t in warehouse
- * (Sentral) stock for online checkout.
+ * Catalog listings are not live store-floor stock. Ask shoppers to
+ * confirm a frame before they come in.
  */
 export function InStoreAvailabilityNote({
   compact = false,
@@ -26,14 +26,15 @@ export function InStoreAvailabilityNote({
   if (compact) {
     return (
       <p className="border-b border-ink bg-cream px-3 py-2 text-center text-[10px] font-semibold leading-relaxed text-ink-muted sm:px-5 sm:text-xs">
-        More frames in store. {messageLink}
+        Listings aren’t live store stock. {messageLink} to check a frame.
       </p>
     );
   }
 
   return (
     <>
-      More colors in store. {messageLink}
+      This page isn’t live store stock. {messageLink} to confirm it’s in
+      store.
     </>
   );
 }

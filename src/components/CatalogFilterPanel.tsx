@@ -308,7 +308,7 @@ export function CatalogFilterPanel({
                 }
                 className="h-4 w-4 accent-ink"
               />
-              In stock only
+              Hide sold-out listings
             </label>
           </FilterSection>
 

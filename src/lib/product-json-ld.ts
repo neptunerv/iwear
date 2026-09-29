@@ -21,9 +21,6 @@ export function buildProductJsonLd(product: Product) {
     url: `${site.url.replace(/\/$/, "")}/products/${product.handle}`,
     priceCurrency: price.currencyCode,
     price: price.amount,
-    availability: product.availableForSale
-      ? "https://schema.org/InStock"
-      : "https://schema.org/OutOfStock",
     seller: {
       "@type": "Organization",
       name: site.name,
