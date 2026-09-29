@@ -7,9 +7,9 @@ import { IwearWordmark } from "@/components/IwearWordmark";
 import { HomeProductShowcase } from "@/components/HomeProductShowcase";
 import { VisitUsSection } from "@/components/VisitUsSection";
 import { featuredBrands } from "@/lib/brands";
-import { homePopularHandles } from "@/lib/home-picks";
-import { filterInStockProducts, filterOnlineBrandProducts } from "@/lib/product-utils";
-import { getNewProducts, getProductByHandle } from "@/lib/shopify";
+import { homeNewHandles, homePopularHandles } from "@/lib/home-picks";
+import { filterInStockProducts } from "@/lib/product-utils";
+import { getProductByHandle, type Product } from "@/lib/shopify";
 
 export const metadata: Metadata = {
   alternates: {
@@ -17,17 +17,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function HomePage() {
-  const [popularRaw, newProductsRaw] = await Promise.all([
-    Promise.all(homePopularHandles.map((handle) => getProductByHandle(handle))),
-    getNewProducts(36),
-  ]);
-  const popular = filterInStockProducts(
-    popularRaw.flatMap((product) => (product ? [product] : [])),
+async function loadPicks(handles: readonly string[]): Promise<Product[]> {
+  const products = await Promise.all(
+    handles.map((handle) => getProductByHandle(handle)),
   );
-  const newProducts = filterInStockProducts(
-    filterOnlineBrandProducts(newProductsRaw),
-  ).slice(0, 4);
+  return filterInStockProducts(
+    products.flatMap((product) => (product ? [product] : [])),
+  );
+}
+
+export default async function HomePage() {
+  const [popular, newProducts] = await Promise.all([
+    loadPicks(homePopularHandles),
+    loadPicks(homeNewHandles),
+  ]);
 
   return (
     <>

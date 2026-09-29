@@ -12,3 +12,15 @@ export const homePopularHandles = [
   "rayban-rb3025-001-33",
   "oakley-oo9245-06",
 ] as const;
+
+/**
+ * Homepage “New in store” row. Hand-picked, same as Popular, so the two
+ * rows don’t repeat. The Puffer is the fashion Wayfarer; Clubmaster,
+ * Erika, and Holbrook are the other shapes that aren’t already above.
+ */
+export const homeNewHandles = [
+  "rayban-rb4940-6018750",
+  "rayban-rb3016f-w0366",
+  "rayban-rb4171-6593t554",
+  "oakley-oo9244-13",
+] as const;
